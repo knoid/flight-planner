@@ -1,0 +1,5 @@
+@media print {
+    .root td:first-child, .root th:first-child {
+        display: none;
+    }
+}

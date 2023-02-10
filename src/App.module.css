@@ -1,0 +1,9 @@
+.hidden {
+    display: none;
+}
+
+@media print {
+    .printHidden {
+        display: none !important;
+    }
+}
