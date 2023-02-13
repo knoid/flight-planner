@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import PrintFriendlyInput from './PrintFriendlyInput';
+import { useStore } from './store';
 
 interface TimeInputProps {
   onChange: (value: string) => void;
@@ -14,7 +15,8 @@ function formatTime(value: string) {
 }
 
 export default function TimeInput(props: TimeInputProps) {
-  const [value, setValue] = useState('');
+  const { startTime, setStartTime } = useStore();
+  const [value, setValue] = useState(startTime);
 
   function onBlur() {
     if (validTime.test(value)) {
@@ -26,13 +28,15 @@ export default function TimeInput(props: TimeInputProps) {
     const inputValue = event.currentTarget.value;
     setValue(inputValue);
     if (validTime.test(inputValue)) {
-      props.onChange(formatTime(inputValue));
+      const normalizedValue = formatTime(inputValue)
+      setStartTime(normalizedValue);
+      props.onChange(normalizedValue);
     }
   }
 
   return (
     <PrintFriendlyInput
-      error={!validTime.test(value)}
+      error={!!value && !validTime.test(value)}
       onBlur={onBlur}
       onChange={onChange}
       inputProps={{ size: 5 }}

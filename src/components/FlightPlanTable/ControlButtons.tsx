@@ -27,7 +27,7 @@ const UpDownButtonGroup = styled(ButtonGroup)({
     borderBottom: '1px solid rgba(224, 224, 224, 1)',
   },
   '.MuiButton-root': {
-    padding: 3,
+    padding: 0,
   }
 });
 

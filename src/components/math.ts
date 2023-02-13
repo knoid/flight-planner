@@ -63,3 +63,7 @@ export function groundSpeed(
       2 * windSpeed * cruiseSpeed * cos(heading - windDirection)
   );
 }
+
+export function sum(...args: number[]): number {
+  return args.reduce((accum, value) => accum + value, 0);
+}
