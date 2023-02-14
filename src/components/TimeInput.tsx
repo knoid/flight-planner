@@ -3,7 +3,7 @@ import PrintFriendlyInput from './PrintFriendlyInput';
 import { useStore } from './store';
 
 interface TimeInputProps {
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 }
 
 export const validTime = /^[0-9]{1,2}:[0-9]{1,2}$/;
@@ -30,7 +30,7 @@ export default function TimeInput(props: TimeInputProps) {
     if (validTime.test(inputValue)) {
       const normalizedValue = formatTime(inputValue)
       setStartTime(normalizedValue);
-      props.onChange(normalizedValue);
+      props.onChange?.(normalizedValue);
     }
   }
 

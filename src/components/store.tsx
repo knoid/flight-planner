@@ -17,6 +17,8 @@ type Leg = [code: string, wind: string];
 
 interface State {
   cruiseSpeed: number;
+  fuelCapacity: number;
+  fuelFlow: number;
   legs: Leg[];
   startTime: string;
   version: number;
@@ -24,6 +26,8 @@ interface State {
 
 const initialState: State = {
   cruiseSpeed: -1,
+  fuelCapacity: -1,
+  fuelFlow: -1,
   legs: [],
   startTime: '',
   version,
@@ -61,6 +65,14 @@ export function useStore() {
     setState((state) => ({ ...state, cruiseSpeed }));
   }, [setState]);
 
+  const setFuelCapacity = useCallback((fuelCapacity: number) => {
+    setState((state) => ({ ...state, fuelCapacity }));
+  }, [setState]);
+
+  const setFuelFlow = useCallback((fuelFlow: number) => {
+    setState((state) => ({ ...state, fuelFlow }));
+  }, [setState]);
+
   const setLegs = useCallback((legs: Leg[]) => {
     setState((state) => ({ ...state, legs }));
   }, [setState]);
@@ -75,6 +87,8 @@ export function useStore() {
 
   return useMemo(() => ({
     setCruiseSpeed,
+    setFuelCapacity,
+    setFuelFlow,
     setLegs,
     setStartTime,
     ...state,

@@ -1,13 +1,8 @@
-import { Functions } from '@mui/icons-material';
 import {
-  alpha,
-  darken,
-  lighten,
   Paper,
   styled,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableFooter,
   TableHead,
@@ -21,60 +16,40 @@ import * as math from '../math';
 import POIInput from '../POIInput';
 import POIsContext, { POI } from '../POIsContext';
 import { useStore } from '../store';
-import TimeInput from '../TimeInput';
-import WindInput from '../WindInput';
-import ControlButtons from './ControlButtons';
-import styles from './FlightPlanTable.module.css';
 import legsToPartials, { Leg } from './legsToPartials';
+import TableCell from './TableCell';
+import WaypointRow from './WaypointRow';
 
 const PrintFriendlyPaper = styled(Paper)({
-  '@media print': {
+  '&&': { // https://github.com/styled-components/styled-components/issues/1816#issuecomment-398454088
     display: 'inline-block',
     width: 'auto',
+  }
+});
+
+const InlineTable = styled(Table)({
+  '@media print': {
+    '& td:first-child, & th:first-child': {
+      display: 'none',
+    },
   },
+  '& th': {
+    fontWeight: 'bold'
+  }
 });
-
-const SumIcon = styled(Functions)({
-  verticalAlign: 'bottom',
-  marginLeft: -24,
-});
-
-const FillInCell = styled(TableCell)(({ theme }) => {
-  const borderColor =
-    theme.palette.mode === 'light'
-      ? lighten(alpha(theme.palette.divider, 1), 0.88)
-      : darken(alpha(theme.palette.divider, 1), 0.68);
-  return {
-    borderLeft: `1px solid ${borderColor}`,
-    color: borderColor,
-  };
-});
-
-function formatDegrees(radians: number) {
-  return Math.round(math.toDegrees(radians)).toString().padStart(3, '0');
-}
-
-function pad2(num: number) {
-  return num.toString().padStart(2, '0');
-}
-
-function formatTime(date: Date) {
-  const hours = pad2(date.getHours());
-  const minutes = pad2(date.getMinutes());
-  return `${hours}:${minutes}`;
-}
-
-function formatDuration(hours: number) {
-  const minutes = hours * 60;
-  return `${Math.floor(minutes / 60)}:${pad2(Math.round(minutes % 60))}`;
-}
 
 interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
 }
 
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
-  const { cruiseSpeed, legs: savedLegs, setLegs: setSavedLegs } = useStore();
+  const {
+    cruiseSpeed,
+    fuelCapacity,
+    fuelFlow,
+    legs: savedLegs,
+    setLegs: setSavedLegs,
+  } = useStore();
   const [legs, setLegs] = useState<Leg[]>([]);
   const [startTime, setStartTime] = useState<Date | null>(null);
   function onETAChange(value: string) {
@@ -119,9 +94,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
 
   function onWindChange(modifiedIndex: number, value: string) {
     setLegs((legs) => [
-      ...legs.map((leg, index) =>
-        index === modifiedIndex ? { ...leg, wind: value } : leg
-      ),
+      ...legs.map((leg, index) => (index === modifiedIndex ? { ...leg, wind: value } : leg)),
     ]);
   }
 
@@ -145,18 +118,25 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     setLegs((legs) => legs.filter((leg, position) => position !== index));
   }
 
-  const partials = legsToPartials(legs, cruiseSpeed, startTime, wmm);
+  const partials = legsToPartials(legs, cruiseSpeed, fuelCapacity, fuelFlow, startTime, wmm);
 
   return (
     <TableContainer component={PrintFriendlyPaper}>
-      <Table className={styles.root} size="small">
+      <InlineTable size="small">
         <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell colSpan={12} />
+            <TableCell align="center" colSpan={2}>
+              Fuel
+            </TableCell>
+          </TableRow>
           <TableRow>
             <TableCell />
             <TableCell>#</TableCell>
             <TableCell>POI</TableCell>
             {/* <TableCell>GND</TableCell> */}
-            <TableCell>TWR</TableCell>
+            <TableCell>COM</TableCell>
             {/* <TableCell>VOR</TableCell> */}
             <TableCell>Aero</TableCell>
             {/* <TableCell></TableCell> */}
@@ -165,10 +145,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell title="Distance [nm]">Dist.</TableCell>
             {/* <TableCell></TableCell> */}
             <TableCell>Course</TableCell>
-            <TableCell
-              id="wind-label"
-              title="Wind speed and direction [dir/speed]"
-            >
+            <TableCell id="wind-label" title="Wind speed and direction [dir/speed]">
               Wind
             </TableCell>
             <TableCell title="Heading">HD</TableCell>
@@ -176,82 +153,28 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell title="Estimated Time Enroute [h:m]">ETE</TableCell>
             <TableCell title="Estimated Time of Arrival [h:m]">ETA</TableCell>
             <TableCell>Real</TableCell>
+            <TableCell>Trip</TableCell>
+            <TableCell title="Remaining">Rem</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {partials.map((partial, index) => (
-            <TableRow key={partial.leg.key}>
-              <TableCell align="right" padding="none">
-                <ControlButtons
-                  disableDown={index === legs.length - 1}
-                  disableUp={index === 0}
-                  onMoveDown={moveLeg.bind(null, 1, index)}
-                  onMoveUp={moveLeg.bind(null, -1, index)}
-                  onRemove={removeLeg.bind(null, index)}
-                />
-              </TableCell>
-              <TableCell>{index + 1}.</TableCell>
-              <TableCell>{partial.leg.poi.code}</TableCell>
-              {/* <TableCell>{partial.leg.poi.GND?.toFixed(2)}</TableCell> */}
-              <TableCell>{partial.leg.poi.TWR?.toFixed(2)}</TableCell>
-              {/* <TableCell>{partial.leg.poi.VOR?.toFixed(2)}</TableCell> */}
-              <TableCell align="center">{partial.leg.poi.aero}</TableCell>
-              {index > 0 ? (
-                <>
-                  {/* <TableCell>{partial.latR}</TableCell> */}
-                  {/* <TableCell>{partial.lngR}</TableCell> */}
-                  {/* <TableCell>{partial.distanceR}</TableCell> */}
-                  <TableCell align="right">
-                    {(math.toDegrees(partial.distance) * 60).toFixed(1)}
-                  </TableCell>
-                  {/* <TableCell>{partial.courseR}</TableCell> */}
-                  <TableCell align="center">
-                    {formatDegrees(partial.course)}
-                  </TableCell>
-                  <TableCell padding="none">
-                    <WindInput
-                      aria-describedby="wind-label"
-                      onCopyDown={onWindCopyDown.bind(null, index)}
-                      onChange={onWindChange.bind(null, index)}
-                      value={partial.leg.wind}
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    {partial.heading > -1 ? formatDegrees(partial.heading) : ''}
-                  </TableCell>
-                  <TableCell>
-                    {partial.groundSpeed > -1
-                      ? Math.round(partial.groundSpeed)
-                      : ''}
-                  </TableCell>
-                  <TableCell>
-                    {partial.ete > 0 ? formatDuration(partial.ete) : ''}
-                  </TableCell>
-                  <FillInCell>
-                    {partial.eta ? formatTime(partial.eta) : ''}
-                  </FillInCell>
-                  <FillInCell />
-                </>
-              ) : (
-                <>
-                  <TableCell colSpan={5} />
-                  <TableCell>
-                    <SumIcon aria-label="sum" />
-                    {formatDuration(
-                      math.sum(
-                        ...partials
-                          .map((partial) => partial.ete)
-                          .filter((val) => val > 0)
-                      )
-                    )}
-                  </TableCell>
-                  <FillInCell>
-                    <TimeInput onChange={onETAChange} />
-                  </FillInCell>
-                  <FillInCell />
-                </>
+            <WaypointRow
+              disableDown={index === legs.length - 1}
+              disableUp={index === 0}
+              index={index}
+              key={partial.leg.key}
+              onETAChange={onETAChange}
+              onMoveDown={moveLeg.bind(null, 1, index)}
+              onMoveUp={moveLeg.bind(null, -1, index)}
+              onRemove={removeLeg.bind(null, index)}
+              onWindChange={onWindChange.bind(null, index)}
+              onWindCopyDown={onWindCopyDown.bind(null, index)}
+              partial={partial}
+              totalTime={math.sum(
+                ...partials.map((partial) => partial.ete).filter((ete) => ete > 0)
               )}
-            </TableRow>
+            />
           ))}
         </TableBody>
         <HideOnPrint component={TableFooter}>
@@ -259,12 +182,12 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell align="right" colSpan={2}>
               Add new
             </TableCell>
-            <TableCell colSpan={5}>
+            <TableCell colSpan={7}>
               <POIInput onChange={onChange} />
             </TableCell>
           </TableRow>
         </HideOnPrint>
-      </Table>
+      </InlineTable>
     </TableContainer>
   );
 }

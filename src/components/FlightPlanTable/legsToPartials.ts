@@ -8,7 +8,7 @@ export interface Leg {
   wind: string;
 }
 
-interface Partial {
+export interface Partial {
   course: number;
   distance: number;
   /** Estimated time of arrival in hours. */
@@ -20,11 +20,20 @@ interface Partial {
   lat: number;
   lon: number;
   leg: Leg;
+  remainingFuel: number;
+  tripFuel: number;
 }
 
 const h2m = 60 * 60 * 1000;
 
-export default function legsToPartials(legs: Leg[], cruiseSpeed: number, initialTime: Date | null, wmm: WorldMagneticModel) {
+export default function legsToPartials(
+  legs: Leg[],
+  cruiseSpeed: number,
+  fuelCapacity: number,
+  fuelFlow: number,
+  initialTime: Date | null,
+  wmm: WorldMagneticModel
+) {
   return legs.reduce((partials, leg) => {
     const lat = math.toRadians(leg.poi.lat);
     const lon = math.toRadians(leg.poi.lon);
@@ -40,6 +49,8 @@ export default function legsToPartials(legs: Leg[], cruiseSpeed: number, initial
           lat,
           lon,
           leg,
+          remainingFuel: fuelCapacity,
+          tripFuel: 0,
         },
       ];
     }
@@ -47,6 +58,7 @@ export default function legsToPartials(legs: Leg[], cruiseSpeed: number, initial
     const previousPartial = partials[partials.length - 1];
     const lastPOI = previousPartial.leg.poi;
     const lastETA = previousPartial.eta;
+    const { remainingFuel } = previousPartial;
     const [windDirection, windSpeed = 0] = leg.wind.split('/').map(Number);
     const { course, distance } = math.courseDistance(
       math.toRadians(lastPOI.lat),
@@ -56,9 +68,7 @@ export default function legsToPartials(legs: Leg[], cruiseSpeed: number, initial
     );
     const heading = math.heading(course, cruiseSpeed, windDirection, windSpeed);
     const groundSpeed =
-      heading > -1
-        ? math.groundSpeed(cruiseSpeed, heading, windDirection, windSpeed)
-        : -1;
+      heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windDirection, windSpeed) : -1;
     const now = new Date();
     const declination = wmm.declination(
       1500 / 3,
@@ -66,24 +76,22 @@ export default function legsToPartials(legs: Leg[], cruiseSpeed: number, initial
       leg.poi.lon,
       now.getFullYear() + now.getMonth() / 12
     );
-    const ete = groundSpeed
-      ? (math.toDegrees(distance) / groundSpeed) * 60
-      : -1;
+    const ete = groundSpeed ? (math.toDegrees(distance) / groundSpeed) * 60 : -1;
+    const tripFuel = fuelFlow > 0 ? fuelFlow * ete : fuelFlow;
     return [
       ...partials,
       {
         course: course - declination,
         distance,
-        eta:
-          groundSpeed && lastETA
-            ? new Date(lastETA.getTime() + ete * h2m)
-            : null,
+        eta: groundSpeed && lastETA ? new Date(lastETA.getTime() + ete * h2m) : null,
         ete: groundSpeed ? (math.toDegrees(distance) / groundSpeed) * 60 : -1,
         groundSpeed,
         heading: heading > 0 ? heading - declination : heading,
         lat,
         lon,
         leg,
+        remainingFuel: remainingFuel > 0 ? remainingFuel - tripFuel : -1,
+        tripFuel,
       },
     ];
   }, [] as Partial[]);
