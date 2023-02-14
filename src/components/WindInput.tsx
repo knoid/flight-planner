@@ -1,11 +1,5 @@
 import { ArrowDropDown } from '@mui/icons-material';
-import {
-  IconButton,
-  Input,
-  InputAdornment,
-  InputProps,
-  styled,
-} from '@mui/material';
+import { IconButton, InputAdornment, InputProps, styled } from '@mui/material';
 import { ChangeEvent, MouseEventHandler } from 'react';
 import PrintFriendlyInput from './PrintFriendlyInput';
 
@@ -19,11 +13,7 @@ interface WindInputProps extends Pick<InputProps, 'aria-describedby'> {
   value: string;
 }
 
-export default function WindInput({
-  onChange,
-  onCopyDown,
-  ...props
-}: WindInputProps) {
+export default function WindInput({ onChange, onCopyDown, ...props }: WindInputProps) {
   function onChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     let newValue = event.currentTarget.value;
     if (newValue.length === 3 && !newValue.includes('/')) {
@@ -37,7 +27,7 @@ export default function WindInput({
   return (
     <PrintFriendlyInput
       fullWidth
-      inputProps={{ inputMode: 'numeric', size: 5 }}
+      inputProps={{ inputMode: 'numeric', size: 4 }}
       onChange={onChangeHandler}
       endAdornment={
         <InputAdornment position="end">

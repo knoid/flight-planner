@@ -1,3 +1,4 @@
+import { styled } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import PrintFriendlyInput from './PrintFriendlyInput';
 import { useStore } from './store';
@@ -13,6 +14,12 @@ function formatTime(value: string) {
     .map((num) => num.padStart(2, '0'))
     .join(':');
 }
+
+const CenteredInput = styled(PrintFriendlyInput)({
+  input: {
+    textAlign: 'center'
+  }
+})
 
 export default function TimeInput(props: TimeInputProps) {
   const { startTime, setStartTime } = useStore();
@@ -35,7 +42,7 @@ export default function TimeInput(props: TimeInputProps) {
   }
 
   return (
-    <PrintFriendlyInput
+    <CenteredInput
       error={!!value && !validTime.test(value)}
       onBlur={onBlur}
       onChange={onChange}

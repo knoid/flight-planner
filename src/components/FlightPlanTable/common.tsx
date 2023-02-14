@@ -20,6 +20,7 @@ export const FillInCell = styled(TableCell)(({ theme }) => {
   return {
     borderLeft: `1px solid ${borderColor}`,
     color: borderColor,
+    textAlign: 'center',
     '& + &': {
       borderRight: `1px solid ${borderColor}`,
     }
@@ -69,7 +70,7 @@ export function CommonCells({
         />
       </TableCell>
       <TableCell>{index + 1}.</TableCell>
-      <TableCell>{partial.leg.poi.code}</TableCell>
+      <TableCell>{partial.leg.code}</TableCell>
       {metadata ? (
         <>
           {/* <TableCell>{partial.leg.poi.GND?.toFixed(2)}</TableCell> */}

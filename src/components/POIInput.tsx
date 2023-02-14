@@ -43,7 +43,7 @@ export default function POIInput({ onChange }: POIInputProps) {
             matches(option.code, inputValue) || matches(option.name, inputValue)
         )
       }
-      getOptionLabel={(option) => option.code}
+      getOptionLabel={(option) => `(${option.code}) ${option.name}`}
       id="poi-input"
       inputValue={value}
       isOptionEqualToValue={(option, value) => option.code === value.code}

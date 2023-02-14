@@ -3,8 +3,9 @@ import * as math from '../math';
 import { POI } from '../POIsContext';
 
 export interface Leg {
+  code: string;
   key: string;
-  readonly poi: POI;
+  readonly poi?: POI;
   wind: string;
 }
 
@@ -35,28 +36,36 @@ export default function legsToPartials(
   wmm: WorldMagneticModel
 ) {
   return legs.reduce((partials, leg) => {
+    const empty = {
+      course: -1,
+      distance: 0,
+      eta: initialTime,
+      ete: -1,
+      groundSpeed: -1,
+      heading: -1,
+      lat: -1,
+      lon: -1,
+      leg,
+      remainingFuel: fuelCapacity,
+      tripFuel: 0,
+    };
+
+    if (!leg.poi) {
+      return [...partials, empty];
+    }
+
     const lat = math.toRadians(leg.poi.lat);
     const lon = math.toRadians(leg.poi.lon);
     if (partials.length === 0) {
-      return [
-        {
-          course: -1,
-          distance: 0,
-          eta: initialTime,
-          ete: -1,
-          groundSpeed: -1,
-          heading: -1,
-          lat,
-          lon,
-          leg,
-          remainingFuel: fuelCapacity,
-          tripFuel: 0,
-        },
-      ];
+      return [{ ...empty, lat, lon }];
     }
 
     const previousPartial = partials[partials.length - 1];
     const lastPOI = previousPartial.leg.poi;
+    if (!lastPOI) {
+      return [...partials, { ...empty, lat, lon }];
+    }
+
     const lastETA = previousPartial.eta;
     const { remainingFuel } = previousPartial;
     const [windDirection, windSpeed = 0] = leg.wind.split('/').map(Number);

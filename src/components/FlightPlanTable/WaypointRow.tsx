@@ -1,6 +1,7 @@
 import { Functions } from '@mui/icons-material';
 import { styled, TableRow } from '@mui/material';
 import { useEffect, useState } from 'react';
+import cachedFetch from '../cachedFetch';
 import * as math from '../math';
 import TimeInput from '../TimeInput';
 import WindInput from '../WindInput';
@@ -20,8 +21,8 @@ const SumIcon = styled(Functions)({
 });
 
 const VisuallyHidden = styled('span')({
-  visibility: 'hidden'
-})
+  visibility: 'hidden',
+});
 
 function formatDegrees(radians: number) {
   return Math.round(math.toDegrees(radians)).toString().padStart(3, '0');
@@ -56,8 +57,14 @@ interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
   totalTime: number;
 }
 
-function isOK(response: PromiseSettledResult<Response>): response is PromiseFulfilledResult<Response> {
-  return response.status === 'fulfilled' && response.value.ok;
+function isOK(
+  response: PromiseSettledResult<Response>
+): response is PromiseFulfilledResult<Response> {
+  return (
+    response.status === 'fulfilled' &&
+    response.value.ok &&
+    (response.value.headers.get('Content-Type')?.includes('json') || false)
+  );
 }
 
 export default function WaypointRow({
@@ -68,7 +75,7 @@ export default function WaypointRow({
   ...commonCellsProps
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
-  const { code } = partial.leg.poi;
+  const { code } = partial.leg;
   const [metadata, setMetadata] = useState<Metadata | null>(null);
 
   useEffect(() => {
@@ -76,7 +83,7 @@ export default function WaypointRow({
 
     (async () => {
       const [madhelResponse, frequenciesResponse] = await Promise.allSettled([
-        fetch(`https://datos.anac.gob.ar/madhel/api/v2/airports/${code}/?format=json`),
+        cachedFetch(`https://datos.anac.gob.ar/madhel/api/v2/airports/${code}/?format=json`),
         fetch(`/data/AR/${code}.json`),
       ]);
 
@@ -84,8 +91,10 @@ export default function WaypointRow({
         const result: Metadata = {};
         if (isOK(madhelResponse)) {
           const madhelResult: MadhelDetailsResponse = await madhelResponse.value.json();
-          result.distanceReference = Number(madhelResult.metadata.localization.distance_reference) * km2nm;
-          result.directionReference = madhelResult.metadata.localization.direction_reference.replace(/O$/, 'W');
+          result.distanceReference =
+            Number(madhelResult.metadata.localization.distance_reference) * km2nm;
+          result.directionReference =
+            madhelResult.metadata.localization.direction_reference.replace(/O$/, 'W');
         }
 
         if (isOK(frequenciesResponse)) {
@@ -108,9 +117,13 @@ export default function WaypointRow({
         {/* <TableCell>{partial.latR}</TableCell> */}
         {/* <TableCell>{partial.lngR}</TableCell> */}
         {/* <TableCell>{partial.distanceR}</TableCell> */}
-        <TableCell align="right">{(math.toDegrees(partial.distance) * 60).toFixed(1)}</TableCell>
+        <TableCell align="right">
+          {partial.distance > 0 ? (math.toDegrees(partial.distance) * 60).toFixed(1) : ''}
+        </TableCell>
         {/* <TableCell>{partial.courseR}</TableCell> */}
-        <TableCell align="center">{formatDegrees(partial.course)}</TableCell>
+        <TableCell align="center">
+          {partial.course > -1 ? formatDegrees(partial.course) : ''}
+        </TableCell>
         <TableCell padding="none">
           <WindInput
             aria-describedby="wind-label"
@@ -127,7 +140,9 @@ export default function WaypointRow({
         <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
         <FillInCell />
         <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
-        <TableCell>{partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}</TableCell>
+        <TableCell>
+          {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
+        </TableCell>
       </TableRow>
     );
   }

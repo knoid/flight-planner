@@ -1,4 +1,6 @@
 import {
+  alpha,
+  lighten,
   Paper,
   styled,
   Table,
@@ -21,22 +23,29 @@ import TableCell from './TableCell';
 import WaypointRow from './WaypointRow';
 
 const PrintFriendlyPaper = styled(Paper)({
-  '&&': { // https://github.com/styled-components/styled-components/issues/1816#issuecomment-398454088
+  '&&': {
+    // https://github.com/styled-components/styled-components/issues/1816#issuecomment-398454088
     display: 'inline-block',
     width: 'auto',
-  }
+  },
 });
 
 const InlineTable = styled(Table)({
   '@media print': {
-    '& td:first-child, & th:first-child': {
+    '& td:first-of-type, & th:first-of-type': {
       display: 'none',
     },
   },
   '& th': {
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 });
+
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+  '@media screen': {
+    backgroundColor: lighten(theme.palette.primary.main, .8)
+  }
+}))
 
 interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
@@ -63,32 +72,33 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
 
   const { options, loading } = useContext(POIsContext);
   useEffect(() => {
-    if (!loading && options.length > 0) {
-      setLegs(
-        savedLegs
-          .map(([code, wind]) => ({
-            poi: options.find((poi) => poi.code === code),
-            wind,
-          }))
-          .filter((leg): leg is Leg => !!leg.poi)
-          .map(({ poi, wind }) => ({
-            key: `${poi.code}-${nanoid()}`,
-            poi,
-            wind,
-          }))
+    if (loading) {
+      setLegs(savedLegs.map(([code, wind]) => ({ code, key: `${code}-${nanoid()}`, wind })));
+    } else if (!loading && options.length > 0) {
+      setLegs((legs) =>
+        legs.map((leg) => ({
+          ...leg,
+          poi: options.find((poi) => poi.code === leg.code),
+        }))
       );
+    } else {
+      // error loading data
     }
   }, [loading, options]);
 
   function onChange(event: SyntheticEvent, poi: POI | null) {
     if (poi) {
-      setLegs((legs) => [...legs, { key: nanoid(), poi, wind: '' }]);
+      setLegs((legs) => [
+        ...legs,
+        { code: poi.code, key: `${poi.code}-${nanoid()}`, poi, wind: '' },
+      ]);
     }
   }
 
   useEffect(() => {
+    console.log({ loading, legs });
     if (!loading) {
-      setSavedLegs(legs.map((leg) => [leg.poi.code, leg.wind]));
+      setSavedLegs(legs.map((leg) => [leg.code, leg.wind]));
     }
   }, [setSavedLegs, legs, loading]);
 
@@ -123,7 +133,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   return (
     <TableContainer component={PrintFriendlyPaper}>
       <InlineTable size="small">
-        <TableHead>
+        <StyledTableHead>
           <TableRow>
             <TableCell />
             <TableCell colSpan={12} />
@@ -135,9 +145,9 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell />
             <TableCell>#</TableCell>
             <TableCell>POI</TableCell>
-            {/* <TableCell>GND</TableCell> */}
-            <TableCell>COM</TableCell>
-            {/* <TableCell>VOR</TableCell> */}
+            {/* <TableCell align='center'>GND</TableCell> */}
+            <TableCell align='center'>COM</TableCell>
+            {/* <TableCell align='center'>VOR</TableCell> */}
             <TableCell>Aero</TableCell>
             {/* <TableCell></TableCell> */}
             {/* <TableCell></TableCell> */}
@@ -156,7 +166,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell>Trip</TableCell>
             <TableCell title="Remaining">Rem</TableCell>
           </TableRow>
-        </TableHead>
+        </StyledTableHead>
         <TableBody>
           {partials.map((partial, index) => (
             <WaypointRow

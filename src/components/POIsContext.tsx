@@ -1,4 +1,6 @@
 import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { capitalize } from '../utils/capitalize';
+import cachedFetch from './cachedFetch';
 
 export interface POI {
   name: string;
@@ -51,7 +53,7 @@ export function POIsProvider({ children }: ProviderProps) {
     }
 
     (async () => {
-      const request = await fetch('https://datos.anac.gob.ar/madhel/api/v2/airports/');
+      const request = await cachedFetch('https://datos.anac.gob.ar/madhel/api/v2/airports/');
       if (request.ok) {
         const { results }: MadhelResponse = await request.json();
         const pois = results.map((airport) => {
@@ -60,7 +62,7 @@ export function POIsProvider({ children }: ProviderProps) {
             code: airport.local_identifier,
             lat,
             lon,
-            name: airport.human_readable_identifier,
+            name: capitalize(airport.human_readable_identifier.split(' - ')[0]),
           };
         });
 
