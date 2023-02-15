@@ -48,7 +48,6 @@ jobs:
       with:
         path: ./build
 
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages

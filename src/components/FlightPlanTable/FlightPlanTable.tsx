@@ -88,6 +88,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     } else {
       // error loading data
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, options]);
 
   function onChange(event: SyntheticEvent, poi: POI | null) {
