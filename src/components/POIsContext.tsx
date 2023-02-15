@@ -18,17 +18,14 @@ interface ContextProps {
 const POIsContext = createContext<ContextProps>({ loading: false, options: [] });
 export default POIsContext;
 
-interface Point {
-  type: 'Point';
-  coordinates: [lat: number, lon: number];
-}
-
 interface Airport {
   human_readable_identifier: string;
   local_identifier: string;
   the_geom: {
     type: 'Feature';
-    geometry: Point;
+    properties: {
+      gg_point_coordinates: [lat: number, lon: number];
+    };
   };
   uri: string;
 }
@@ -58,7 +55,7 @@ export function POIsProvider({ children }: ProviderProps) {
       if (request.ok) {
         const { results }: MadhelResponse = await request.json();
         const pois = results.map((airport) => {
-          const [lat, lon] = airport.the_geom.geometry.coordinates;
+          const [lat, lon] = airport.the_geom.properties.gg_point_coordinates;
           return {
             code: airport.local_identifier,
             lat,
