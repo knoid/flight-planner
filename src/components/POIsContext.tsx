@@ -1,5 +1,6 @@
-import React, { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 import { capitalize } from '../utils/capitalize';
+import extractName from '../utils/extractName';
 import cachedFetch from './cachedFetch';
 
 export interface POI {
@@ -62,7 +63,7 @@ export function POIsProvider({ children }: ProviderProps) {
             code: airport.local_identifier,
             lat,
             lon,
-            name: capitalize(airport.human_readable_identifier.split(' - ')[0]),
+            name: capitalize(extractName(airport.human_readable_identifier)),
           };
         });
 

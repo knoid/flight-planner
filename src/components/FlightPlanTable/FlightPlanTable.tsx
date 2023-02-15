@@ -1,5 +1,4 @@
 import {
-  alpha,
   lighten,
   Paper,
   styled,
@@ -32,7 +31,7 @@ const PrintFriendlyPaper = styled(Paper)({
 
 const InlineTable = styled(Table)({
   '@media print': {
-    '& td:first-of-type, & th:first-of-type': {
+    '& td:first-of-type, & th:first-of-type, & td:last-of-type, & th:last-of-type': {
       display: 'none',
     },
   },
@@ -51,6 +50,15 @@ interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
 }
 
+function toDate(value: string) {
+  const [hours, minutes] = value.split(':');
+  const date = new Date();
+  date.setHours(+hours);
+  date.setMinutes(+minutes);
+  date.setSeconds(0);
+  return date;
+}
+
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const {
     cruiseSpeed,
@@ -58,22 +66,18 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     fuelFlow,
     legs: savedLegs,
     setLegs: setSavedLegs,
+    startTime: savedStartTime,
   } = useStore();
   const [legs, setLegs] = useState<Leg[]>([]);
-  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [startTime, setStartTime] = useState<Date | null>(savedStartTime ? toDate(savedStartTime) : null);
   function onETAChange(value: string) {
-    const date = new Date();
-    const [hours, minutes] = value.split(':');
-    date.setHours(+hours);
-    date.setMinutes(+minutes);
-    date.setSeconds(0);
-    setStartTime(date);
+    setStartTime(toDate(value));
   }
 
   const { options, loading } = useContext(POIsContext);
   useEffect(() => {
     if (loading) {
-      setLegs(savedLegs.map(([code, wind]) => ({ code, key: `${code}-${nanoid()}`, wind })));
+      setLegs(savedLegs.map((leg) => ({ key: `${leg.code}-${nanoid()}`, ...leg })));
     } else if (!loading && options.length > 0) {
       setLegs((legs) =>
         legs.map((leg) => ({
@@ -96,11 +100,16 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   }
 
   useEffect(() => {
-    console.log({ loading, legs });
     if (!loading) {
-      setSavedLegs(legs.map((leg) => [leg.code, leg.wind]));
+      setSavedLegs(legs.map(({ code, notes, wind }) => ({ code, notes, wind })));
     }
   }, [setSavedLegs, legs, loading]);
+
+  function onNotesChange(modifiedIndex: number, value?: string) {
+    setLegs((legs) => [
+      ...legs.map((leg, index) => (index === modifiedIndex ? { ...leg, notes: value } : leg)),
+    ]);
+  }
 
   function onWindChange(modifiedIndex: number, value: string) {
     setLegs((legs) => [
@@ -140,6 +149,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell align="center" colSpan={2}>
               Fuel
             </TableCell>
+            <TableCell />
           </TableRow>
           <TableRow>
             <TableCell />
@@ -165,6 +175,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell>Real</TableCell>
             <TableCell>Trip</TableCell>
             <TableCell title="Remaining">Rem</TableCell>
+            <TableCell />
           </TableRow>
         </StyledTableHead>
         <TableBody>
@@ -177,6 +188,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
               onETAChange={onETAChange}
               onMoveDown={moveLeg.bind(null, 1, index)}
               onMoveUp={moveLeg.bind(null, -1, index)}
+              onNotesChange={onNotesChange.bind(null, index)}
               onRemove={removeLeg.bind(null, index)}
               onWindChange={onWindChange.bind(null, index)}
               onWindCopyDown={onWindCopyDown.bind(null, index)}

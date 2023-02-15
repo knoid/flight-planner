@@ -13,7 +13,11 @@ import {
 const storageKey = 'store';
 const version = 1;
 
-type Leg = [code: string, wind: string];
+interface Leg {
+  code: string;
+  wind: string;
+  notes?: string;
+}
 
 interface State {
   cruiseSpeed: number;
@@ -51,46 +55,50 @@ interface StoreProviderProps {
 
 export function StoreProvider({ children }: StoreProviderProps) {
   const stateGetterSetter = useState(storedState);
-  return (
-    <StoreContext.Provider value={stateGetterSetter}>
-      {children}
-    </StoreContext.Provider>
-  );
+  return <StoreContext.Provider value={stateGetterSetter}>{children}</StoreContext.Provider>;
 }
 
 export function useStore() {
   const [state, setState] = useContext(StoreContext);
 
-  const setCruiseSpeed = useCallback((cruiseSpeed: number) => {
-    setState((state) => ({ ...state, cruiseSpeed }));
-  }, [setState]);
+  const setCruiseSpeed = useCallback(
+    (cruiseSpeed: number) => setState((state) => ({ ...state, cruiseSpeed })),
+    [setState]
+  );
 
-  const setFuelCapacity = useCallback((fuelCapacity: number) => {
-    setState((state) => ({ ...state, fuelCapacity }));
-  }, [setState]);
+  const setFuelCapacity = useCallback(
+    (fuelCapacity: number) => setState((state) => ({ ...state, fuelCapacity })),
+    [setState]
+  );
 
-  const setFuelFlow = useCallback((fuelFlow: number) => {
-    setState((state) => ({ ...state, fuelFlow }));
-  }, [setState]);
+  const setFuelFlow = useCallback(
+    (fuelFlow: number) => setState((state) => ({ ...state, fuelFlow })),
+    [setState]
+  );
 
-  const setLegs = useCallback((legs: Leg[]) => {
-    setState((state) => ({ ...state, legs }));
-  }, [setState]);
+  const setLegs = useCallback(
+    (legs: Leg[]) => setState((state) => ({ ...state, legs })),
+    [setState]
+  );
 
-  const setStartTime = useCallback((startTime: string) => {
-    setState((state) => ({ ...state, startTime }));
-  }, [setState]);
+  const setStartTime = useCallback(
+    (startTime: string) => setState((state) => ({ ...state, startTime })),
+    [setState]
+  );
 
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(state));
   }, [state]);
 
-  return useMemo(() => ({
-    setCruiseSpeed,
-    setFuelCapacity,
-    setFuelFlow,
-    setLegs,
-    setStartTime,
-    ...state,
-  }), [setCruiseSpeed, setLegs, setStartTime, state]);
+  return useMemo(
+    () => ({
+      setCruiseSpeed,
+      setFuelCapacity,
+      setFuelFlow,
+      setLegs,
+      setStartTime,
+      ...state,
+    }),
+    [setCruiseSpeed, setFuelCapacity, setFuelFlow, setLegs, setStartTime, state]
+  );
 }

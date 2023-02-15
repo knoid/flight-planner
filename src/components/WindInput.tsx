@@ -19,7 +19,7 @@ export default function WindInput({ onChange, onCopyDown, ...props }: WindInputP
     if (newValue.length === 3 && !newValue.includes('/')) {
       newValue += '/';
     }
-    if (/^[0-9]{0,3}\/?[0-9]{0,3}$/.test(newValue)) {
+    if (/^[0-9]{0,3}\/?[0-9]{0,3}$/u.test(newValue)) {
       onChange?.(newValue);
     }
   }

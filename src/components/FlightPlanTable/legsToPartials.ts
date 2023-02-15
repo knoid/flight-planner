@@ -5,6 +5,7 @@ import { POI } from '../POIsContext';
 export interface Leg {
   code: string;
   key: string;
+  notes?: string;
   readonly poi?: POI;
   wind: string;
 }

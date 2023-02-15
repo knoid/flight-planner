@@ -4,9 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+/**
+ * @license Twemoji
+ * Favicon sourced from https://twemoji.twitter.com/ under CC-BY 4.0:
+ * https://creativecommons.org/licenses/by/4.0/
+ */
+
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <App />

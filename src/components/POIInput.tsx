@@ -5,13 +5,13 @@ import {
   CircularProgress,
   TextField,
 } from '@mui/material';
-import React, { SyntheticEvent, useContext, useState } from 'react';
+import { SyntheticEvent, useContext, useState } from 'react';
 import POIsContext, { POI } from './POIsContext';
 
 function normalize(value: string) {
   return value
     .toLocaleLowerCase()
-    .normalize('NFD')
+    .normalize('NFKD')
     .replace(/\p{Diacritic}/gu, '');
 }
 
@@ -31,16 +31,15 @@ interface POIInputProps {
 export default function POIInput({ onChange }: POIInputProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
-  
-  const { loading, options } = useContext(POIsContext)
+
+  const { loading, options } = useContext(POIsContext);
 
   return (
     <Autocomplete
       autoHighlight
       filterOptions={(options, { inputValue }) =>
         options.filter(
-          (option) =>
-            matches(option.code, inputValue) || matches(option.name, inputValue)
+          (option) => matches(option.code, inputValue) || matches(option.name, inputValue)
         )
       }
       getOptionLabel={(option) => `(${option.code}) ${option.name}`}
@@ -61,9 +60,7 @@ export default function POIInput({ onChange }: POIInputProps) {
             ...params.InputProps,
             endAdornment: (
               <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
               </>
             ),

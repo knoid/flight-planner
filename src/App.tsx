@@ -1,7 +1,5 @@
-import { Button, createTheme, CssBaseline, lighten, Link, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, lighten, Link, ThemeProvider } from '@mui/material';
 import { styled } from '@mui/system';
-import { useRef } from 'react';
-import styles from './App.module.css';
 import CruiseSpeedInput from './components/CruiseSpeedInput';
 import FlightPlanTable from './components/FlightPlanTable';
 import FuelCapacityInput from './components/FuelCapacityInput';
@@ -25,8 +23,8 @@ const Section = styled('div')({
 });
 
 const InfoLink = styled(Link)({
-  margin: '1em'
-})
+  margin: '1em',
+});
 
 const Fieldset = styled(Section)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
@@ -44,23 +42,27 @@ const Fieldset = styled(Section)(({ theme }) => ({
 const theme = createTheme();
 
 export default function App() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   return (
     <StoreProvider>
       <POIsProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <HideOnPrint component="header">
-            Flight Planner
-            <Button type="button">Export</Button>
-            <Button type="button" onClick={() => fileInputRef.current?.click()}>
-              Import
-            </Button>
-            <input className={styles.hidden} type="file" ref={fileInputRef} />
             <Section>
-              <InfoLink href="http://ais.anac.gov.ar/notam" rel="noopener noreferrer" target="_blank">NOTAM</InfoLink>
-              <InfoLink href="https://www.smn.gob.ar/metar" rel="noopener noreferrer" target="_blank">SMN</InfoLink>
+              <InfoLink
+                href="http://ais.anac.gov.ar/notam"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                NOTAM
+              </InfoLink>
+              <InfoLink
+                href="https://www.smn.gob.ar/metar"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                SMN
+              </InfoLink>
             </Section>
           </HideOnPrint>
           <Main>

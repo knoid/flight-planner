@@ -5,6 +5,7 @@ import cachedFetch from '../cachedFetch';
 import * as math from '../math';
 import TimeInput from '../TimeInput';
 import WindInput from '../WindInput';
+import AddNotesCell from './AddNotesCell';
 import {
   CommonCells,
   CommonCellsProps,
@@ -13,6 +14,7 @@ import {
   Metadata,
   pad2,
 } from './common';
+import NotesRow from './NotesRow';
 import TableCell from './TableCell';
 
 const SumIcon = styled(Functions)({
@@ -52,6 +54,7 @@ interface FrequenciesResponse {
 
 interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
   onETAChange: (value: string) => void;
+  onNotesChange: (value?: string) => void;
   onWindChange: (value: string) => void;
   onWindCopyDown: () => void;
   totalTime: number;
@@ -69,6 +72,7 @@ function isOK(
 
 export default function WaypointRow({
   onETAChange,
+  onNotesChange,
   onWindChange,
   onWindCopyDown,
   totalTime,
@@ -84,7 +88,7 @@ export default function WaypointRow({
     (async () => {
       const [madhelResponse, frequenciesResponse] = await Promise.allSettled([
         cachedFetch(`https://datos.anac.gob.ar/madhel/api/v2/airports/${code}/?format=json`),
-        fetch(`/data/AR/${code}.json`),
+        fetch(`data/AR/${code}.json`),
       ]);
 
       if (active) {
@@ -94,7 +98,7 @@ export default function WaypointRow({
           result.distanceReference =
             Number(madhelResult.metadata.localization.distance_reference) * km2nm;
           result.directionReference =
-            madhelResult.metadata.localization.direction_reference.replace(/O$/, 'W');
+            madhelResult.metadata.localization.direction_reference.replace(/O$/u, 'W');
         }
 
         if (isOK(frequenciesResponse)) {
@@ -110,61 +114,76 @@ export default function WaypointRow({
     };
   }, [code]);
 
+  const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
+  function toggleNotes() {
+    setOpen((open) => !open);
+  }
+
   if (index > 0) {
     return (
-      <TableRow>
-        <CommonCells metadata={metadata} {...commonCellsProps} />
-        {/* <TableCell>{partial.latR}</TableCell> */}
-        {/* <TableCell>{partial.lngR}</TableCell> */}
-        {/* <TableCell>{partial.distanceR}</TableCell> */}
-        <TableCell align="right">
-          {partial.distance > 0 ? (math.toDegrees(partial.distance) * 60).toFixed(1) : ''}
-        </TableCell>
-        {/* <TableCell>{partial.courseR}</TableCell> */}
-        <TableCell align="center">
-          {partial.course > -1 ? formatDegrees(partial.course) : ''}
-        </TableCell>
-        <TableCell padding="none">
-          <WindInput
-            aria-describedby="wind-label"
-            onCopyDown={onWindCopyDown}
-            onChange={onWindChange}
-            value={partial.leg.wind}
-          />
-        </TableCell>
-        <TableCell align="center">
-          {partial.heading > -1 ? formatDegrees(partial.heading) : ''}
-        </TableCell>
-        <TableCell>{partial.groundSpeed > -1 ? Math.round(partial.groundSpeed) : ''}</TableCell>
-        <TableCell>{partial.ete > 0 ? formatDuration(partial.ete) : ''}</TableCell>
-        <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
-        <FillInCell />
-        <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
-        <TableCell>
-          {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
-        </TableCell>
-      </TableRow>
+      <>
+        <TableRow>
+          <CommonCells metadata={metadata} {...commonCellsProps} />
+          {/* <TableCell>{partial.latR}</TableCell> */}
+          {/* <TableCell>{partial.lngR}</TableCell> */}
+          {/* <TableCell>{partial.distanceR}</TableCell> */}
+          <TableCell align="right">
+            {partial.distance > 0 ? (math.toDegrees(partial.distance) * 60).toFixed(1) : ''}
+          </TableCell>
+          {/* <TableCell>{partial.courseR}</TableCell> */}
+          <TableCell align="center">
+            {partial.course > -1 ? formatDegrees(partial.course) : ''}
+          </TableCell>
+          <TableCell padding="none">
+            <WindInput
+              aria-describedby="wind-label"
+              onCopyDown={onWindCopyDown}
+              onChange={onWindChange}
+              value={partial.leg.wind}
+            />
+          </TableCell>
+          <TableCell align="center">
+            {partial.heading > -1 ? formatDegrees(partial.heading) : ''}
+          </TableCell>
+          <TableCell>{partial.groundSpeed > -1 ? Math.round(partial.groundSpeed) : ''}</TableCell>
+          <TableCell>{partial.ete > 0 ? formatDuration(partial.ete) : ''}</TableCell>
+          <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
+          <FillInCell />
+          <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
+          <TableCell>
+            {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
+          </TableCell>
+          <AddNotesCell onClick={toggleNotes} open={open} />
+        </TableRow>
+        <NotesRow onChange={onNotesChange} value={partial.leg.notes || ''} open={open} />
+      </>
     );
   }
 
   return (
-    <TableRow>
-      <CommonCells metadata={metadata} {...commonCellsProps} />
-      <TableCell colSpan={5} />
-      <TableCell>
-        <SumIcon aria-label="sum" />
-        {formatDuration(totalTime)}
-      </TableCell>
-      <FillInCell>
-        <TimeInput onChange={onETAChange} />
-      </FillInCell>
-      <FillInCell>
-        <VisuallyHidden>
-          <TimeInput />
-        </VisuallyHidden>
-      </FillInCell>
-      <TableCell />
-      <TableCell>{partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}</TableCell>
-    </TableRow>
+    <>
+      <TableRow>
+        <CommonCells metadata={metadata} {...commonCellsProps} />
+        <TableCell colSpan={5} />
+        <TableCell>
+          <SumIcon aria-label="sum" />
+          {formatDuration(totalTime)}
+        </TableCell>
+        <FillInCell>
+          <TimeInput onChange={onETAChange} />
+        </FillInCell>
+        <FillInCell>
+          <VisuallyHidden>
+            <TimeInput />
+          </VisuallyHidden>
+        </FillInCell>
+        <TableCell />
+        <TableCell>
+          {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
+        </TableCell>
+        <AddNotesCell onClick={toggleNotes} open={open} />
+      </TableRow>
+      <NotesRow onChange={onNotesChange} open={open} value={partial.leg.notes || ''} />
+    </>
   );
 }
