@@ -57,7 +57,7 @@ export default function App() {
                 NOTAM
               </InfoLink>
               <InfoLink
-                href="https://www.smn.gob.ar/metar"
+                href="https://www.smn.gob.ar/meteorologia-aeronautica"
                 rel="noopener noreferrer"
                 target="_blank"
               >
