@@ -1,13 +1,5 @@
 const { abs, acos, asin, cos, PI, sin, sqrt } = Math;
 
-export function toDegrees(radians: number): number {
-  return (180 / PI) * (radians % (PI * 2));
-}
-
-export function toRadians(degrees: number) {
-  return (PI / 180) * (degrees % 360);
-}
-
 /** protect against rounding error on input argument */
 function acosf(x: number) {
   if (abs(x) > 1) {
@@ -51,11 +43,19 @@ export function groundSpeed(
   windSource: number,
   windSpeed: number
 ) {
-  return sqrt(
-    windSpeed ** 2 + cruiseSpeed ** 2 - 2 * windSpeed * cruiseSpeed * cos(heading - windSource)
-  );
+  const cruiseSpeed2 = cruiseSpeed ** 2;
+  const windSpeed2 = windSpeed ** 2;
+  return sqrt(windSpeed2 + cruiseSpeed2 - 2 * windSpeed * cruiseSpeed * cos(heading - windSource));
 }
 
 export function sum(...args: number[]): number {
   return args.reduce((accum, value) => accum + value, 0);
+}
+
+export function toDegrees(radians: number): number {
+  return (180 / PI) * (radians % (PI * 2));
+}
+
+export function toRadians(degrees: number) {
+  return (PI / 180) * (degrees % 360);
 }
