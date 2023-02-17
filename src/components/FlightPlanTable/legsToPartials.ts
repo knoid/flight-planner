@@ -86,7 +86,7 @@ export default function legsToPartials(
         course: course - declination,
         distance,
         eta: groundSpeed && lastETA ? new Date(lastETA.getTime() + ete * hour) : null,
-        ete: groundSpeed ? (math.toDegrees(distance) / groundSpeed) * 60 : -1,
+        ete,
         groundSpeed,
         heading: heading > 0 ? heading - declination : heading,
         lat,
