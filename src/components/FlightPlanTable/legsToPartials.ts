@@ -67,18 +67,6 @@ export default function legsToPartials(
       return [...partials, { ...empty, lat, lon }];
     }
 
-    const lastETA = previousPartial.eta;
-    const { remainingFuel } = previousPartial;
-    const [windDirection, windSpeed = 0] = leg.wind.split('/').map(Number);
-    const { course, distance } = math.courseDistance(
-      math.toRadians(lastPOI.lat),
-      math.toRadians(lastPOI.lon),
-      lat,
-      lon
-    );
-    const heading = math.heading(course, cruiseSpeed, windDirection, windSpeed);
-    const groundSpeed =
-      heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windDirection, windSpeed) : -1;
     const now = new Date();
     const declination = wmm.declination(
       1500 / 3,
@@ -86,6 +74,19 @@ export default function legsToPartials(
       leg.poi.lon,
       now.getFullYear() + now.getMonth() / 12
     );
+    const lastETA = previousPartial.eta;
+    const { remainingFuel } = previousPartial;
+    const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
+    const windSource = math.toRadians(windSourceDeg) + declination;
+    const { course, distance } = math.courseDistance(
+      math.toRadians(lastPOI.lat),
+      math.toRadians(lastPOI.lon),
+      lat,
+      lon
+    );
+    const heading = math.heading(course, cruiseSpeed, windSource, windSpeed);
+    const groundSpeed =
+      heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windSource, windSpeed) : -1;
     const ete = groundSpeed ? (math.toDegrees(distance) / groundSpeed) * 60 : -1;
     const tripFuel = fuelFlow > 0 ? fuelFlow * ete : fuelFlow;
     return [
