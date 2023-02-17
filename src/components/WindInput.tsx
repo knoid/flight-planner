@@ -16,7 +16,7 @@ interface WindInputProps extends Pick<InputProps, 'aria-describedby'> {
 export default function WindInput({ onChange, onCopyDown, ...props }: WindInputProps) {
   function onChangeHandler(event: ChangeEvent<HTMLInputElement>) {
     let newValue = event.currentTarget.value;
-    if (newValue.length === 3 && !newValue.includes('/')) {
+    if (props.value.length === 2 && newValue.length === 3 && !newValue.includes('/')) {
       newValue += '/';
     }
     if (/^[0-9]{0,3}\/?[0-9]{0,3}$/u.test(newValue)) {

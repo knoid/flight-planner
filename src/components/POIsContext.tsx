@@ -19,6 +19,11 @@ const POIsContext = createContext<ContextProps>({ loading: false, options: [] })
 export default POIsContext;
 
 interface Airport {
+  data: {
+    helpers_system: {
+      radio: string[];
+    };
+  };
   human_readable_identifier: string;
   local_identifier: string;
   the_geom: {
