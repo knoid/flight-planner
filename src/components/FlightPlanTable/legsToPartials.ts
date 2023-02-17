@@ -57,8 +57,7 @@ export default function legsToPartials(
       return [...partials, empty];
     }
 
-    const lat = math.toRadians(leg.poi.lat);
-    const lon = math.toRadians(leg.poi.lon);
+    const { lat, lon } = leg.poi;
     if (partials.length === 0) {
       return [{ ...empty, lat, lon }];
     }
@@ -74,10 +73,8 @@ export default function legsToPartials(
     const { remainingFuel } = previousPartial;
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
     const windSource = math.toRadians(windSourceDeg) + declination;
-    const lastLat = math.toRadians(lastPOI.lat);
-    const lastLon = math.toRadians(lastPOI.lon);
-    const distance = math.distance(lastLat, lastLon, lat, lon);
-    const course = math.course(distance, lastLat, lastLon, lat, lon);
+    const distance = math.distance(lastPOI.lat, lastPOI.lon, lat, lon);
+    const course = math.course(distance, lastPOI.lat, lastPOI.lon, lat, lon);
     const heading = math.heading(course, cruiseSpeed, windSource, windSpeed);
     const groundSpeed =
       heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windSource, windSpeed) : -1;

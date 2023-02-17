@@ -2,6 +2,7 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { capitalize } from '../utils/capitalize';
 import extractName from '../utils/extractName';
 import cachedFetch from './cachedFetch';
+import * as math from './math';
 
 export interface POI {
   name: string;
@@ -63,8 +64,8 @@ export function POIsProvider({ children }: ProviderProps) {
           const [lat, lon] = airport.the_geom.properties.gg_point_coordinates;
           return {
             code: airport.local_identifier,
-            lat,
-            lon,
+            lat: math.toRadians(lat),
+            lon: math.toRadians(lon),
             name: capitalize(extractName(airport.human_readable_identifier)),
           };
         });
