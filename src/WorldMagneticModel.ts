@@ -233,13 +233,11 @@ export class WorldMagneticModel {
     this.fm[0] = 0.0; // !!!!!! WMM C and Fortran both have a bug in that fm[0] is not initialised
   }
 
-  declination(altitudeKm: number, latitudeDegrees: number, longitudeDegrees: number, yearFloat: number) {
+  declination(altitudeKm: number, latitude: number, longitude: number, yearFloat: number) {
     /* locals */
 
     const maxord = 12;
     const alt = altitudeKm;
-    const glon = longitudeDegrees;
-    const glat = latitudeDegrees;
 
     /*************************************************************************/
 
@@ -247,10 +245,8 @@ export class WorldMagneticModel {
     //if more then 5 years has passed since last epoch update then return invalid
     if (dt < 0.0 || dt > 5.0) return -999;
 
-    const pi = Math.PI;
-    const dtr = pi / 180.0;
-    const rlon = glon * dtr;
-    const rlat = glat * dtr;
+    const rlon = longitude;
+    const rlat = latitude;
     const srlon = Math.sin(rlon);
     const srlat = Math.sin(rlat);
     const crlon = Math.cos(rlon);
@@ -289,9 +285,9 @@ export class WorldMagneticModel {
       ar = ar * aor;
       for (let m = 0, D3 = 1, D4 = (n + m + D3) / D3; D4 > 0; D4--, m += D3) {
         /*
-           COMPUTE UNNORMALIZED ASSOCIATED LEGENDRE POLYNOMIALS
-           AND DERIVATIVES VIA RECURSION RELATIONS
-        */
+         * COMPUTE UNNORMALIZED ASSOCIATED LEGENDRE POLYNOMIALS
+         * AND DERIVATIVES VIA RECURSION RELATIONS
+         */
 
         if (n === m) {
           this.snorm[n + m * 13] = st * this.snorm[n - 1 + (m - 1) * 13];
@@ -335,9 +331,8 @@ export class WorldMagneticModel {
         bt = bt - ar * temp1 * this.dp[m][n];
         bp += this.fm[m] * temp2 * par;
         br += this.fn[n] * temp1 * par;
-        /*
-        SPECIAL CASE:  NORTH/SOUTH GEOGRAPHIC POLES
-        */
+
+        // SPECIAL CASE:  NORTH/SOUTH GEOGRAPHIC POLES
         if (st === 0.0 && m === 1) {
           if (n === 1) this.pp[n] = this.pp[n - 1];
           else
@@ -352,40 +347,11 @@ export class WorldMagneticModel {
     if (st === 0.0) bp = bpp;
     else bp /= st;
 
-    /*
-    ROTATE MAGNETIC VECTOR COMPONENTS FROM SPHERICAL TO
-    GEODETIC COORDINATES
-    */
+    // ROTATE MAGNETIC VECTOR COMPONENTS FROM SPHERICAL TO GEODETIC COORDINATES
     const bx = -bt * ca - br * sa;
     const by = bp;
-    // const bz = bt * sa - br * ca;
-    /*
-    COMPUTE DECLINATION (DEC), INCLINATION (DIP) AND
-    TOTAL INTENSITY (TI)
-*/
+
     return Math.atan2(by, bx);
-    // const bh = Math.sqrt(bx * bx + by * by);
-    // const ti = Math.sqrt(bh * bh + bz * bz);
-    // const dec = Math.atan2(by, bx) / dtr;
-    // const dip = Math.atan2(bz, bh) / dtr;
-    /*
-    COMPUTE MAGNETIC GRID VARIATION IF THE CURRENT
-    GEODETIC POSITION IS IN THE ARCTIC OR ANTARCTIC
-    (I.E. GLAT > +55 DEGREES OR GLAT < -55 DEGREES)
-
-    OTHERWISE, SET MAGNETIC GRID VARIATION TO -999.0
-*/
-    // let gv = -999.0;
-    // if (Math.abs(glat) >= 55.0) {
-    //   if (glat > 0.0 && glon >= 0.0) gv = dec - glon;
-    //   if (glat > 0.0 && glon < 0.0) gv = dec + Math.abs(glon);
-    //   if (glat < 0.0 && glon >= 0.0) gv = dec + glon;
-    //   if (glat < 0.0 && glon < 0.0) gv = dec - Math.abs(glon);
-    //   if (gv > +180.0) gv -= 360.0;
-    //   if (gv < -180.0) gv += 360.0;
-    // }
-
-    // return dec;
   }
 
   knownAnswerTest() {

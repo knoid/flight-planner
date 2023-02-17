@@ -16,22 +16,23 @@ function acosf(x: number) {
   return acos(x);
 }
 
-export function courseDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const d = acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2));
-  let crs12: number;
-  if (d === 0 || lat1 === -(PI / 180) * 90) {
-    crs12 = 2 * PI;
+export function course(distance: number, lat1: number, lon1: number, lat2: number, lon2: number) {
+  if (distance === 0 || lat1 === -(PI / 180) * 90) {
+    return 2 * PI;
   } else if (lat1 === (PI / 180) * 90) {
-    crs12 = PI;
+    return PI;
   } else {
-    const argacos = (sin(lat2) - sin(lat1) * cos(d)) / (sin(d) * cos(lat1));
+    const argacos = (sin(lat2) - sin(lat1) * cos(distance)) / (sin(distance) * cos(lat1));
     if (sin(lon2 - lon1) > 0) {
-      crs12 = acosf(argacos);
+      return acosf(argacos);
     } else {
-      crs12 = 2 * PI - acosf(argacos);
+      return 2 * PI - acosf(argacos);
     }
   }
-  return { distance: d, course: crs12 };
+}
+
+export function distance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  return acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2));
 }
 
 export function heading(
