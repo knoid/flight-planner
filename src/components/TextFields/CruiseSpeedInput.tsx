@@ -1,7 +1,7 @@
 import { InputAdornment } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useStore } from '../store';
 import NumericTextField from './NumericTextField';
-import { useStore } from './store';
 
 const inputProps = { pattern: '[0-9]*' };
 const InputProps = { endAdornment: <InputAdornment position="end">kt</InputAdornment> };

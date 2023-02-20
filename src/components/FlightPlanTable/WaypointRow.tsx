@@ -3,8 +3,8 @@ import { styled, TableRow } from '@mui/material';
 import { useEffect, useState } from 'react';
 import cachedFetch from '../cachedFetch';
 import * as math from '../math';
-import TimeInput from '../TimeInput';
-import WindInput from '../WindInput';
+import TimeInput from '../TextFields/TimeInput';
+import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
 import {
   CommonCells,

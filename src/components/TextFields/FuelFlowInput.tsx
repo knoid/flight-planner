@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useStore } from '../store';
 import NumericTextField from './NumericTextField';
-import { useStore } from './store';
 
 export default function FuelFlowInput() {
   const { setFuelFlow, fuelFlow: savedValue } = useStore();

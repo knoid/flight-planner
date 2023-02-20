@@ -24,6 +24,9 @@ interface State {
   fuelCapacity: number;
   fuelFlow: number;
   legs: Leg[];
+  metadata: {
+    [key: string]: string;
+  };
   startTime: string;
   version: number;
 }
@@ -33,18 +36,21 @@ const initialState: State = {
   fuelCapacity: -1,
   fuelFlow: -1,
   legs: [],
+  metadata: {},
   startTime: '',
   version,
 };
 
-const storedState =
-  (function () {
+const storedState = {
+  ...initialState,
+  ...(function () {
     try {
       return JSON.parse(localStorage.getItem(storageKey)!) as State;
     } catch (error) {
-      return null;
+      return {};
     }
-  })() || initialState;
+  })(),
+};
 
 type ContextType = [State, Dispatch<SetStateAction<State>>];
 const StoreContext = createContext<ContextType>([initialState, () => {}]);
@@ -81,6 +87,12 @@ export function useStore() {
     [setState]
   );
 
+  const setMetadata = useCallback(
+    (key: string, value: string) =>
+      setState(({ metadata, ...state }) => ({ ...state, metadata: { ...metadata, [key]: value } })),
+    [setState]
+  );
+
   const setStartTime = useCallback(
     (startTime: string) => setState((state) => ({ ...state, startTime })),
     [setState]
@@ -96,9 +108,10 @@ export function useStore() {
       setFuelCapacity,
       setFuelFlow,
       setLegs,
+      setMetadata,
       setStartTime,
       ...state,
     }),
-    [setCruiseSpeed, setFuelCapacity, setFuelFlow, setLegs, setStartTime, state]
+    [setCruiseSpeed, setFuelCapacity, setFuelFlow, setLegs, setMetadata, setStartTime, state]
   );
 }

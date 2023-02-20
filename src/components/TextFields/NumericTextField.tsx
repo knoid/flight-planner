@@ -1,20 +1,20 @@
-import { styled, TextField, TextFieldProps } from '@mui/material';
+import { styled, TextFieldProps } from '@mui/material';
+import TextField from './TextField';
 
-const MarginTextField = styled(TextField)(({ theme }) => ({
-  margin: '0 0.5em',
+const CenteredTextField = styled(TextField)({
   input: {
     textAlign: 'center',
   },
   '.MuiInputLabel-root': {
     color: 'black',
   },
-}));
+})
 
 export default function NumericTextField({ inputProps, ...props }: TextFieldProps) {
   const isValid = !isNaN(Number(props.value));
 
   return (
-    <MarginTextField
+    <CenteredTextField
       error={!isValid}
       inputProps={{ inputMode: 'numeric', size: 10, ...inputProps }}
       {...props}

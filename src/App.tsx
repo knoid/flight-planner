@@ -1,12 +1,12 @@
-import { createTheme, CssBaseline, lighten, Link, ThemeProvider } from '@mui/material';
-import { styled } from '@mui/system';
-import CruiseSpeedInput from './components/CruiseSpeedInput';
+import { createTheme, CssBaseline, lighten, Link, styled, ThemeProvider } from '@mui/material';
 import FlightPlanTable from './components/FlightPlanTable';
-import FuelCapacityInput from './components/FuelCapacityInput';
-import FuelFlowInput from './components/FuelFlowInput';
 import HideOnPrint from './components/HideOnPrint';
+import Metadata from './components/Metadata';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
+import CruiseSpeedInput from './components/TextFields/CruiseSpeedInput';
+import FuelCapacityInput from './components/TextFields/FuelCapacityInput';
+import FuelFlowInput from './components/TextFields/FuelFlowInput';
 import { WorldMagneticModel } from './WorldMagneticModel';
 
 const wmm = new WorldMagneticModel();
@@ -66,6 +66,7 @@ export default function App() {
             </Section>
           </HideOnPrint>
           <Main>
+            <Metadata />
             <Fieldset>
               <CruiseSpeedInput />
               <FuelCapacityInput />

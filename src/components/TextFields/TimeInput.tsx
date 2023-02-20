@@ -1,7 +1,7 @@
 import { styled } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
+import { useStore } from '../store';
 import PrintFriendlyInput from './PrintFriendlyInput';
-import { useStore } from './store';
 
 interface TimeInputProps {
   onChange?: (value: string) => void;
@@ -17,9 +17,9 @@ function formatTime(value: string) {
 
 const CenteredInput = styled(PrintFriendlyInput)({
   input: {
-    textAlign: 'center'
-  }
-})
+    textAlign: 'center',
+  },
+});
 
 export default function TimeInput(props: TimeInputProps) {
   const { startTime, setStartTime } = useStore();
@@ -35,7 +35,7 @@ export default function TimeInput(props: TimeInputProps) {
     const inputValue = event.currentTarget.value;
     setValue(inputValue);
     if (validTime.test(inputValue)) {
-      const normalizedValue = formatTime(inputValue)
+      const normalizedValue = formatTime(inputValue);
       setStartTime(normalizedValue);
       props.onChange?.(normalizedValue);
     }
