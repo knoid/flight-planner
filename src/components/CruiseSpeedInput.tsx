@@ -1,6 +1,10 @@
+import { InputAdornment } from '@mui/material';
 import { useEffect, useState } from 'react';
 import NumericTextField from './NumericTextField';
 import { useStore } from './store';
+
+const inputProps = { pattern: '[0-9]*' };
+const InputProps = { endAdornment: <InputAdornment position="end">kt</InputAdornment> };
 
 export default function CruiseSpeedInput() {
   const { setCruiseSpeed, cruiseSpeed: savedValue } = useStore();
@@ -10,10 +14,11 @@ export default function CruiseSpeedInput() {
   useEffect(() => {
     setCruiseSpeed(value);
   }, [value, setCruiseSpeed]);
-  
+
   return (
     <NumericTextField
-      inputProps={{ pattern: '[0-9]*' }}
+      inputProps={inputProps}
+      InputProps={InputProps}
       label="Cruise speed"
       onChange={(event) => setRawValue(event.currentTarget.value)}
       value={rawValue}
