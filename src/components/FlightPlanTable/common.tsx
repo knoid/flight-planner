@@ -1,7 +1,7 @@
-import { alpha, darken, lighten, styled } from '@mui/material';
+import { styled } from '@mui/material';
 import ControlButtons from './ControlButtons';
 import { Partial } from './legsToPartials';
-import TableCell from './TableCell';
+import TableCell, { TableCellProps } from './TableCell';
 
 export function pad2(num: number) {
   return num.toString().padStart(2, '0');
@@ -12,22 +12,7 @@ export function formatDuration(hours: number) {
   return `${Math.floor(minutes / 60)}:${pad2(Math.round(minutes % 60))}`;
 }
 
-export const FillInCell = styled(TableCell)(({ theme }) => {
-  const borderColor =
-    theme.palette.mode === 'light'
-      ? lighten(alpha(theme.palette.divider, 1), 0.88)
-      : darken(alpha(theme.palette.divider, 1), 0.68);
-  return {
-    borderLeft: `1px solid ${borderColor}`,
-    color: borderColor,
-    textAlign: 'center',
-    '& + &': {
-      borderRight: `1px solid ${borderColor}`,
-    }
-  };
-});
-
-const NoWrapTableCell = styled(TableCell)({
+const NoWrapTableCell = styled(TableCell)<TableCellProps>({
   whiteSpace: 'nowrap'
 })
 

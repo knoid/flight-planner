@@ -1,21 +1,29 @@
 import { Functions } from '@mui/icons-material';
-import { styled, TableRow } from '@mui/material';
+import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useEffect, useState } from 'react';
 import cachedFetch from '../cachedFetch';
 import * as math from '../math';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
-import {
-  CommonCells,
-  CommonCellsProps,
-  FillInCell,
-  formatDuration,
-  Metadata,
-  pad2,
-} from './common';
+import { CommonCells, CommonCellsProps, formatDuration, Metadata, pad2 } from './common';
 import NotesRow from './NotesRow';
-import TableCell from './TableCell';
+import TableCell, { TableCellProps } from './TableCell';
+
+export const FillInCell = styled(TableCell)<TableCellProps>(({ theme }) => {
+  const borderColor =
+    theme.palette.mode === 'light'
+      ? lighten(alpha(theme.palette.divider, 1), 0.88)
+      : darken(alpha(theme.palette.divider, 1), 0.68);
+  return {
+    borderLeft: `1px solid ${borderColor}`,
+    color: borderColor,
+    textAlign: 'center',
+    '& + &': {
+      borderRight: `1px solid ${borderColor}`,
+    },
+  };
+});
 
 const SumIcon = styled(Functions)({
   verticalAlign: 'bottom',
@@ -124,13 +132,9 @@ export default function WaypointRow({
       <>
         <TableRow>
           <CommonCells metadata={metadata} {...commonCellsProps} />
-          {/* <TableCell>{partial.latR}</TableCell> */}
-          {/* <TableCell>{partial.lngR}</TableCell> */}
-          {/* <TableCell>{partial.distanceR}</TableCell> */}
           <TableCell align="right">
             {partial.distance > 0 ? (math.toDegrees(partial.distance) * 60).toFixed(1) : ''}
           </TableCell>
-          {/* <TableCell>{partial.courseR}</TableCell> */}
           <TableCell align="center">
             {partial.course > -1 ? formatDegrees(partial.course) : ''}
           </TableCell>
@@ -150,7 +154,9 @@ export default function WaypointRow({
           <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
           <FillInCell />
           <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
-          <TableCell>
+          <TableCell
+            color={partial.remainingFuel !== -1 && partial.remainingFuel <= 0 ? 'error' : undefined}
+          >
             {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
           </TableCell>
           <AddNotesCell onClick={toggleNotes} open={open} />

@@ -19,8 +19,6 @@ export interface Partial {
   ete: number;
   groundSpeed: number;
   heading: number;
-  lat: number;
-  lon: number;
   leg: Leg;
   remainingFuel: number;
   tripFuel: number;
@@ -46,8 +44,6 @@ export default function legsToPartials(
       ete: -1,
       groundSpeed: -1,
       heading: -1,
-      lat: -1,
-      lon: -1,
       leg,
       remainingFuel: fuelCapacity,
       tripFuel: 0,
@@ -59,22 +55,19 @@ export default function legsToPartials(
 
     const { lat, lon } = leg.poi;
     if (partials.length === 0) {
-      return [{ ...empty, lat, lon }];
+      return [empty];
     }
 
-    const previousPartial = partials[partials.length - 1];
-    const lastPOI = previousPartial.leg.poi;
-    if (!lastPOI) {
-      return [...partials, { ...empty, lat, lon }];
+    const last = partials[partials.length - 1];
+    if (!last.leg.poi) {
+      return [...partials, empty];
     }
 
     const declination = wmm.declination(1500 / 3, lat, lon, yearFloat);
-    const lastETA = previousPartial.eta;
-    const { remainingFuel } = previousPartial;
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
     const windSource = math.toRadians(windSourceDeg) + declination;
-    const distance = math.distance(lastPOI.lat, lastPOI.lon, lat, lon);
-    const course = math.course(distance, lastPOI.lat, lastPOI.lon, lat, lon);
+    const distance = math.distance(last.leg.poi.lat, last.leg.poi.lon, lat, lon);
+    const course = math.course(distance, last.leg.poi.lat, last.leg.poi.lon, lat, lon);
     const heading = math.heading(course, cruiseSpeed, windSource, windSpeed);
     const groundSpeed =
       heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windSource, windSpeed) : -1;
@@ -85,14 +78,12 @@ export default function legsToPartials(
       {
         course: course - declination,
         distance,
-        eta: groundSpeed && lastETA ? new Date(lastETA.getTime() + ete * hour) : null,
+        eta: groundSpeed > -1 && last.eta ? new Date(last.eta.getTime() + ete * hour) : null,
         ete,
         groundSpeed,
         heading: heading > 0 ? heading - declination : heading,
-        lat,
-        lon,
         leg,
-        remainingFuel: remainingFuel > 0 ? remainingFuel - tripFuel : -1,
+        remainingFuel: last.remainingFuel > 0 ? last.remainingFuel - tripFuel : -1,
         tripFuel,
       },
     ];
