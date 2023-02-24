@@ -1,14 +1,14 @@
 import { Functions } from '@mui/icons-material';
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
-import { useEffect, useState } from 'react';
-import cachedFetch from '../cachedFetch';
+import { useState } from 'react';
 import * as math from '../math';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
-import { CommonCells, CommonCellsProps, formatDuration, Metadata, pad2 } from './common';
+import { CommonCells, CommonCellsProps, formatDuration, pad2 } from './common';
 import NotesRow from './NotesRow';
 import TableCell, { TableCellProps } from './TableCell';
+import useWaypoint from './useWaypoint';
 
 export const FillInCell = styled(TableCell)<TableCellProps>(({ theme }) => {
   const borderColor =
@@ -44,22 +44,6 @@ function formatTime(date: Date) {
   return `${hours}:${minutes}`;
 }
 
-const km2nm = 1 / 1.852;
-
-interface MadhelDetailsResponse {
-  metadata: {
-    localization: {
-      distance_reference: string;
-      direction_reference: string;
-    };
-  };
-}
-
-interface FrequenciesResponse {
-  ATIS?: number;
-  COM?: number;
-}
-
 interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
   onETAChange: (value: string) => void;
   onNotesChange: (value?: string) => void;
@@ -67,17 +51,6 @@ interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
   onWindCopyDown: () => void;
   totalTime: number;
 }
-
-function isOK(
-  response: PromiseSettledResult<Response>
-): response is PromiseFulfilledResult<Response> {
-  return (
-    response.status === 'fulfilled' &&
-    response.value.ok &&
-    (response.value.headers.get('Content-Type')?.includes('json') || false)
-  );
-}
-
 export default function WaypointRow({
   onETAChange,
   onNotesChange,
@@ -88,39 +61,7 @@ export default function WaypointRow({
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
   const { code } = partial.leg;
-  const [metadata, setMetadata] = useState<Metadata | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    (async () => {
-      const [madhelResponse, frequenciesResponse] = await Promise.allSettled([
-        cachedFetch(`https://datos.anac.gob.ar/madhel/api/v2/airports/${code}/?format=json`),
-        fetch(`data/AR/${code}.json`),
-      ]);
-
-      if (active) {
-        const result: Metadata = {};
-        if (isOK(madhelResponse)) {
-          const madhelResult: MadhelDetailsResponse = await madhelResponse.value.json();
-          result.distanceReference =
-            Number(madhelResult.metadata.localization.distance_reference) * km2nm;
-          result.directionReference =
-            madhelResult.metadata.localization.direction_reference.replace(/O$/u, 'W');
-        }
-
-        if (isOK(frequenciesResponse)) {
-          const frequenciesResult: FrequenciesResponse = await frequenciesResponse.value.json();
-          Object.assign(result, frequenciesResult);
-        }
-        setMetadata(result);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [code]);
+  const metadata = useWaypoint(code);
 
   const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
   function toggleNotes() {
