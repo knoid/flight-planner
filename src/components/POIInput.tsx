@@ -28,6 +28,15 @@ interface POIInputProps {
   ) => void;
 }
 
+function getOptionLabel(option: POI) {
+  switch (option.type) {
+    case 'airport':
+      return `(${option.code}) ${option.name}`;
+    case 'waypoint':
+      return option.code;
+  }
+}
+
 export default function POIInput({ onChange }: POIInputProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
@@ -39,10 +48,12 @@ export default function POIInput({ onChange }: POIInputProps) {
       autoHighlight
       filterOptions={(options, { inputValue }) =>
         options.filter(
-          (option) => matches(option.code, inputValue) || matches(option.name, inputValue)
+          (option) =>
+            matches(option.code, inputValue) ||
+            (option.type === 'airport' && matches(option.name, inputValue))
         )
       }
-      getOptionLabel={(option) => `(${option.code}) ${option.name}`}
+      getOptionLabel={getOptionLabel}
       id="poi-input"
       inputValue={value}
       isOptionEqualToValue={(option, value) => option.code === value.code}
