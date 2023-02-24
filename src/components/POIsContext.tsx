@@ -83,8 +83,8 @@ async function fetchWaypoints(): Promise<Waypoint[]> {
     const results: WaypointsResponse = await request.json();
     return Object.entries(results).map(([identifier, [lat, lon]]) => ({
       code: identifier,
-      lat,
-      lon,
+      lat: math.toRadians(lat),
+      lon: math.toRadians(lon),
       type: 'waypoint',
     }));
   }
