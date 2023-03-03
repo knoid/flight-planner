@@ -9,45 +9,17 @@ import {
   useMemo,
   useState,
 } from 'react';
-
-const storageKey = 'store';
-const version = 1;
-
-interface Leg {
-  code: string;
-  wind: string;
-  notes?: string;
-}
-
-interface State {
-  cruiseSpeed: number;
-  fuelCapacity: number;
-  fuelFlow: number;
-  legs: Leg[];
-  metadata: {
-    [key: string]: string;
-  };
-  startTime: string;
-  version: number;
-}
-
-const initialState: State = {
-  cruiseSpeed: -1,
-  fuelCapacity: -1,
-  fuelFlow: -1,
-  legs: [],
-  metadata: {},
-  startTime: '',
-  version,
-};
+import { initialState, Leg, State, storageKey } from './constants';
+import runMigrations from './runMigrations';
 
 const storedState = {
-  ...initialState,
   ...(function () {
     try {
-      return JSON.parse(localStorage.getItem(storageKey)!) as State;
+      const data = JSON.parse(localStorage.getItem(storageKey) ?? '');
+      const migratedData = runMigrations(data)
+      return migratedData;
     } catch (error) {
-      return {};
+      return initialState;
     }
   })(),
 };
