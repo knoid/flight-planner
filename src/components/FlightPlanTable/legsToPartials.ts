@@ -49,13 +49,8 @@ export default function legsToPartials(
       tripFuel: 0,
     };
 
-    if (!leg.poi) {
+    if (!leg.poi || partials.length === 0) {
       return [...partials, empty];
-    }
-
-    const { lat, lon } = leg.poi;
-    if (partials.length === 0) {
-      return [empty];
     }
 
     const last = partials[partials.length - 1];
@@ -63,11 +58,11 @@ export default function legsToPartials(
       return [...partials, empty];
     }
 
-    const declination = wmm.declination(1500 / 3, lat, lon, yearFloat);
+    const declination = wmm.declination(1500 / 3, leg.poi.coords, yearFloat);
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
     const windSource = math.toRadians(windSourceDeg) + declination;
-    const distance = math.distance(last.leg.poi.lat, last.leg.poi.lon, lat, lon);
-    const course = math.course(distance, last.leg.poi.lat, last.leg.poi.lon, lat, lon);
+    const distance = math.distance(last.leg.poi.coords, leg.poi.coords);
+    const course = math.course(distance, last.leg.poi.coords, leg.poi.coords);
     const heading = math.heading(course, cruiseSpeed, windSource, windSpeed);
     const groundSpeed =
       heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windSource, windSpeed) : -1;

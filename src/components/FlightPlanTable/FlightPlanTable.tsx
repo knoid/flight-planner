@@ -42,9 +42,9 @@ const InlineTable = styled(Table)({
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   '@media screen': {
-    backgroundColor: lighten(theme.palette.primary.main, .8)
-  }
-}))
+    backgroundColor: lighten(theme.palette.primary.main, 0.8),
+  },
+}));
 
 interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
@@ -69,7 +69,9 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     startTime: savedStartTime,
   } = useStore();
   const [legs, setLegs] = useState<Leg[]>([]);
-  const [startTime, setStartTime] = useState<Date | null>(savedStartTime ? toDate(savedStartTime) : null);
+  const [startTime, setStartTime] = useState<Date | null>(
+    savedStartTime ? toDate(savedStartTime) : null
+  );
   function onETAChange(value: string) {
     setStartTime(toDate(value));
   }
@@ -88,7 +90,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     } else {
       // error loading data
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, options]);
 
   function onChange(event: SyntheticEvent, poi: POI | null) {
@@ -157,7 +159,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell>#</TableCell>
             <TableCell>POI</TableCell>
             {/* <TableCell align='center'>GND</TableCell> */}
-            <TableCell align='center'>COM</TableCell>
+            <TableCell align="center">COM</TableCell>
             {/* <TableCell align='center'>VOR</TableCell> */}
             <TableCell>Aero</TableCell>
             {/* <TableCell></TableCell> */}

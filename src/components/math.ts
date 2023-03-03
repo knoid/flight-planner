@@ -1,3 +1,5 @@
+import { Coords } from "../types";
+
 const { abs, acos, asin, cos, PI, sin, sqrt } = Math;
 
 /** protect against rounding error on input argument */
@@ -8,7 +10,9 @@ function acosf(x: number) {
   return acos(x);
 }
 
-export function course(distance: number, lat1: number, lon1: number, lat2: number, lon2: number) {
+export function course(distance: number, from: Coords, to: Coords) {
+  const [lat1, lon1] = from;
+  const [lat2, lon2] = to;
   if (distance === 0 || lat1 === -(PI / 180) * 90) {
     return 2 * PI;
   } else if (lat1 === (PI / 180) * 90) {
@@ -23,7 +27,9 @@ export function course(distance: number, lat1: number, lon1: number, lat2: numbe
   }
 }
 
-export function distance(lat1: number, lon1: number, lat2: number, lon2: number) {
+export function distance(from: Coords, to: Coords) {
+  const [lat1, lon1] = from;
+  const [lat2, lon2] = to;
   return acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2));
 }
 
