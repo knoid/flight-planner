@@ -31,6 +31,8 @@ email: w.chadwick<at>sky.com
 
 */
 
+import { Coords } from "./types";
+
 const a = 6378.137;
 const b = 6356.7523142;
 const re = 6371.2;
@@ -233,7 +235,7 @@ export class WorldMagneticModel {
     this.fm[0] = 0.0; // !!!!!! WMM C and Fortran both have a bug in that fm[0] is not initialised
   }
 
-  declination(altitudeKm: number, latitude: number, longitude: number, yearFloat: number) {
+  declination(altitudeKm: number, coords: Coords, yearFloat: number) {
     /* locals */
 
     const maxord = 12;
@@ -245,8 +247,7 @@ export class WorldMagneticModel {
     //if more then 5 years has passed since last epoch update then return invalid
     if (dt < 0.0 || dt > 5.0) return -999;
 
-    const rlon = longitude;
-    const rlat = latitude;
+    const [rlat, rlon] = coords;
     const srlon = Math.sin(rlon);
     const srlat = Math.sin(rlat);
     const crlon = Math.cos(rlon);
@@ -384,7 +385,7 @@ export class WorldMagneticModel {
       const lon = parseFloat(c_flds[1]);
       const exp = parseFloat(c_flds[2]);
 
-      const dec = this.declination(0, lat, lon, 2010.0);
+      const dec = this.declination(0, [lat, lon], 2010.0);
       if (Math.abs(dec - exp) > maxErr) {
         maxErr = Math.abs(dec - exp);
         maxExp = exp;
@@ -399,7 +400,7 @@ export class WorldMagneticModel {
       const lon = parseFloat(c_flds[1]);
       const exp = parseFloat(c_flds[2]);
 
-      const dec = this.declination(0, lat, lon, 2012.5);
+      const dec = this.declination(0, [lat, lon], 2012.5);
       if (Math.abs(dec - exp) > maxErr) {
         maxErr = Math.abs(dec - exp);
         maxExp = exp;
