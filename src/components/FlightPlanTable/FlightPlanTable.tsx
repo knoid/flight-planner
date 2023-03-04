@@ -161,7 +161,8 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
         <StyledTableHead>
           <TableRow>
             <TableCell />
-            <TableCell colSpan={13} />
+            <TableCell colSpan={12} />
+            <TableCell hideInPrint={!hasAltitude} />
             <TableCell align="center" colSpan={2}>
               Fuel
             </TableCell>

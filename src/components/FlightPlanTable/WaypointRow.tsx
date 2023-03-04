@@ -127,7 +127,8 @@ export default function WaypointRow({
     <>
       <TableRow>
         <CommonCells metadata={metadata} {...commonCellsProps} />
-        <TableCell colSpan={6} />
+        <TableCell colSpan={5} />
+        <TableCell hideInPrint={!hasAltitude} />
         <TableCell>
           <SumIcon aria-label="sum" />
           {formatDuration(totalTime)}
