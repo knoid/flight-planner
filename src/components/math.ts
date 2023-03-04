@@ -54,12 +54,20 @@ export function groundSpeed(
   return sqrt(windSpeed2 + cruiseSpeed2 - 2 * windSpeed * cruiseSpeed * cos(heading - windSource));
 }
 
-export function sum(...args: number[]): number {
+export function sum(...args: number[]) {
   return args.reduce((accum, value) => accum + value, 0);
 }
 
-export function toDegrees(radians: number): number {
+export function toDegrees(radians: number) {
   return (180 / PI) * (radians % (PI * 2));
+}
+
+export function toKilometers(value: string) {
+  let feet = Number(value);
+  if (value.startsWith('FL')) {
+    feet = Number(value.substring(2)) * 100;
+  }
+  return feet / 3280.8;
 }
 
 export function toRadians(degrees: number) {

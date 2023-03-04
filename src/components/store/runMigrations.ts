@@ -18,7 +18,8 @@ export default function runMigrations(data?: DeepPartial<State>): State {
   const legs = (data.legs || [])
     .filter(<T>(leg: T | undefined): leg is T => !!leg)
     .filter(<T extends { code?: string }>(leg: T): leg is WithCode<T> => !!leg.code)
-    .map(({ wind, ...leg }) => ({
+    .map(({ altitude, wind, ...leg }) => ({
+      altitude: altitude || '',
       wind: wind || '',
       ...leg,
     }));

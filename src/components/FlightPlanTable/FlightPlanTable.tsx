@@ -97,14 +97,16 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     if (poi) {
       setLegs((legs) => [
         ...legs,
-        { code: poi.code, key: `${poi.code}-${nanoid()}`, poi, wind: '' },
+        { altitude: '', code: poi.code, key: `${poi.code}-${nanoid()}`, poi, wind: '' },
       ]);
     }
   }
 
   useEffect(() => {
     if (!loading) {
-      setSavedLegs(legs.map(({ code, notes, wind }) => ({ code, notes, wind })));
+      setSavedLegs(
+        legs.map(({ altitude, code, notes, wind }) => ({ altitude, code, notes, wind }))
+      );
     }
   }, [setSavedLegs, legs, loading]);
 
@@ -114,19 +116,29 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     ]);
   }
 
-  function onWindChange(modifiedIndex: number, value: string) {
-    setLegs((legs) => [
-      ...legs.map((leg, index) => (index === modifiedIndex ? { ...leg, wind: value } : leg)),
-    ]);
+  function onChangeHandler(key: 'altitude' | 'wind') {
+    return function onChange(modifiedIndex: number, value: string) {
+      setLegs((legs) => [
+        ...legs.map((leg, index) => (index === modifiedIndex ? { ...leg, [key]: value } : leg)),
+      ]);
+    };
   }
 
-  function onWindCopyDown(index: number) {
-    const value = legs[index].wind;
-    setLegs((legs) => [
-      ...legs.slice(0, index + 1),
-      ...legs.slice(index + 1).map((leg) => ({ ...leg, wind: value })),
-    ]);
+  const onAltitudeChange = onChangeHandler('altitude');
+  const onWindChange = onChangeHandler('wind');
+
+  function onCopyDownHandler(key: 'altitude' | 'wind') {
+    return function onCopyDown(index: number) {
+      const value = legs[index][key];
+      setLegs((legs) => [
+        ...legs.slice(0, index + 1),
+        ...legs.slice(index + 1).map((leg) => ({ ...leg, [key]: value })),
+      ]);
+    };
   }
+
+  const onAltitudeCopyDown = onCopyDownHandler('altitude');
+  const onWindCopyDown = onCopyDownHandler('wind');
 
   function moveLeg(dir: number, index: number) {
     setLegs((legs) => {
@@ -141,6 +153,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   }
 
   const partials = legsToPartials(legs, cruiseSpeed, fuelCapacity, fuelFlow, startTime, wmm);
+  const hasAltitude = !!legs.find(leg => leg.altitude.length > 0);
 
   return (
     <TableContainer component={PrintFriendlyPaper}>
@@ -148,7 +161,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
         <StyledTableHead>
           <TableRow>
             <TableCell />
-            <TableCell colSpan={12} />
+            <TableCell colSpan={13} />
             <TableCell align="center" colSpan={2}>
               Fuel
             </TableCell>
@@ -166,7 +179,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             {/* <TableCell></TableCell> */}
             {/* <TableCell></TableCell> */}
             <TableCell title="Distance [nm]">Dist.</TableCell>
-            {/* <TableCell></TableCell> */}
+            <TableCell id="altitude-label" hideInPrint={!hasAltitude}>Altitude</TableCell>
             <TableCell>Course</TableCell>
             <TableCell id="wind-label" title="Wind speed and direction [dir/speed]">
               Wind
@@ -186,8 +199,11 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <WaypointRow
               disableDown={index === legs.length - 1}
               disableUp={index === 0}
+              hasAltitude={hasAltitude}
               index={index}
               key={partial.leg.key}
+              onAltitudeChange={onAltitudeChange.bind(null, index)}
+              onAltitudeCopyDown={onAltitudeCopyDown.bind(null, index)}
               onETAChange={onETAChange}
               onMoveDown={moveLeg.bind(null, 1, index)}
               onMoveUp={moveLeg.bind(null, -1, index)}

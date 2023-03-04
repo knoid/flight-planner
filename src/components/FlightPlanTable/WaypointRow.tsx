@@ -2,6 +2,7 @@ import { Functions } from '@mui/icons-material';
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useState } from 'react';
 import * as math from '../math';
+import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
@@ -45,13 +46,20 @@ function formatTime(date: Date) {
 }
 
 interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
+  hasAltitude?: boolean;
+  onAltitudeChange: (value: string) => void;
+  onAltitudeCopyDown: () => void;
   onETAChange: (value: string) => void;
   onNotesChange: (value?: string) => void;
   onWindChange: (value: string) => void;
   onWindCopyDown: () => void;
   totalTime: number;
 }
+
 export default function WaypointRow({
+  hasAltitude,
+  onAltitudeChange,
+  onAltitudeCopyDown,
   onETAChange,
   onNotesChange,
   onWindChange,
@@ -75,6 +83,14 @@ export default function WaypointRow({
           <CommonCells metadata={metadata} {...commonCellsProps} />
           <TableCell align="right">
             {partial.distance > 0 ? (math.toDegrees(partial.distance) * 60).toFixed(1) : ''}
+          </TableCell>
+          <TableCell hideInPrint={!hasAltitude}>
+            <AltitudeInput
+              aria-describedby="altitude-label"
+              onChange={onAltitudeChange}
+              onCopyDown={onAltitudeCopyDown}
+              value={partial.leg.altitude}
+            />
           </TableCell>
           <TableCell align="center">
             {partial.course > -1 ? formatDegrees(partial.course) : ''}
@@ -111,7 +127,7 @@ export default function WaypointRow({
     <>
       <TableRow>
         <CommonCells metadata={metadata} {...commonCellsProps} />
-        <TableCell colSpan={5} />
+        <TableCell colSpan={6} />
         <TableCell>
           <SumIcon aria-label="sum" />
           {formatDuration(totalTime)}

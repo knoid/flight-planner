@@ -2,6 +2,7 @@ export const storageKey = 'store';
 export const version = 1;
 
 export interface Leg {
+  altitude: string;
   code: string;
   wind: string;
   notes?: string;

@@ -3,6 +3,7 @@ import * as math from '../math';
 import { POI } from '../POIsContext';
 
 export interface Leg {
+  altitude: string;
   code: string;
   key: string;
   notes?: string;
@@ -24,6 +25,7 @@ export interface Partial {
   tripFuel: number;
 }
 
+const defaultAltitudeKm = math.toKilometers('2000');
 const hour = 60 * 60 * 1000;
 const now = new Date();
 const yearFloat = now.getFullYear() + now.getMonth() / 12;
@@ -58,7 +60,8 @@ export default function legsToPartials(
       return [...partials, empty];
     }
 
-    const declination = wmm.declination(1500 / 3, leg.poi.coords, yearFloat);
+    const altitudeKm = math.toKilometers(leg.altitude) || defaultAltitudeKm;
+    const declination = wmm.declination(altitudeKm, leg.poi.coords, yearFloat);
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
     const windSource = math.toRadians(windSourceDeg) + declination;
     const distance = math.distance(last.leg.poi.coords, leg.poi.coords);
