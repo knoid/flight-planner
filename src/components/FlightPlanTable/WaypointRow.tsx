@@ -36,7 +36,8 @@ const VisuallyHidden = styled('span')({
 });
 
 function formatDegrees(radians: number) {
-  return Math.round(math.toDegrees(radians)).toString().padStart(3, '0');
+  const degrees = math.remainder(math.toDegrees(radians), 360);
+  return Math.round(degrees).toString().padStart(3, '0');
 }
 
 function formatTime(date: Date) {

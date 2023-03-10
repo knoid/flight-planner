@@ -1,6 +1,6 @@
-import { Coords } from "../types";
+import { Coords } from '../types';
 
-const { abs, acos, asin, cos, PI, sin, sqrt } = Math;
+const { abs, acos, asin, ceil, cos, PI, sin, sqrt } = Math;
 
 /** protect against rounding error on input argument */
 function acosf(x: number) {
@@ -54,12 +54,16 @@ export function groundSpeed(
   return sqrt(windSpeed2 + cruiseSpeed2 - 2 * windSpeed * cruiseSpeed * cos(heading - windSource));
 }
 
+export function remainder(value: number, max: number) {
+  return (value + max * ceil(abs(value / max))) % max;
+}
+
 export function sum(...args: number[]) {
   return args.reduce((accum, value) => accum + value, 0);
 }
 
 export function toDegrees(radians: number) {
-  return (180 / PI) * (radians % (PI * 2));
+  return (180 / PI) * radians;
 }
 
 export function toKilometers(value: string) {
@@ -71,5 +75,5 @@ export function toKilometers(value: string) {
 }
 
 export function toRadians(degrees: number) {
-  return (PI / 180) * (degrees % 360);
+  return (PI / 180) * degrees;
 }
