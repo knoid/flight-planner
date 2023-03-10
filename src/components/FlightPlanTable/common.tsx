@@ -1,4 +1,7 @@
-import { styled } from '@mui/material';
+import { Map } from '@mui/icons-material';
+import { IconButton, styled } from '@mui/material';
+import HideOnPrint from '../HideOnPrint';
+import * as math from '../math';
 import ControlButtons from './ControlButtons';
 import { Partial } from './legsToPartials';
 import TableCell, { TableCellProps } from './TableCell';
@@ -51,6 +54,29 @@ export function CommonCells({
   partial,
 }: CommonCellsProps) {
   const freq = metadata?.frequencies || {};
+  const ref = metadata?.reference;
+  const { poi } = partial.leg;
+  let googleMapsUrl;
+  if (poi) {
+    const coords = poi.coords.map(math.toDegrees).join(',');
+    if (poi.type === 'airport') {
+      // https://developers.google.com/maps/documentation/urls/get-started#map-action
+      const qs = new URLSearchParams({
+        api: '1',
+        basemap: 'satellite',
+        center: coords,
+        map_action: 'map',
+      });
+      googleMapsUrl = `https://www.google.com/maps/@?${qs.toString()}`;
+    } else if (poi.type === 'waypoint') {
+      // https://developers.google.com/maps/documentation/urls/get-started#search-action
+      const qs = new URLSearchParams({
+        api: '1',
+        query: coords,
+      });
+      googleMapsUrl = `https://www.google.com/maps/search/?${qs.toString()}`;
+    }
+  }
   return (
     <>
       <TableCell align="right" padding="none">
@@ -70,7 +96,19 @@ export function CommonCells({
           <TableCell>{freq.TWR ? freq.TWR.toFixed(2) : ''}</TableCell>
           <TableCell>{freq.GND ? freq.GND.toFixed(2) : ''}</TableCell>
           <NoWrapTableCell align="center">
-            {metadata.reference && Math.round(metadata.reference.distance) + ' ' + metadata.reference.direction}
+            {ref && Math.round(ref.distance) + ' ' + ref.direction}
+            {googleMapsUrl && (
+              <HideOnPrint component="span">
+                <IconButton
+                  href={googleMapsUrl}
+                  size="small"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Map />
+                </IconButton>
+              </HideOnPrint>
+            )}
           </NoWrapTableCell>
         </>
       ) : (

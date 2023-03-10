@@ -2,9 +2,7 @@ import {
   OverridableComponent,
   OverrideProps,
 } from '@mui/material/OverridableComponent';
-import clsx from 'clsx';
-import { ComponentType, ElementType, forwardRef, ReactNode } from 'react';
-import styles from './HideOnPrint.module.css';
+import { ElementType, ReactNode } from 'react';
 
 export interface HideOnPrintTypeMap<P = {}, D extends ElementType = 'div'> {
   props: P & {
