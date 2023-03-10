@@ -17,10 +17,13 @@ const Main = styled('main')({
   textAlign: 'center',
 });
 
-const Section = styled('div')({
-  margin: '1.5em 0',
+const Section = styled('div')(({ theme }) => ({
+  margin: '0.5em 0',
   textAlign: 'center',
-});
+  [theme.breakpoints.up('sm')]: {
+    margin: '1.5em 0',
+  },
+}));
 
 const InfoLink = styled(Link)({
   margin: '1em',
@@ -28,14 +31,17 @@ const InfoLink = styled(Link)({
 
 const Fieldset = styled(Section)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  display: 'inline-block',
-  padding: '1.2em',
+  display: 'inline-flex',
+  padding: '1.2em 0',
   '@media screen': {
     backgroundColor: lighten(theme.palette.primary.main, 0.8),
   },
   '@media print': {
     margin: 0,
     padding: '0.5em',
+  },
+  [theme.breakpoints.up('sm')]: {
+    padding: '1.2em',
   },
 }));
 

@@ -2,6 +2,9 @@ import { Input, InputProps, styled } from '@mui/material';
 
 const CustomInput = styled(Input)({
   fontSize: 'inherit',
+  input: {
+    minWidth: '3.5em',
+  },
   '& + span': {
     display: 'none',
   },
