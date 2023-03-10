@@ -62,8 +62,7 @@ function toDate(value: string) {
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const {
     cruiseSpeed,
-    fuelCapacity,
-    fuelFlow,
+    fuel,
     legs: savedLegs,
     setLegs: setSavedLegs,
     startTime: savedStartTime,
@@ -152,8 +151,8 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     setLegs((legs) => legs.filter((leg, position) => position !== index));
   }
 
-  const partials = legsToPartials(legs, cruiseSpeed, fuelCapacity, fuelFlow, startTime, wmm);
-  const hasAltitude = !!legs.find(leg => leg.altitude.length > 0);
+  const partials = legsToPartials(legs, cruiseSpeed, fuel.capacity, fuel.flow, startTime, wmm);
+  const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
 
   return (
     <TableContainer component={PrintFriendlyPaper}>
@@ -161,7 +160,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
         <StyledTableHead>
           <TableRow>
             <TableCell />
-            <TableCell colSpan={12} />
+            <TableCell colSpan={14} />
             <TableCell hideInPrint={!hasAltitude} />
             <TableCell align="center" colSpan={2}>
               Fuel
@@ -172,23 +171,26 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell />
             <TableCell>#</TableCell>
             <TableCell>POI</TableCell>
-            {/* <TableCell align='center'>GND</TableCell> */}
             <TableCell align="center">COM</TableCell>
-            {/* <TableCell align='center'>VOR</TableCell> */}
-            <TableCell>Aero</TableCell>
-            {/* <TableCell></TableCell> */}
-            {/* <TableCell></TableCell> */}
-            {/* <TableCell></TableCell> */}
+            <TableCell align="center">TWR</TableCell>
+            <TableCell align="center">GND</TableCell>
+            <TableCell align="center">Aero</TableCell>
             <TableCell title="Distance [nm]">Dist.</TableCell>
-            <TableCell id="altitude-label" hideInPrint={!hasAltitude}>Altitude</TableCell>
+            <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
+              Altitude
+            </TableCell>
             <TableCell>Course</TableCell>
             <TableCell id="wind-label" title="Wind speed and direction [dir/speed]">
               Wind
             </TableCell>
             <TableCell title="Heading">HD</TableCell>
             <TableCell title="Ground Speed [kt]">GS</TableCell>
-            <TableCell title="Estimated Time Enroute [h:m]">ETE</TableCell>
-            <TableCell title="Estimated Time of Arrival [h:m]">ETA</TableCell>
+            <TableCell align="center" title="Estimated Time Enroute [h:m]">
+              ETE
+            </TableCell>
+            <TableCell align="center" title="Estimated Time of Arrival [h:m]">
+              ETA
+            </TableCell>
             <TableCell>Real</TableCell>
             <TableCell>Trip</TableCell>
             <TableCell title="Remaining">Rem</TableCell>

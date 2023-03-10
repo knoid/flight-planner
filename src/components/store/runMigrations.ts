@@ -26,9 +26,16 @@ export default function runMigrations(data?: DeepPartial<State>): State {
 
   data.version = version;
 
+  const { fuelCapacity, fuelFlow } = data as any;
   return {
     ...initialState,
     ...data,
+    fuel: {
+      ...initialState.fuel,
+      ...(fuelCapacity ? { capacity: Number(fuelCapacity) } : {}),
+      ...(fuelFlow ? { flow: Number(fuelFlow) } : {}),
+      ...data.fuel,
+    },
     legs,
   };
 }

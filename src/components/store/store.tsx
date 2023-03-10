@@ -16,7 +16,7 @@ const storedState = {
   ...(function () {
     try {
       const data = JSON.parse(localStorage.getItem(storageKey) ?? '');
-      const migratedData = runMigrations(data)
+      const migratedData = runMigrations(data);
       return migratedData;
     } catch (error) {
       return initialState;
@@ -44,13 +44,9 @@ export function useStore() {
     [setState]
   );
 
-  const setFuelCapacity = useCallback(
-    (fuelCapacity: number) => setState((state) => ({ ...state, fuelCapacity })),
-    [setState]
-  );
-
-  const setFuelFlow = useCallback(
-    (fuelFlow: number) => setState((state) => ({ ...state, fuelFlow })),
+  const setFuel = useCallback(
+    (value: Partial<State['fuel']>) =>
+      setState(({ fuel, ...state }) => ({ ...state, fuel: { ...fuel, ...value } })),
     [setState]
   );
 
@@ -77,13 +73,12 @@ export function useStore() {
   return useMemo(
     () => ({
       setCruiseSpeed,
-      setFuelCapacity,
-      setFuelFlow,
+      setFuel,
       setLegs,
       setMetadata,
       setStartTime,
       ...state,
     }),
-    [setCruiseSpeed, setFuelCapacity, setFuelFlow, setLegs, setMetadata, setStartTime, state]
+    [setCruiseSpeed, setFuel, setLegs, setMetadata, setStartTime, state]
   );
 }

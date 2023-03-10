@@ -13,13 +13,20 @@ export function formatDuration(hours: number) {
 }
 
 const NoWrapTableCell = styled(TableCell)<TableCellProps>({
-  whiteSpace: 'nowrap'
-})
+  whiteSpace: 'nowrap',
+});
 
 export interface Metadata {
-  COM?: number;
-  distanceReference?: number;
-  directionReference?: string;
+  frequencies: {
+    COM?: number;
+    GND?: number;
+    TWR?: number;
+    VOR?: number;
+  };
+  reference?: {
+    distance: number;
+    direction: string;
+  };
 }
 
 export interface CommonCellsProps {
@@ -43,6 +50,7 @@ export function CommonCells({
   onRemove,
   partial,
 }: CommonCellsProps) {
+  const freq = metadata?.frequencies || {};
   return (
     <>
       <TableCell align="right" padding="none">
@@ -58,16 +66,15 @@ export function CommonCells({
       <TableCell>{partial.leg.code}</TableCell>
       {metadata ? (
         <>
-          {/* <TableCell>{partial.leg.poi.GND?.toFixed(2)}</TableCell> */}
-          <TableCell>{metadata.COM ? metadata.COM.toFixed(2) : ''}</TableCell>
-          {/* <TableCell>{partial.leg.poi.VOR?.toFixed(2)}</TableCell> */}
+          <TableCell>{freq.COM ? freq.COM.toFixed(2) : ''}</TableCell>
+          <TableCell>{freq.TWR ? freq.TWR.toFixed(2) : ''}</TableCell>
+          <TableCell>{freq.GND ? freq.GND.toFixed(2) : ''}</TableCell>
           <NoWrapTableCell align="center">
-            {metadata.distanceReference ? Math.round(metadata.distanceReference) : ''}{' '}
-            {metadata.directionReference}
+            {metadata.reference && Math.round(metadata.reference.distance) + ' ' + metadata.reference.direction}
           </NoWrapTableCell>
         </>
       ) : (
-        <TableCell colSpan={2} />
+        <TableCell colSpan={4} />
       )}
     </>
   );

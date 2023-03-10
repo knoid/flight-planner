@@ -41,18 +41,19 @@ export default function useWaypoint(code: string) {
       ]);
 
       if (active) {
-        const result: Metadata = {};
+        const result: Metadata = { frequencies: {} };
         if (isOK(madhelResponse)) {
           const madhelResult: MadhelDetailsResponse = await madhelResponse.value.json();
-          result.distanceReference =
-            Number(madhelResult.metadata.localization.distance_reference) * km2nm;
-          result.directionReference =
-            madhelResult.metadata.localization.direction_reference.replace(/O$/u, 'W');
+          const { localization } = madhelResult.metadata;
+          result.reference = {
+            distance: Number(localization.distance_reference) * km2nm,
+            direction: localization.direction_reference.replaceAll('O', 'W'),
+          }
         }
 
         if (isOK(frequenciesResponse)) {
           const frequenciesResult: FrequenciesResponse = await frequenciesResponse.value.json();
-          Object.assign(result, frequenciesResult);
+          Object.assign(result.frequencies, frequenciesResult);
         }
         setMetadata(result);
       }

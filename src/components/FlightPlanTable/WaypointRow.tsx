@@ -77,6 +77,7 @@ export default function WaypointRow({
   }
 
   if (index > 0) {
+    const hasRem = partial.remainingFuel !== -1;
     return (
       <>
         <TableRow>
@@ -111,10 +112,8 @@ export default function WaypointRow({
           <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
           <FillInCell />
           <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
-          <TableCell
-            color={partial.remainingFuel !== -1 && partial.remainingFuel <= 0 ? 'error' : undefined}
-          >
-            {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
+          <TableCell color={hasRem && partial.remainingFuel <= 0 ? 'error' : undefined}>
+            {hasRem ? partial.remainingFuel.toFixed(2) : ''}
           </TableCell>
           <AddNotesCell onClick={toggleNotes} open={open} />
         </TableRow>

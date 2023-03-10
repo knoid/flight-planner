@@ -1,6 +1,12 @@
 export const storageKey = 'store';
 export const version = 1;
 
+export enum FuelUnit {
+  GallonUS, // gals
+  Liter, // lts
+  Pound, // lbs
+}
+
 export interface Leg {
   altitude: string;
   code: string;
@@ -10,8 +16,11 @@ export interface Leg {
 
 export interface State {
   cruiseSpeed: number;
-  fuelCapacity: number;
-  fuelFlow: number;
+  fuel: {
+    capacity: number;
+    flow: number;
+    unit: FuelUnit;
+  };
   legs: Leg[];
   metadata: {
     [key: string]: string | undefined;
@@ -22,8 +31,11 @@ export interface State {
 
 export const initialState: State = {
   cruiseSpeed: -1,
-  fuelCapacity: -1,
-  fuelFlow: -1,
+  fuel: {
+    capacity: -1,
+    flow: -1,
+    unit: FuelUnit.GallonUS,
+  },
   legs: [],
   metadata: {},
   startTime: '',

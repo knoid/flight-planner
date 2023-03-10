@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '../store';
-import NumericTextField from './NumericTextField';
+import FuelTextField from './FuelTextField';
 
 export default function FuelCapacityInput() {
-  const { setFuelCapacity, fuelCapacity: savedValue } = useStore();
-  const [rawValue, setRawValue] = useState(savedValue > 0 ? savedValue.toString() : '');
+  const { setFuel, fuel } = useStore();
+  const [rawValue, setRawValue] = useState(fuel.capacity > 0 ? fuel.capacity.toString() : '');
   const value = Number(rawValue);
 
   useEffect(() => {
-    setFuelCapacity(value);
-  }, [value, setFuelCapacity]);
+    setFuel({ capacity: value });
+  }, [value, setFuel]);
 
   return (
-    <NumericTextField
+    <FuelTextField
       inputProps={{ pattern: '[0-9.,]*' }}
       label="Fuel Capacity"
       onChange={(event) => setRawValue(event.currentTarget.value)}
