@@ -1,4 +1,3 @@
-import { Functions } from '@mui/icons-material';
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useState } from 'react';
 import * as math from '../math';
@@ -26,11 +25,6 @@ export const FillInCell = styled(TableCell)<TableCellProps>(({ theme }) => {
   };
 });
 
-const SumIcon = styled(Functions)({
-  verticalAlign: 'bottom',
-  marginLeft: -24,
-});
-
 const VisuallyHidden = styled('span')({
   visibility: 'hidden',
 });
@@ -54,7 +48,6 @@ interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
   onNotesChange: (value?: string) => void;
   onWindChange: (value: string) => void;
   onWindCopyDown: () => void;
-  totalTime: number;
 }
 
 export default function WaypointRow({
@@ -65,7 +58,6 @@ export default function WaypointRow({
   onNotesChange,
   onWindChange,
   onWindCopyDown,
-  totalTime,
   ...commonCellsProps
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
@@ -109,7 +101,7 @@ export default function WaypointRow({
             {partial.heading > -1 ? formatDegrees(partial.heading) : ''}
           </TableCell>
           <TableCell>{partial.groundSpeed > -1 ? Math.round(partial.groundSpeed) : ''}</TableCell>
-          <TableCell>{partial.ete > 0 ? formatDuration(partial.ete) : ''}</TableCell>
+          <TableCell align="center">{partial.ete > 0 ? formatDuration(partial.ete) : ''}</TableCell>
           <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
           <FillInCell />
           <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
@@ -127,12 +119,8 @@ export default function WaypointRow({
     <>
       <TableRow>
         <CommonCells metadata={metadata} {...commonCellsProps} />
-        <TableCell colSpan={5} />
+        <TableCell colSpan={6} />
         <TableCell hideInPrint={!hasAltitude} />
-        <TableCell>
-          <SumIcon aria-label="sum" />
-          {formatDuration(totalTime)}
-        </TableCell>
         <FillInCell>
           <TimeInput onChange={onETAChange} />
         </FillInCell>

@@ -17,6 +17,7 @@ import * as math from '../math';
 import POIInput from '../POIInput';
 import POIsContext, { POI } from '../POIsContext';
 import { useStore } from '../store';
+import { formatDuration } from './common';
 import legsToPartials, { Leg } from './legsToPartials';
 import TableCell from './TableCell';
 import WaypointRow from './WaypointRow';
@@ -38,6 +39,10 @@ const InlineTable = styled(Table)({
   '& th': {
     fontWeight: 'bold',
   },
+});
+
+const TotalsTableCell = styled(TableCell)({
+  fontWeight: 'bold',
 });
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
@@ -153,6 +158,12 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
 
   const partials = legsToPartials(legs, cruiseSpeed, fuel.capacity, fuel.flow, startTime, wmm);
   const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
+  const totalFuelConsumption = math.sum(
+    ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0)
+  );
+  const totalTripDuration = math.sum(
+    ...partials.map((partial) => partial.ete).filter((ete) => ete > 0)
+  );
 
   return (
     <TableContainer component={PrintFriendlyPaper}>
@@ -215,9 +226,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
               onWindChange={onWindChange.bind(null, index)}
               onWindCopyDown={onWindCopyDown.bind(null, index)}
               partial={partial}
-              totalTime={math.sum(
-                ...partials.map((partial) => partial.ete).filter((ete) => ete > 0)
-              )}
             />
           ))}
         </TableBody>
@@ -229,6 +237,14 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell colSpan={7}>
               <POIInput onChange={onChange} />
             </TableCell>
+            <TotalsTableCell align="right" colSpan={4}>
+              Totals:
+            </TotalsTableCell>
+            <TableCell align="center">{formatDuration(totalTripDuration)}</TableCell>
+            <TableCell colSpan={2} />
+            <TableCell align="center">{totalFuelConsumption.toFixed(2)}</TableCell>
+            <TableCell />
+            <TableCell />
           </TableRow>
         </HideOnPrint>
       </InlineTable>

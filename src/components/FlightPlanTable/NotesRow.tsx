@@ -1,4 +1,5 @@
 import { Input, TableRow } from '@mui/material';
+import { useEffect, useState } from 'react';
 import TableCell from './TableCell';
 
 interface NotesRowProps {
@@ -7,7 +8,13 @@ interface NotesRowProps {
   value: string;
 }
 
-export default function NotesRow({ onChange, open, value }: NotesRowProps) {
+export default function NotesRow({ onChange, open, value: initialValue }: NotesRowProps) {
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    onChange(value || undefined);
+  }, [onChange, value]);
+
   if (!open) {
     return null;
   }
@@ -15,11 +22,11 @@ export default function NotesRow({ onChange, open, value }: NotesRowProps) {
   return (
     <TableRow>
       <TableCell />
-      <TableCell colSpan={14}>
+      <TableCell colSpan={17}>
         <Input
           disableUnderline
           fullWidth
-          onChange={(event) => onChange(event.currentTarget.value || undefined)}
+          onChange={(event) => setValue(event.currentTarget.value)}
           placeholder="Notes…"
           size="small"
           value={value}
