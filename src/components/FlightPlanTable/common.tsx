@@ -3,6 +3,7 @@ import { IconButton, styled } from '@mui/material';
 import HideOnPrint from '../HideOnPrint';
 import * as math from '../math';
 import ControlButtons from './ControlButtons';
+import Frequency from './Frequency';
 import { Partial } from './legsToPartials';
 import TableCell, { TableCellProps } from './TableCell';
 
@@ -14,6 +15,12 @@ export function formatDuration(hours: number) {
   const minutes = hours * 60;
   return `${Math.floor(minutes / 60)}:${pad2(Math.round(minutes % 60))}`;
 }
+
+const Grid = styled('div')({
+  display: 'inline-grid',
+  gap: '10px',
+  gridAutoFlow: 'column',
+});
 
 const NoWrapTableCell = styled(TableCell)<TableCellProps>({
   whiteSpace: 'nowrap',
@@ -53,7 +60,7 @@ export function CommonCells({
   onRemove,
   partial,
 }: CommonCellsProps) {
-  const freq = metadata?.frequencies || {};
+  const frequencies = Object.entries(metadata?.frequencies || {}).sort(([a], [b]) => b.localeCompare(a));
   const ref = metadata?.reference;
   const { poi } = partial.leg;
   let googleMapsUrl;
@@ -92,9 +99,13 @@ export function CommonCells({
       <TableCell>{partial.leg.code}</TableCell>
       {metadata ? (
         <>
-          <TableCell>{freq.COM ? freq.COM.toFixed(2) : ''}</TableCell>
-          <TableCell>{freq.TWR ? freq.TWR.toFixed(2) : ''}</TableCell>
-          <TableCell>{freq.GND ? freq.GND.toFixed(2) : ''}</TableCell>
+          <TableCell>
+            <Grid>
+              {frequencies.map(([name, freq]) => (
+                <Frequency key={name} name={name} frequency={freq} />
+              ))}
+            </Grid>
+          </TableCell>
           <NoWrapTableCell align="center">
             {ref && Math.round(ref.distance) + ' ' + ref.direction}
             {googleMapsUrl && (
@@ -112,7 +123,7 @@ export function CommonCells({
           </NoWrapTableCell>
         </>
       ) : (
-        <TableCell colSpan={4} />
+        <TableCell colSpan={2} />
       )}
     </>
   );

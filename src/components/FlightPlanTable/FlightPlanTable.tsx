@@ -171,7 +171,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
         <StyledTableHead>
           <TableRow>
             <TableCell />
-            <TableCell colSpan={14} />
+            <TableCell colSpan={12} />
             <TableCell hideInPrint={!hasAltitude} />
             <TableCell align="center" colSpan={2}>
               Fuel
@@ -182,9 +182,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell />
             <TableCell>#</TableCell>
             <TableCell>POI</TableCell>
-            <TableCell align="center">COM</TableCell>
-            <TableCell align="center">TWR</TableCell>
-            <TableCell align="center">GND</TableCell>
+            <TableCell align="center">Freq.</TableCell>
             <TableCell align="center">Aero</TableCell>
             <TableCell title="Distance [nm]">Dist.</TableCell>
             <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
@@ -234,7 +232,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             <TableCell align="right" colSpan={2}>
               Add new
             </TableCell>
-            <TableCell colSpan={7}>
+            <TableCell colSpan={5}>
               <POIInput onChange={onChange} />
             </TableCell>
             <TotalsTableCell align="right" colSpan={4}>
