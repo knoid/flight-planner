@@ -11,7 +11,7 @@ const UnitCycleButton = styled(IconButton)({
   },
 });
 
-const fuelUnits: Record<FuelUnit, string> = {
+export const fuelUnits: Record<FuelUnit, string> = {
   [FuelUnit.GallonUS]: 'gal',
   [FuelUnit.Liter]: 'lts',
   [FuelUnit.Pound]: 'lbs',

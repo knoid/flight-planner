@@ -21,6 +21,7 @@ export interface State {
     flow: number;
     unit: FuelUnit;
   };
+  includeFrequencies: boolean;
   legs: Leg[];
   metadata: {
     [key: string]: string | undefined;
@@ -36,6 +37,7 @@ export const initialState: State = {
     flow: -1,
     unit: FuelUnit.GallonUS,
   },
+  includeFrequencies: true,
   legs: [],
   metadata: {},
   startTime: '',

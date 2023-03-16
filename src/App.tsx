@@ -1,6 +1,8 @@
 import { createTheme, CssBaseline, lighten, Link, styled, ThemeProvider } from '@mui/material';
+import AirportsTable from './components/AirportsTable';
 import FlightPlanTable from './components/FlightPlanTable';
 import HideOnPrint from './components/HideOnPrint';
+import { LegsProvider } from './components/LegsContext';
 import Metadata from './components/Metadata';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
@@ -51,38 +53,43 @@ export default function App() {
   return (
     <StoreProvider>
       <POIsProvider>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <HideOnPrint component="header">
-            <Section>
-              <InfoLink
-                href="http://ais.anac.gov.ar/notam"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                NOTAM
-              </InfoLink>
-              <InfoLink
-                href="https://www.smn.gob.ar/meteorologia-aeronautica"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                SMN
-              </InfoLink>
-            </Section>
-          </HideOnPrint>
-          <Main>
-            <Metadata />
-            <Fieldset>
-              <CruiseSpeedInput />
-              <FuelCapacityInput />
-              <FuelFlowInput />
-            </Fieldset>
-            <Section>
-              <FlightPlanTable wmm={wmm} />
-            </Section>
-          </Main>
-        </ThemeProvider>
+        <LegsProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <HideOnPrint component="header">
+              <Section>
+                <InfoLink
+                  href="http://ais.anac.gov.ar/notam"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  NOTAM
+                </InfoLink>
+                <InfoLink
+                  href="https://www.smn.gob.ar/meteorologia-aeronautica"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  SMN
+                </InfoLink>
+              </Section>
+            </HideOnPrint>
+            <Main>
+              <Metadata />
+              <Fieldset>
+                <CruiseSpeedInput />
+                <FuelCapacityInput />
+                <FuelFlowInput />
+              </Fieldset>
+              <Section>
+                <FlightPlanTable wmm={wmm} />
+              </Section>
+              <Section>
+                <AirportsTable />
+              </Section>
+            </Main>
+          </ThemeProvider>
+        </LegsProvider>
       </POIsProvider>
     </StoreProvider>
   );

@@ -1,24 +1,34 @@
-import { styled, TableBody, TableFooter, TableRow } from '@mui/material';
+import {
+  Checkbox,
+  FormControlLabel,
+  styled,
+  TableBody,
+  TableFooter,
+  TableRow,
+} from '@mui/material';
 import { nanoid } from 'nanoid';
-import { SyntheticEvent, useContext, useEffect, useState } from 'react';
+import { SyntheticEvent } from 'react';
 import { WorldMagneticModel } from '../../WorldMagneticModel';
 import HideOnPrint from '../HideOnPrint';
+import { useLegs } from '../LegsContext';
 import * as math from '../math';
 import POIInput from '../POIInput';
-import POIsContext, { POI } from '../POIsContext';
+import { POI } from '../POIsContext';
 import { useStore } from '../store';
 import Table, { TableCell, TableHead } from '../Table';
-import { formatDuration } from './common';
-import legsToPartials, { Leg } from './legsToPartials';
+import { fuelUnits } from '../TextFields/FuelTextField';
+import { formatDistance, formatDuration } from './common';
+import legsToPartials from './legsToPartials';
 import WaypointRow from './WaypointRow';
 
 const TotalsTableCell = styled(TableCell)({
   fontWeight: 'bold',
 });
 
-interface FlightPlanTableProps {
-  wmm: WorldMagneticModel;
-}
+const Unit = styled('span')({
+  position: 'absolute',
+  marginLeft: '.3em',
+});
 
 function toDate(value: string) {
   const [hours, minutes] = value.split(':');
@@ -29,33 +39,21 @@ function toDate(value: string) {
   return date;
 }
 
+interface FlightPlanTableProps {
+  wmm: WorldMagneticModel;
+}
+
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const {
     cruiseSpeed,
     fuel,
-    legs: savedLegs,
-    setLegs: setSavedLegs,
+    includeFrequencies,
     startTime: savedStartTime,
+    setIncludeFrequencies,
   } = useStore();
-  const [legs, setLegs] = useState<Leg[]>([]);
+  const intIncludeFrequencies = includeFrequencies ? 1 : 0;
+  const [legs, setLegs] = useLegs();
   const startTime = savedStartTime ? toDate(savedStartTime) : null;
-
-  const { options, loading } = useContext(POIsContext);
-  useEffect(() => {
-    if (loading) {
-      setLegs(savedLegs.map((leg) => ({ key: `${leg.code}-${nanoid()}`, ...leg })));
-    } else if (!loading && options.length > 0) {
-      setLegs((legs) =>
-        legs.map((leg) => ({
-          ...leg,
-          poi: options.find((poi) => poi.code === leg.code),
-        }))
-      );
-    } else {
-      // error loading data
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, options]);
 
   function onChange(event: SyntheticEvent, poi: POI | null) {
     if (poi) {
@@ -65,14 +63,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
       ]);
     }
   }
-
-  useEffect(() => {
-    if (!loading) {
-      setSavedLegs(
-        legs.map(({ altitude, code, notes, wind }) => ({ altitude, code, notes, wind }))
-      );
-    }
-  }, [setSavedLegs, legs, loading]);
 
   function onNotesChange(modifiedIndex: number, value?: string) {
     setLegs((legs) => [
@@ -121,6 +111,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const totalFuelConsumption = math.sum(
     ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0)
   );
+  const totalTripDistance = math.sum(...partials.map((partial) => partial.distance));
   const totalTripDuration = math.sum(
     ...partials.map((partial) => partial.ete).filter((ete) => ete > 0)
   );
@@ -130,7 +121,20 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
       <TableHead>
         <TableRow>
           <TableCell />
-          <TableCell colSpan={12} />
+          <TableCell colSpan={11 + intIncludeFrequencies} padding="checkbox">
+            <HideOnPrint>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={includeFrequencies}
+                    onChange={(event) => setIncludeFrequencies(event.target.checked)}
+                    size="small"
+                  />
+                }
+                label="Include frequencies"
+              />
+            </HideOnPrint>
+          </TableCell>
           <TableCell hideInPrint={!hasAltitude} />
           <TableCell align="center" colSpan={2}>
             Fuel
@@ -141,7 +145,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           <TableCell />
           <TableCell>#</TableCell>
           <TableCell>POI</TableCell>
-          <TableCell align="center">Freq.</TableCell>
+          {includeFrequencies && <TableCell align="center">Freq.</TableCell>}
           <TableCell align="center">Aero</TableCell>
           <TableCell title="Distance [nm]">Dist.</TableCell>
           <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
@@ -185,24 +189,36 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           />
         ))}
       </TableBody>
-      <HideOnPrint component={TableFooter}>
+      <TableFooter>
         <TableRow>
-          <TableCell align="right" colSpan={2}>
-            Add new
-          </TableCell>
-          <TableCell colSpan={5}>
-            <POIInput onChange={onChange} />
-          </TableCell>
-          <TotalsTableCell align="right" colSpan={4}>
+          <TableCell />
+          <TotalsTableCell align="right" colSpan={2}>
             Totals:
           </TotalsTableCell>
-          <TableCell align="center">{formatDuration(totalTripDuration)}</TableCell>
+          <TableCell colSpan={1 + intIncludeFrequencies} />
+          <TableCell align="right">{formatDistance(totalTripDistance)}<Unit>nm</Unit></TableCell>
+          <TableCell hideInPrint={!hasAltitude} />
+          <TableCell colSpan={4} />
+          <TableCell align="center">{formatDuration(totalTripDuration)}<Unit>hs</Unit></TableCell>
           <TableCell colSpan={2} />
-          <TableCell align="center">{totalFuelConsumption.toFixed(2)}</TableCell>
+          <TableCell align="right">
+            {totalFuelConsumption.toFixed(2)}
+            <Unit>{fuelUnits[fuel.unit]}</Unit>
+          </TableCell>
           <TableCell />
           <TableCell />
         </TableRow>
-      </HideOnPrint>
+        <HideOnPrint component={TableRow}>
+          <TableCell />
+          <TableCell align="right" colSpan={2}>
+            Add new
+          </TableCell>
+          <TableCell colSpan={4 + intIncludeFrequencies}>
+            <POIInput onChange={onChange} />
+          </TableCell>
+          <TableCell />
+        </HideOnPrint>
+      </TableFooter>
     </Table>
   );
 }

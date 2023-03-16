@@ -5,10 +5,10 @@ import { TableCell } from '../Table';
 import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
+import useWaypoint from '../useWaypoint';
 import AddNotesCell from './AddNotesCell';
-import { CommonCells, CommonCellsProps, formatDuration, pad2 } from './common';
+import { CommonCells, CommonCellsProps, formatDistance, formatDuration, pad2 } from './common';
 import NotesRow from './NotesRow';
-import useWaypoint from './useWaypoint';
 
 export const FillInCell = styled(TableCell)(({ theme }) => {
   const borderColor =
@@ -74,7 +74,7 @@ export default function WaypointRow({
         <TableRow>
           <CommonCells metadata={metadata} {...commonCellsProps} />
           <TableCell align="right">
-            {partial.distance > 0 ? (math.toDegrees(partial.distance) * 60).toFixed(1) : ''}
+            {partial.distance > 0 ? formatDistance(partial.distance) : ''}
           </TableCell>
           <TableCell hideInPrint={!hasAltitude}>
             <AltitudeInput

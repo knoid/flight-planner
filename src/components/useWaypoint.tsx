@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import cachedFetch from '../cachedFetch';
-import { Metadata } from './common';
+import cachedFetch from './cachedFetch';
+import { Metadata } from './FlightPlanTable/common';
 
 const km2nm = 1 / 1.852;
 

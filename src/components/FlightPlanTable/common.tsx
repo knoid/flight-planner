@@ -2,6 +2,7 @@ import { Map } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
 import HideOnPrint from '../HideOnPrint';
 import * as math from '../math';
+import { useStore } from '../store';
 import { TableCell } from '../Table';
 import ControlButtons from './ControlButtons';
 import Frequency from './Frequency';
@@ -9,6 +10,10 @@ import { Partial } from './legsToPartials';
 
 export function pad2(num: number) {
   return num.toString().padStart(2, '0');
+}
+
+export function formatDistance(distance: number) {
+  return (math.toDegrees(distance) * 60).toFixed(1);
 }
 
 export function formatDuration(hours: number) {
@@ -28,6 +33,9 @@ const NoWrapTableCell = styled(TableCell)({
 
 export interface Metadata {
   frequencies: {
+    APP?: number;
+    ATIS?: number;
+    CLRD?: number;
     COM?: number;
     GND?: number;
     TWR?: number;
@@ -60,7 +68,10 @@ export function CommonCells({
   onRemove,
   partial,
 }: CommonCellsProps) {
-  const frequencies = Object.entries(metadata?.frequencies || {}).sort(([a], [b]) => b.localeCompare(a));
+  const { includeFrequencies } = useStore();
+  const frequencies = Object.entries(metadata?.frequencies || {}).sort(([a], [b]) =>
+    b.localeCompare(a)
+  );
   const ref = metadata?.reference;
   const { poi } = partial.leg;
   let googleMapsUrl;
@@ -99,13 +110,15 @@ export function CommonCells({
       <TableCell>{partial.leg.code}</TableCell>
       {metadata ? (
         <>
-          <TableCell>
-            <Grid>
-              {frequencies.map(([name, freq]) => (
-                <Frequency key={name} name={name} frequency={freq} />
-              ))}
-            </Grid>
-          </TableCell>
+          {includeFrequencies && (
+            <TableCell>
+              <Grid>
+                {frequencies.map(([name, freq]) => (
+                  <Frequency key={name} name={name} frequency={freq} />
+                ))}
+              </Grid>
+            </TableCell>
+          )}
           <NoWrapTableCell align="center">
             {ref && Math.round(ref.distance) + ' ' + ref.direction}
             {googleMapsUrl && (
