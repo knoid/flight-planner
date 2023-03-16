@@ -73,12 +73,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     startTime: savedStartTime,
   } = useStore();
   const [legs, setLegs] = useState<Leg[]>([]);
-  const [startTime, setStartTime] = useState<Date | null>(
-    savedStartTime ? toDate(savedStartTime) : null
-  );
-  function onETAChange(value: string) {
-    setStartTime(toDate(value));
-  }
+  const startTime = savedStartTime ? toDate(savedStartTime) : null;
 
   const { options, loading } = useContext(POIsContext);
   useEffect(() => {
@@ -216,7 +211,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
               key={partial.leg.key}
               onAltitudeChange={onAltitudeChange.bind(null, index)}
               onAltitudeCopyDown={onAltitudeCopyDown.bind(null, index)}
-              onETAChange={onETAChange}
               onMoveDown={moveLeg.bind(null, 1, index)}
               onMoveUp={moveLeg.bind(null, -1, index)}
               onNotesChange={onNotesChange.bind(null, index)}

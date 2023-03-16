@@ -35,14 +35,14 @@ export default function legsToPartials(
   cruiseSpeed: number,
   fuelCapacity: number,
   fuelFlow: number,
-  initialTime: Date | null,
+  startTime: Date | null,
   wmm: WorldMagneticModel
 ) {
   return legs.reduce((partials, leg) => {
     const empty = {
       course: -1,
       distance: 0,
-      eta: initialTime,
+      eta: startTime,
       ete: -1,
       groundSpeed: -1,
       heading: -1,

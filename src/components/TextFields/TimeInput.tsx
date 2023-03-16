@@ -3,10 +3,6 @@ import { ChangeEvent, useState } from 'react';
 import { useStore } from '../store';
 import PrintFriendlyInput from './PrintFriendlyInput';
 
-interface TimeInputProps {
-  onChange?: (value: string) => void;
-}
-
 const validTime = /^[0-9]{1,2}(:[0-9]{1,2})?$/;
 function formatTime(value: string) {
   return value
@@ -23,7 +19,7 @@ const CenteredInput = styled(PrintFriendlyInput)({
   },
 });
 
-export default function TimeInput(props: TimeInputProps) {
+export default function TimeInput() {
   const { startTime, setStartTime } = useStore();
   const [rawValue, setRawValue] = useState(startTime);
   const value = rawValue.trim();
@@ -37,11 +33,7 @@ export default function TimeInput(props: TimeInputProps) {
   function onChange(event: ChangeEvent<HTMLInputElement>) {
     const inputValue = event.currentTarget.value;
     setRawValue(inputValue);
-    if (validTime.test(inputValue)) {
-      const normalizedValue = formatTime(inputValue);
-      setStartTime(normalizedValue);
-      props.onChange?.(normalizedValue);
-    }
+    setStartTime(validTime.test(inputValue) ? formatTime(inputValue) : '');
   }
 
   return (

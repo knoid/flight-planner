@@ -44,7 +44,6 @@ interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
   hasAltitude?: boolean;
   onAltitudeChange: (value: string) => void;
   onAltitudeCopyDown: () => void;
-  onETAChange: (value: string) => void;
   onNotesChange: (value?: string) => void;
   onWindChange: (value: string) => void;
   onWindCopyDown: () => void;
@@ -54,7 +53,6 @@ export default function WaypointRow({
   hasAltitude,
   onAltitudeChange,
   onAltitudeCopyDown,
-  onETAChange,
   onNotesChange,
   onWindChange,
   onWindCopyDown,
@@ -122,7 +120,7 @@ export default function WaypointRow({
         <TableCell colSpan={6} />
         <TableCell hideInPrint={!hasAltitude} />
         <FillInCell>
-          <TimeInput onChange={onETAChange} />
+          <TimeInput />
         </FillInCell>
         <FillInCell>
           <VisuallyHidden>
