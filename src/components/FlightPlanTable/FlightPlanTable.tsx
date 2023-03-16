@@ -203,7 +203,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           <TableCell colSpan={2} />
           <TableCell align="right">
             {totalFuelConsumption.toFixed(2)}
-            <Unit>{fuelUnits[fuel.unit]}</Unit>
+            <Unit>{fuelUnits.get(fuel.unit)}</Unit>
           </TableCell>
           <TableCell />
           <TableCell />

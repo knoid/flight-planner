@@ -1,6 +1,7 @@
 import { IconButton, InputAdornment, TextFieldProps } from '@mui/material';
 import { styled } from '@mui/system';
 import { MouseEvent } from 'react';
+import * as math from '../math';
 import { FuelUnit, useStore } from '../store';
 import NumericTextField from './NumericTextField';
 
@@ -11,18 +12,17 @@ const UnitCycleButton = styled(IconButton)({
   },
 });
 
-export const fuelUnits: Record<FuelUnit, string> = {
-  [FuelUnit.GallonUS]: 'gal',
-  [FuelUnit.Liter]: 'lts',
-  [FuelUnit.Pound]: 'lbs',
-};
-const fuelUnitsLength = Object.values(fuelUnits).length;
+export const fuelUnits = new Map<FuelUnit, string>([
+  [FuelUnit.GallonUS, 'gal'],
+  [FuelUnit.Liter, 'lts'],
+  [FuelUnit.Pound, 'lbs'],
+]);
 
 export default function FuelTextField({ InputProps, ...props }: TextFieldProps) {
   const { fuel, setFuel } = useStore();
 
   function handleClick() {
-    setFuel({ unit: (fuel.unit + 1) % fuelUnitsLength });
+    setFuel({ unit: math.remainder(fuel.unit + 1, fuelUnits.size) });
   }
 
   function handleMouseDown(event: MouseEvent<HTMLButtonElement>) {
@@ -42,7 +42,7 @@ export default function FuelTextField({ InputProps, ...props }: TextFieldProps) 
               onMouseDown={handleMouseDown}
               size="small"
             >
-              {fuelUnits[fuel.unit]}
+              {fuelUnits.get(fuel.unit)}
             </UnitCycleButton>
           </InputAdornment>
         ),
