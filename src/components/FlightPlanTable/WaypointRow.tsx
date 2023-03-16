@@ -1,16 +1,16 @@
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useState } from 'react';
 import * as math from '../math';
+import { TableCell } from '../Table';
 import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
 import { CommonCells, CommonCellsProps, formatDuration, pad2 } from './common';
 import NotesRow from './NotesRow';
-import TableCell, { TableCellProps } from './TableCell';
 import useWaypoint from './useWaypoint';
 
-export const FillInCell = styled(TableCell)<TableCellProps>(({ theme }) => {
+export const FillInCell = styled(TableCell)(({ theme }) => {
   const borderColor =
     theme.palette.mode === 'light'
       ? lighten(alpha(theme.palette.divider, 1), 0.88)

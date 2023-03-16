@@ -1,14 +1,4 @@
-import {
-  lighten,
-  Paper,
-  styled,
-  Table,
-  TableBody,
-  TableContainer,
-  TableFooter,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { styled, TableBody, TableFooter, TableRow } from '@mui/material';
 import { nanoid } from 'nanoid';
 import { SyntheticEvent, useContext, useEffect, useState } from 'react';
 import { WorldMagneticModel } from '../../WorldMagneticModel';
@@ -17,39 +7,14 @@ import * as math from '../math';
 import POIInput from '../POIInput';
 import POIsContext, { POI } from '../POIsContext';
 import { useStore } from '../store';
+import Table, { TableCell, TableHead } from '../Table';
 import { formatDuration } from './common';
 import legsToPartials, { Leg } from './legsToPartials';
-import TableCell from './TableCell';
 import WaypointRow from './WaypointRow';
-
-const PrintFriendlyPaper = styled(Paper)({
-  '&&': {
-    // https://github.com/styled-components/styled-components/issues/1816#issuecomment-398454088
-    display: 'inline-block',
-    width: 'auto',
-  },
-});
-
-const InlineTable = styled(Table)({
-  '@media print': {
-    '& td:first-of-type, & th:first-of-type, & td:last-of-type, & th:last-of-type': {
-      display: 'none',
-    },
-  },
-  '& th': {
-    fontWeight: 'bold',
-  },
-});
 
 const TotalsTableCell = styled(TableCell)({
   fontWeight: 'bold',
 });
-
-const StyledTableHead = styled(TableHead)(({ theme }) => ({
-  '@media screen': {
-    backgroundColor: lighten(theme.palette.primary.main, 0.8),
-  },
-}));
 
 interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
@@ -161,85 +126,83 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   );
 
   return (
-    <TableContainer component={PrintFriendlyPaper}>
-      <InlineTable size="small">
-        <StyledTableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell colSpan={12} />
-            <TableCell hideInPrint={!hasAltitude} />
-            <TableCell align="center" colSpan={2}>
-              Fuel
-            </TableCell>
-            <TableCell />
-          </TableRow>
-          <TableRow>
-            <TableCell />
-            <TableCell>#</TableCell>
-            <TableCell>POI</TableCell>
-            <TableCell align="center">Freq.</TableCell>
-            <TableCell align="center">Aero</TableCell>
-            <TableCell title="Distance [nm]">Dist.</TableCell>
-            <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
-              Altitude
-            </TableCell>
-            <TableCell>Course</TableCell>
-            <TableCell id="wind-label" title="Wind speed and direction [dir/speed]">
-              Wind
-            </TableCell>
-            <TableCell title="Heading">HD</TableCell>
-            <TableCell title="Ground Speed [kt]">GS</TableCell>
-            <TableCell align="center" title="Estimated Time Enroute [h:m]">
-              ETE
-            </TableCell>
-            <TableCell align="center" title="Estimated Time of Arrival [h:m]">
-              ETA
-            </TableCell>
-            <TableCell>Real</TableCell>
-            <TableCell>Trip</TableCell>
-            <TableCell title="Remaining">Rem</TableCell>
-            <TableCell />
-          </TableRow>
-        </StyledTableHead>
-        <TableBody>
-          {partials.map((partial, index) => (
-            <WaypointRow
-              disableDown={index === legs.length - 1}
-              disableUp={index === 0}
-              hasAltitude={hasAltitude}
-              index={index}
-              key={partial.leg.key}
-              onAltitudeChange={onAltitudeChange.bind(null, index)}
-              onAltitudeCopyDown={onAltitudeCopyDown.bind(null, index)}
-              onMoveDown={moveLeg.bind(null, 1, index)}
-              onMoveUp={moveLeg.bind(null, -1, index)}
-              onNotesChange={onNotesChange.bind(null, index)}
-              onRemove={removeLeg.bind(null, index)}
-              onWindChange={onWindChange.bind(null, index)}
-              onWindCopyDown={onWindCopyDown.bind(null, index)}
-              partial={partial}
-            />
-          ))}
-        </TableBody>
-        <HideOnPrint component={TableFooter}>
-          <TableRow>
-            <TableCell align="right" colSpan={2}>
-              Add new
-            </TableCell>
-            <TableCell colSpan={5}>
-              <POIInput onChange={onChange} />
-            </TableCell>
-            <TotalsTableCell align="right" colSpan={4}>
-              Totals:
-            </TotalsTableCell>
-            <TableCell align="center">{formatDuration(totalTripDuration)}</TableCell>
-            <TableCell colSpan={2} />
-            <TableCell align="center">{totalFuelConsumption.toFixed(2)}</TableCell>
-            <TableCell />
-            <TableCell />
-          </TableRow>
-        </HideOnPrint>
-      </InlineTable>
-    </TableContainer>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell />
+          <TableCell colSpan={12} />
+          <TableCell hideInPrint={!hasAltitude} />
+          <TableCell align="center" colSpan={2}>
+            Fuel
+          </TableCell>
+          <TableCell />
+        </TableRow>
+        <TableRow>
+          <TableCell />
+          <TableCell>#</TableCell>
+          <TableCell>POI</TableCell>
+          <TableCell align="center">Freq.</TableCell>
+          <TableCell align="center">Aero</TableCell>
+          <TableCell title="Distance [nm]">Dist.</TableCell>
+          <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
+            Altitude
+          </TableCell>
+          <TableCell>Course</TableCell>
+          <TableCell id="wind-label" title="Wind speed and direction [dir/speed]">
+            Wind
+          </TableCell>
+          <TableCell title="Heading">HD</TableCell>
+          <TableCell title="Ground Speed [kt]">GS</TableCell>
+          <TableCell align="center" title="Estimated Time Enroute [h:m]">
+            ETE
+          </TableCell>
+          <TableCell align="center" title="Estimated Time of Arrival [h:m]">
+            ETA
+          </TableCell>
+          <TableCell>Real</TableCell>
+          <TableCell>Trip</TableCell>
+          <TableCell title="Remaining">Rem</TableCell>
+          <TableCell />
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {partials.map((partial, index) => (
+          <WaypointRow
+            disableDown={index === legs.length - 1}
+            disableUp={index === 0}
+            hasAltitude={hasAltitude}
+            index={index}
+            key={partial.leg.key}
+            onAltitudeChange={onAltitudeChange.bind(null, index)}
+            onAltitudeCopyDown={onAltitudeCopyDown.bind(null, index)}
+            onMoveDown={moveLeg.bind(null, 1, index)}
+            onMoveUp={moveLeg.bind(null, -1, index)}
+            onNotesChange={onNotesChange.bind(null, index)}
+            onRemove={removeLeg.bind(null, index)}
+            onWindChange={onWindChange.bind(null, index)}
+            onWindCopyDown={onWindCopyDown.bind(null, index)}
+            partial={partial}
+          />
+        ))}
+      </TableBody>
+      <HideOnPrint component={TableFooter}>
+        <TableRow>
+          <TableCell align="right" colSpan={2}>
+            Add new
+          </TableCell>
+          <TableCell colSpan={5}>
+            <POIInput onChange={onChange} />
+          </TableCell>
+          <TotalsTableCell align="right" colSpan={4}>
+            Totals:
+          </TotalsTableCell>
+          <TableCell align="center">{formatDuration(totalTripDuration)}</TableCell>
+          <TableCell colSpan={2} />
+          <TableCell align="center">{totalFuelConsumption.toFixed(2)}</TableCell>
+          <TableCell />
+          <TableCell />
+        </TableRow>
+      </HideOnPrint>
+    </Table>
   );
 }

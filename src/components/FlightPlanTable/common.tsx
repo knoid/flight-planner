@@ -2,10 +2,10 @@ import { Map } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
 import HideOnPrint from '../HideOnPrint';
 import * as math from '../math';
+import { TableCell } from '../Table';
 import ControlButtons from './ControlButtons';
 import Frequency from './Frequency';
 import { Partial } from './legsToPartials';
-import TableCell, { TableCellProps } from './TableCell';
 
 export function pad2(num: number) {
   return num.toString().padStart(2, '0');
@@ -22,7 +22,7 @@ const Grid = styled('div')({
   gridAutoFlow: 'column',
 });
 
-const NoWrapTableCell = styled(TableCell)<TableCellProps>({
+const NoWrapTableCell = styled(TableCell)({
   whiteSpace: 'nowrap',
 });
 

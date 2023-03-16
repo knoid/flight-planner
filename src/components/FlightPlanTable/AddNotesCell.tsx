@@ -1,6 +1,6 @@
 import { CommentsDisabled, InsertComment } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import TableCell from './TableCell';
+import { TableCell } from '../Table';
 
 interface AddNotesCellProps {
   onClick: () => void;
