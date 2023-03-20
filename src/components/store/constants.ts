@@ -19,6 +19,7 @@ export interface State {
   fuel: {
     capacity: number;
     flow: number;
+    reserve: number;
     unit: FuelUnit;
   };
   includeFrequencies: boolean;
@@ -35,6 +36,7 @@ export const initialState: State = {
   fuel: {
     capacity: -1,
     flow: -1,
+    reserve: -1,
     unit: FuelUnit.GallonUS,
   },
   includeFrequencies: true,

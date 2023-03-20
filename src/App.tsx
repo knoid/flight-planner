@@ -9,6 +9,7 @@ import { StoreProvider } from './components/store';
 import CruiseSpeedInput from './components/TextFields/CruiseSpeedInput';
 import FuelCapacityInput from './components/TextFields/FuelCapacityInput';
 import FuelFlowInput from './components/TextFields/FuelFlowInput';
+import FuelReserveInput from './components/TextFields/FuelReserveInput';
 import { WorldMagneticModel } from './WorldMagneticModel';
 
 const wmm = new WorldMagneticModel();
@@ -79,6 +80,7 @@ export default function App() {
               <Fieldset>
                 <CruiseSpeedInput />
                 <FuelCapacityInput />
+                <FuelReserveInput />
                 <FuelFlowInput />
               </Fieldset>
               <Section>

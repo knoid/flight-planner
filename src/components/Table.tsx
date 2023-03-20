@@ -41,7 +41,7 @@ export default function Table({ children }: TableProps) {
 }
 
 export interface TableCellProps {
-  color?: 'error';
+  color?: 'error' | 'warning';
   hideInPrint?: boolean;
 }
 
@@ -49,7 +49,7 @@ export const TableCell = styled(MuiTableCell, {
   shouldForwardProp: (propName) => propName !== 'hideInPrint',
 })<TableCellProps>(({ color, hideInPrint, padding, theme }) => ({
   ...(color && {
-    color: theme.palette.error.main,
+    color: theme.palette[color].main,
     fontWeight: 'bold',
   }),
   ...(hideInPrint && {

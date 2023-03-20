@@ -1,6 +1,7 @@
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useState } from 'react';
 import * as math from '../math';
+import { useStore } from '../store';
 import { TableCell } from '../Table';
 import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
@@ -60,6 +61,7 @@ export default function WaypointRow({
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
   const { code } = partial.leg;
+  const { fuel } = useStore();
   const metadata = useWaypoint(code);
 
   const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
@@ -69,6 +71,8 @@ export default function WaypointRow({
 
   if (index > 0) {
     const hasRem = partial.remainingFuel !== -1;
+    const inReserve = hasRem && partial.remainingFuel <= fuel.reserve;
+    const noFuel = hasRem && partial.remainingFuel <= 0;
     return (
       <>
         <TableRow>
@@ -103,7 +107,7 @@ export default function WaypointRow({
           <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
           <FillInCell />
           <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
-          <TableCell color={hasRem && partial.remainingFuel <= 0 ? 'error' : undefined}>
+          <TableCell color={noFuel ? 'error' : inReserve ? 'warning' : undefined}>
             {hasRem ? partial.remainingFuel.toFixed(2) : ''}
           </TableCell>
           <AddNotesCell onClick={toggleNotes} open={open} />
