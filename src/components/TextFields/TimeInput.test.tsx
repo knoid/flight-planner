@@ -7,7 +7,7 @@ describe('formats time inputs', () => {
     test(`formats ${input} to ${expected}`, async () => {
       render(<TimeInput />);
       const textBox = screen.getByRole('textbox');
-  
+
       const user = userEvent.setup();
       await user.type(textBox, input);
       fireEvent.blur(textBox);
@@ -18,4 +18,17 @@ describe('formats time inputs', () => {
   testTimeFormatting('8', '08:00');
   testTimeFormatting('8:1', '08:01');
   testTimeFormatting(' 8 ', '08:00');
+  testTimeFormatting('0854', '08:54');
+});
+
+test.skip('text is replaced after focus', async () => {
+  render(<TimeInput />);
+  const textBox = screen.getByRole('textbox');
+
+  const user = userEvent.setup();
+  await user.type(textBox, '1234');
+  fireEvent.blur(textBox);
+  await user.click(textBox);
+  await user.keyboard('4321');
+  expect(textBox).toHaveValue('43:21');
 });

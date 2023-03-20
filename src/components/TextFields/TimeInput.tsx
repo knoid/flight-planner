@@ -1,5 +1,5 @@
 import { styled } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FocusEvent, useState } from 'react';
 import { useStore } from '../store';
 import PrintFriendlyInput from './PrintFriendlyInput';
 
@@ -30,8 +30,16 @@ export default function TimeInput() {
     }
   }
 
+  function onFocus(event: FocusEvent<HTMLInputElement>) {
+    event.currentTarget.select();
+  }
+
   function onChange(event: ChangeEvent<HTMLInputElement>) {
-    const inputValue = event.currentTarget.value;
+    let inputValue = event.currentTarget.value;
+    const startsWithHours = /^(\d{2}):?/;
+    if (inputValue.length > rawValue.length && inputValue.match(startsWithHours)) {
+      inputValue = inputValue.replace(startsWithHours, '$1:');
+    }
     setRawValue(inputValue);
     setStartTime(validTime.test(inputValue) ? formatTime(inputValue) : '');
   }
@@ -41,6 +49,7 @@ export default function TimeInput() {
       error={!!value && !validTime.test(value)}
       onBlur={onBlur}
       onChange={onChange}
+      onFocus={onFocus}
       inputProps={{ size: 5 }}
       value={rawValue}
     />
