@@ -136,7 +136,7 @@ export function CommonCells({
           </NoWrapTableCell>
         </>
       ) : (
-        <TableCell colSpan={2} />
+        <TableCell colSpan={1 + (includeFrequencies ? 1 : 0)} />
       )}
     </>
   );
