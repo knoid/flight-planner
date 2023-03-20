@@ -34,8 +34,8 @@ const InfoLink = styled(Link)({
 
 const Fieldset = styled(Section)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  display: 'inline-flex',
-  padding: '1.2em 0',
+  display: 'flex',
+  flexDirection: 'column',
   '@media screen': {
     backgroundColor: lighten(theme.palette.primary.main, 0.8),
   },
@@ -44,7 +44,8 @@ const Fieldset = styled(Section)(({ theme }) => ({
     padding: '0.5em',
   },
   [theme.breakpoints.up('sm')]: {
-    padding: '1.2em',
+    display: 'inline-flex',
+    flexDirection: 'row',
   },
 }));
 
