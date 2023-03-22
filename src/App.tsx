@@ -7,9 +7,7 @@ import Metadata from './components/Metadata';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
 import CruiseSpeedInput from './components/TextFields/CruiseSpeedInput';
-import FuelCapacityInput from './components/TextFields/FuelCapacityInput';
-import FuelFlowInput from './components/TextFields/FuelFlowInput';
-import FuelReserveInput from './components/TextFields/FuelReserveInput';
+import FuelTextField from './components/TextFields/FuelTextField';
 import { WorldMagneticModel } from './WorldMagneticModel';
 
 const wmm = new WorldMagneticModel();
@@ -80,9 +78,9 @@ export default function App() {
               <Metadata />
               <Fieldset>
                 <CruiseSpeedInput />
-                <FuelCapacityInput />
-                <FuelReserveInput />
-                <FuelFlowInput />
+                <FuelTextField label="Fuel Capacity" name="capacity" />
+                <FuelTextField label="Fuel Reserve" name="reserve" />
+                <FuelTextField label="Fuel Flow" name="flow" />
               </Fieldset>
               <Section>
                 <FlightPlanTable wmm={wmm} />
