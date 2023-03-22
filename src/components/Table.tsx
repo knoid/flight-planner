@@ -20,13 +20,12 @@ const InlineTable = styled(MuiTable)({
   },
 });
 
-const Paper = styled(MuiPaper)({
-  '&&': {
-    // https://github.com/styled-components/styled-components/issues/1816#issuecomment-398454088
+const Paper = styled(MuiPaper)(({ theme }) => ({
+  [theme.breakpoints.up('sm')]: {
     display: 'inline-block',
     width: 'auto',
   },
-});
+}));
 
 interface TableProps {
   children: ReactNode;
@@ -61,6 +60,7 @@ export const TableCell = styled(MuiTableCell, {
   ...(padding === 'none' && {
     padding: 0,
   }),
+  position: 'relative',
 }));
 
 export const TableHead = styled(MuiTableHead)(({ theme }) => ({
