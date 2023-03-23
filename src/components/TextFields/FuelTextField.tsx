@@ -23,6 +23,10 @@ interface FuelTextFieldProps {
   name: keyof State['fuel'];
 }
 
+function handleMouseDown(event: MouseEvent<HTMLButtonElement>) {
+  event.preventDefault();
+}
+
 export default function FuelTextField({ label, name }: FuelTextFieldProps) {
   const { fuel, setFuel } = useStore();
   const storedValue = fuel[name];
@@ -35,10 +39,6 @@ export default function FuelTextField({ label, name }: FuelTextFieldProps) {
 
   function handleClick() {
     setFuel({ unit: math.remainder(fuel.unit + 1, fuelUnits.size) });
-  }
-
-  function handleMouseDown(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
   }
 
   return (
