@@ -1,7 +1,7 @@
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useState } from 'react';
-import * as math from '../math';
-import { useStore } from '../store';
+import * as math from '../../../../components/math';
+import { useStore } from '../../../../components/store';
 import { TableCell } from '../Table';
 import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';

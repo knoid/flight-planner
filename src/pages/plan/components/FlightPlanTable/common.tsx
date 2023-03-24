@@ -1,8 +1,8 @@
 import { Map } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
 import HideOnPrint from '../HideOnPrint';
-import * as math from '../math';
-import { useStore } from '../store';
+import * as math from '../../../../components/math';
+import { useStore } from '../../../../components/store';
 import { TableCell } from '../Table';
 import ControlButtons from './ControlButtons';
 import Frequency from './Frequency';

@@ -1,5 +1,5 @@
 import { TableBody, TableRow as MuiTableRow } from '@mui/material';
-import { useLegs } from '../LegsContext';
+import { useLegs } from '../../../../components/LegsContext';
 import Table, { TableCell, TableHead } from '../Table';
 import TableRow from './TableRow';
 

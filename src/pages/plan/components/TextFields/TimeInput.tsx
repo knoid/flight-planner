@@ -1,6 +1,6 @@
 import { styled } from '@mui/material';
 import { ChangeEvent, FocusEvent, useState } from 'react';
-import { useStore } from '../store';
+import { useStore } from '../../../../components/store';
 import PrintFriendlyInput from './PrintFriendlyInput';
 
 const validTime = /^[0-9]{1,2}(:[0-9]{1,2})?$/;

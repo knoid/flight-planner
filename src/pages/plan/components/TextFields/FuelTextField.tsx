@@ -1,8 +1,7 @@
 import { IconButton, InputAdornment, styled } from '@mui/material';
 import { MouseEvent, useEffect, useState } from 'react';
-import * as math from '../math';
-import { FuelUnit, useStore } from '../store';
-import { State } from '../store/constants';
+import * as math from '../../../../components/math';
+import { FuelUnit, State, useStore } from '../../../../components/store';
 import NumericTextField from './NumericTextField';
 
 const UnitCycleButton = styled(IconButton)({

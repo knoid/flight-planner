@@ -1,5 +1,5 @@
 import { styled, TableRow as MuiTableRow } from '@mui/material';
-import { Leg } from '../LegsContext';
+import { Leg } from '../../../../components/LegsContext';
 import { TableCell } from '../Table';
 import useWaypoint from '../useWaypoint';
 

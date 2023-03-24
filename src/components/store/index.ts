@@ -1,4 +1,3 @@
-import { FuelUnit } from './constants';
-import { StoreProvider, useStore } from './store';
-
-export { FuelUnit, StoreProvider, useStore };
+export { FuelUnit } from './constants';
+export type { State } from './constants';
+export { StoreProvider, useStore } from './store';

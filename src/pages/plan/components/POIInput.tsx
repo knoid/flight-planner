@@ -1,12 +1,15 @@
+import { Map as MapIcon } from '@mui/icons-material';
 import {
   Autocomplete,
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
   CircularProgress,
+  IconButton,
+  InputAdornment,
   TextField,
 } from '@mui/material';
-import { SyntheticEvent, useContext, useState } from 'react';
-import POIsContext, { POI } from './POIsContext';
+import { MouseEvent, SyntheticEvent, useContext, useState } from 'react';
+import POIsContext, { POI } from '../../../components/POIsContext';
 
 function normalize(value: string) {
   return value
@@ -19,15 +22,6 @@ function matches(search: string, inputValue: string) {
   return normalize(search).includes(normalize(inputValue));
 }
 
-interface POIInputProps {
-  onChange: (
-    event: SyntheticEvent,
-    value: POI | null,
-    reason: AutocompleteChangeReason,
-    details?: AutocompleteChangeDetails<POI>
-  ) => void;
-}
-
 function getOptionLabel(option: POI) {
   switch (option.type) {
     case 'airport':
@@ -35,6 +29,19 @@ function getOptionLabel(option: POI) {
     case 'waypoint':
       return option.code;
   }
+}
+
+function handleOnClick(event: MouseEvent<HTMLElement>) {
+  event.stopPropagation();
+}
+
+interface POIInputProps {
+  onChange: (
+    event: SyntheticEvent,
+    value: POI | null,
+    reason: AutocompleteChangeReason,
+    details?: AutocompleteChangeDetails<POI>
+  ) => void;
 }
 
 export default function POIInput({ onChange }: POIInputProps) {
@@ -70,16 +77,23 @@ export default function POIInput({ onChange }: POIInputProps) {
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+              <InputAdornment position="end">
+                {loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : (
+                  <IconButton onClick={handleOnClick} size="small" href="map">
+                    <MapIcon />
+                  </IconButton>
+                )}
                 {params.InputProps.endAdornment}
-              </>
+              </InputAdornment>
             ),
           }}
         />
       )}
       size="small"
       sx={{ width: 300 }}
+      value={null}
     />
   );
 }

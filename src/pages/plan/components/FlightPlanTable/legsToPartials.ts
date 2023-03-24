@@ -1,6 +1,6 @@
 import { WorldMagneticModel } from '../../WorldMagneticModel';
-import * as math from '../math';
-import { POI } from '../POIsContext';
+import * as math from '../../../../components/math';
+import { POI } from '../../../../components/POIsContext';
 
 export interface Leg {
   altitude: string;

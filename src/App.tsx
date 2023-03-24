@@ -1,53 +1,37 @@
-import { createTheme, CssBaseline, lighten, Link, styled, ThemeProvider } from '@mui/material';
-import AirportsTable from './components/AirportsTable';
-import FlightPlanTable from './components/FlightPlanTable';
-import HideOnPrint from './components/HideOnPrint';
+import { createTheme, CssBaseline, LinkProps, ThemeProvider } from '@mui/material';
+import { AnchorHTMLAttributes, ForwardedRef, forwardRef } from 'react';
+import { createBrowserRouter, Link as ReactRouterLink, RouterProvider } from 'react-router-dom';
 import { LegsProvider } from './components/LegsContext';
-import Metadata from './components/Metadata';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
-import CruiseSpeedInput from './components/TextFields/CruiseSpeedInput';
-import FuelTextField from './components/TextFields/FuelTextField';
-import { WorldMagneticModel } from './WorldMagneticModel';
+import MapPage from './pages/map';
+import PlanPage from './pages/plan';
 
-const wmm = new WorldMagneticModel();
+const router = createBrowserRouter(
+  [
+    { element: <PlanPage />, path: '/' },
+    { element: <MapPage />, path: '/map' },
+  ],
+  { basename: '/flight-planner' }
+);
 
-const Main = styled('main')({
-  display: 'block',
-  margin: 'auto',
-  textAlign: 'center',
+const LinkBehavior = forwardRef(
+  (
+    { href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>,
+    ref: ForwardedRef<HTMLAnchorElement>
+  ) => <ReactRouterLink to={href || ''} ref={ref} {...props} />
+);
+
+const theme = createTheme({
+  components: {
+    MuiLink: {
+      defaultProps: { component: LinkBehavior } as LinkProps,
+    },
+    MuiButtonBase: {
+      defaultProps: { LinkComponent: LinkBehavior },
+    },
+  },
 });
-
-const Section = styled('div')(({ theme }) => ({
-  margin: '0.5em 0',
-  textAlign: 'center',
-  [theme.breakpoints.up('sm')]: {
-    margin: '1.5em 0',
-  },
-}));
-
-const InfoLink = styled(Link)({
-  margin: '1em',
-});
-
-const Fieldset = styled(Section)(({ theme }) => ({
-  borderRadius: theme.shape.borderRadius,
-  display: 'flex',
-  flexDirection: 'column',
-  '@media screen': {
-    backgroundColor: lighten(theme.palette.primary.main, 0.8),
-  },
-  '@media print': {
-    margin: 0,
-    padding: '0.5em',
-  },
-  [theme.breakpoints.up('sm')]: {
-    display: 'inline-flex',
-    flexDirection: 'row',
-  },
-}));
-
-const theme = createTheme();
 
 export default function App() {
   return (
@@ -56,39 +40,7 @@ export default function App() {
         <LegsProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <HideOnPrint component="header">
-              <Section>
-                <InfoLink
-                  href="http://ais.anac.gov.ar/notam"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  NOTAM
-                </InfoLink>
-                <InfoLink
-                  href="https://www.smn.gob.ar/meteorologia-aeronautica"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  SMN
-                </InfoLink>
-              </Section>
-            </HideOnPrint>
-            <Main>
-              <Metadata />
-              <Fieldset>
-                <CruiseSpeedInput />
-                <FuelTextField label="Fuel Capacity" name="capacity" />
-                <FuelTextField label="Fuel Reserve" name="reserve" />
-                <FuelTextField label="Fuel Flow" name="flow" />
-              </Fieldset>
-              <Section>
-                <FlightPlanTable wmm={wmm} />
-              </Section>
-              <Section>
-                <AirportsTable />
-              </Section>
-            </Main>
+            <RouterProvider router={router} />
           </ThemeProvider>
         </LegsProvider>
       </POIsProvider>
