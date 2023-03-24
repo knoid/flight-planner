@@ -22,10 +22,10 @@ const PointOnMap = styled('div')({
   width: 19,
 });
 
-const Helipad = styled(PointOnMap)({
-  border: '1px solid black',
-  borderRadius: '50%',
-});
+// const Helipad = styled(PointOnMap)({
+//   border: '1px solid black',
+//   borderRadius: '50%',
+// });
 const Airport = styled(PointOnMap)({ zIndex: 1000 }).withComponent(LocalAirportIcon);
 const Waypoint = styled(PointOnMap)({ zIndex: 1020 }).withComponent(Paper);
 
