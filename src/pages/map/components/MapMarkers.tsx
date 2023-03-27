@@ -59,6 +59,16 @@ export default function MapMarkers() {
   return (
     <>
       <Polyline positions={points} />
+      {options
+        .filter((poi) => poi.type === 'airport')
+        .map((poi) => (
+          <Marker key={poi.code} position={poi.coords.map(math.toDegrees) as Coords}>
+            <DivIcon>
+              <Airport />
+            </DivIcon>
+            <Popup>{poi.code}</Popup>
+          </Marker>
+        ))}
       {legs.map((leg, index) => {
         const poi = leg.poi;
         if (!poi) {
@@ -73,16 +83,6 @@ export default function MapMarkers() {
           </Marker>
         );
       })}
-      {options
-        .filter((poi) => poi.type === 'airport')
-        .map((poi) => (
-          <Marker key={poi.code} position={poi.coords.map(math.toDegrees) as Coords}>
-            <DivIcon>
-              <Airport />
-            </DivIcon>
-            <Popup>{poi.code}</Popup>
-          </Marker>
-        ))}
     </>
   );
 }
