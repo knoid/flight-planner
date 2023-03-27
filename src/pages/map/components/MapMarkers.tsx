@@ -26,8 +26,8 @@ const PointOnMap = styled('div')({
 //   border: '1px solid black',
 //   borderRadius: '50%',
 // });
-const Airport = styled(PointOnMap)({ zIndex: 1000 }).withComponent(LocalAirportIcon);
-const Waypoint = styled(PointOnMap)({ zIndex: 1020 }).withComponent(Paper);
+const Airport = PointOnMap.withComponent(LocalAirportIcon);
+const Waypoint = PointOnMap.withComponent(Paper);
 
 export default function MapMarkers() {
   const [legs] = useLegs();
