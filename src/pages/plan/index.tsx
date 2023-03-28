@@ -44,7 +44,7 @@ const Fieldset = styled(Section)(({ theme }) => ({
   },
 }));
 
-export default function PlanPage() {
+export const Component = function PlanPage() {
   return (
     <>
       <HideOnPrint component="header">
@@ -78,4 +78,4 @@ export default function PlanPage() {
       </Main>
     </>
   );
-}
+};

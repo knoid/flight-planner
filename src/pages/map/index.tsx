@@ -14,7 +14,7 @@ const RoundPaper = styled(Paper)({
   zIndex: 1000,
 });
 
-export default function MapPage() {
+export const Component = function MapPage() {
   return (
     <>
       <MapContainer zoomControl={false}>
@@ -32,4 +32,4 @@ export default function MapPage() {
       </RoundPaper>
     </>
   );
-}
+};

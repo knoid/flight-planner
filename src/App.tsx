@@ -4,13 +4,11 @@ import { createBrowserRouter, Link as ReactRouterLink, RouterProvider } from 're
 import { LegsProvider } from './components/LegsContext';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
-import MapPage from './pages/map';
-import PlanPage from './pages/plan';
 
 const router = createBrowserRouter(
   [
-    { element: <PlanPage />, path: '/' },
-    { element: <MapPage />, path: '/map' },
+    { lazy: () => import('./pages/plan'), path: '/' },
+    { lazy: () => import('./pages/map'), path: '/map' },
   ],
   { basename: '/flight-planner' }
 );
