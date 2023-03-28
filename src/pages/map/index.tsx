@@ -3,6 +3,7 @@ import { IconButton, Paper, styled } from '@mui/material';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import MapMarkers from './components/MapMarkers';
 import ZoomControls from './components/ZoomControls';
+import 'leaflet/dist/leaflet.css';
 
 const RoundPaper = styled(Paper)({
   borderRadius: '50%',
