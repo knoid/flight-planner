@@ -30,7 +30,7 @@
     "@vitest/coverage-c8": "^0.29.7",
     "jsdom": "^21.1.1",
     "vite": "^4.2.1",
-    "vitest": "^0.29.7"
+    "vitest": "^0.29.8"
   },
   "scripts": {
     "build": "tsc && vite build && cp dist/index.html dist/404.html",
