@@ -42,6 +42,7 @@ const c2 = a2 - b2;
 const a4 = a2 * a2;
 const b4 = b2 * b2;
 const c4 = a4 - b4;
+const dtr = Math.PI / 180.0;
 
 export class WorldMagneticModel {
   /* 2020 - 2025 coefficients from WMM.COF */
@@ -240,7 +241,7 @@ export class WorldMagneticModel {
     //if more then 5 years has passed since last epoch update then return invalid
     if (dt < 0.0 || dt > 5.0) return -999;
 
-    const [rlat, rlon] = coordinates;
+    const [rlat, rlon] = coordinates.map((deg) => deg * dtr);
     const srlon = Math.sin(rlon);
     const srlat = Math.sin(rlat);
     const crlon = Math.cos(rlon);

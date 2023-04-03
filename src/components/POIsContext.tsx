@@ -35,11 +35,7 @@ interface ProviderProps {
 async function fetchPublicAirports(): Promise<Airport[]> {
   const request = await cachedFetch('filterBy/condition/public.json');
   if (request.ok) {
-    const result: Airport[] = await request.json();
-    return result.map(({ coordinates, ...airport }) => ({
-      ...airport,
-      coordinates: coordinates.map(math.toRadians) as Coords,
-    }));
+    return await request.json();
   }
   return [];
 }
@@ -52,9 +48,9 @@ async function fetchWaypoints(): Promise<Waypoint[]> {
   const request = await cachedFetch('local/AR/waypoints.json');
   if (request.ok) {
     const results: WaypointsResponse = await request.json();
-    return Object.entries(results).map(([local, [lat, lon]]) => ({
+    return Object.entries(results).map(([local, coordinates]) => ({
       type: 'waypoint',
-      coordinates: [math.toRadians(lat), math.toRadians(lon)],
+      coordinates,
       identifiers: { local },
     }));
   }

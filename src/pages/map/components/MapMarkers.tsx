@@ -41,18 +41,13 @@ export default function MapMarkers() {
   const right = Math.max(...legs.map((leg) => leg.poi?.coordinates[0] || NaN));
   const bottom = Math.min(...legs.map((leg) => leg.poi?.coordinates[1] || NaN));
   const points = legs
-    .map((leg) => leg.poi?.coordinates.map(math.toDegrees) as Coords | undefined)
+    .map((leg) => leg.poi?.coordinates)
     .filter((coordinates): coordinates is Coords => !!coordinates);
 
   useEffect(() => {
     if (loaded) {
       const bounds =
-        points.length > 0
-          ? new LatLngBounds(
-              [left, top].map(math.toDegrees) as Coords,
-              [right, bottom].map(math.toDegrees) as Coords,
-            )
-          : defaultBounds;
+        points.length > 0 ? new LatLngBounds([left, top], [right, bottom]) : defaultBounds;
       map.fitBounds(bounds);
     }
   }, [bottom, left, loaded, map, points.length, right, top]);
@@ -63,10 +58,7 @@ export default function MapMarkers() {
       {options
         .filter((poi) => poi.type === 'airport')
         .map((poi) => (
-          <Marker
-            key={poi.identifiers.local}
-            position={poi.coordinates.map(math.toDegrees) as Coords}
-          >
+          <Marker key={poi.identifiers.local} position={poi.coordinates}>
             <DivIcon>
               <Airport />
             </DivIcon>
@@ -79,7 +71,7 @@ export default function MapMarkers() {
           return null;
         }
         return (
-          <Marker key={leg.key} position={poi.coordinates.map(math.toDegrees) as Coords}>
+          <Marker key={leg.key} position={poi.coordinates}>
             <DivIcon>
               <Waypoint>{index + 1}</Waypoint>
             </DivIcon>
