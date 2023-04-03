@@ -27,8 +27,8 @@ const PointOnMap = styled('div')({
 //   border: '1px solid black',
 //   borderRadius: '50%',
 // });
-const Airport = PointOnMap.withComponent(LocalAirportIcon);
-const Waypoint = PointOnMap.withComponent(Paper);
+const AirportIcon = PointOnMap.withComponent(LocalAirportIcon);
+const WaypointNumber = PointOnMap.withComponent(Paper);
 
 export default function MapMarkers() {
   const [legs] = useLegs();
@@ -60,7 +60,7 @@ export default function MapMarkers() {
         .map((poi) => (
           <Marker key={poi.identifiers.local} position={poi.coordinates}>
             <DivIcon>
-              <Airport />
+              <AirportIcon />
             </DivIcon>
             <Popup>{poi.identifiers.local}</Popup>
           </Marker>
@@ -73,7 +73,7 @@ export default function MapMarkers() {
         return (
           <Marker key={leg.key} position={poi.coordinates}>
             <DivIcon>
-              <Waypoint>{index + 1}</Waypoint>
+              <WaypointNumber>{index + 1}</WaypointNumber>
             </DivIcon>
             <Popup>{poi.identifiers.local}</Popup>
           </Marker>

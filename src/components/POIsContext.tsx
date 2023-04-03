@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 
 import { Coords } from '../types';
 import cachedFetch from './cachedFetch';
-import * as math from './math';
 
 interface BasePOI {
   identifiers: { iata?: string; icao?: string; local: string };
@@ -32,8 +31,8 @@ interface ProviderProps {
   children: ReactNode;
 }
 
-async function fetchPublicAirports(): Promise<Airport[]> {
-  const request = await cachedFetch('filterBy/condition/public.json');
+async function fetchAirports(): Promise<Airport[]> {
+  const request = await cachedFetch('filterBy/type/airport.json');
   if (request.ok) {
     return await request.json();
   }
@@ -73,7 +72,7 @@ export function POIsProvider({ children }: ProviderProps) {
     }
 
     (async () => {
-      const [res1, res2] = await Promise.allSettled([fetchPublicAirports(), fetchWaypoints()]);
+      const [res1, res2] = await Promise.allSettled([fetchAirports(), fetchWaypoints()]);
 
       if (active) {
         const newOptions = [];
