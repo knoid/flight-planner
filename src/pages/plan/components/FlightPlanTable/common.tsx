@@ -1,11 +1,12 @@
 import { Map } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
-import HideOnPrint from '../HideOnPrint';
+
 import * as math from '../../../../components/math';
 import { useStore } from '../../../../components/store';
+import HideOnPrint from '../HideOnPrint';
 import { TableCell } from '../Table';
 import ControlButtons from './ControlButtons';
-import Frequency from './Frequency';
+import Labelled from './Labelled';
 import { Partial } from './legsToPartials';
 
 export function pad2(num: number) {
@@ -31,27 +32,40 @@ const NoWrapTableCell = styled(TableCell)({
   whiteSpace: 'nowrap',
 });
 
-export interface Metadata {
-  frequencies: {
-    APP?: number;
-    ATIS?: number;
-    CLRD?: number;
-    COM?: number;
-    GND?: number;
-    TWR?: number;
-    VOR?: number;
+interface Frequency {
+  type: string;
+  frequency: number;
+}
+
+interface Runway {
+  orientations: [string, string];
+  type: 'asphalt' | 'concrete' | 'dirt';
+}
+
+export interface Airport {
+  condition: 'private' | 'public';
+  controlled: boolean;
+  coordinates: [lat: number, lon: number];
+  /** In feet. */
+  elevation?: number;
+  frequencies: Frequency[];
+  identifiers: {
+    iata?: string;
+    icao?: string;
+    local: string;
   };
-  reference?: {
-    distance: number;
-    direction: string;
-  };
+  name: string;
+  radio_helpers: Frequency[];
+  reference?: { direction: string; distance: number };
+  runways: Runway[];
+  type: 'airport' | 'helipad';
 }
 
 export interface CommonCellsProps {
+  airport: Airport | null;
   disableDown: boolean;
   disableUp: boolean;
   index: number;
-  metadata: Metadata | null;
   onMoveDown: () => void;
   onMoveUp: () => void;
   onRemove: () => void;
@@ -59,30 +73,30 @@ export interface CommonCellsProps {
 }
 
 export function CommonCells({
+  airport,
   disableDown,
   disableUp,
   index,
-  metadata,
   onMoveDown,
   onMoveUp,
   onRemove,
   partial,
 }: CommonCellsProps) {
   const { includeFrequencies } = useStore();
-  const frequencies = Object.entries(metadata?.frequencies || {}).sort(([a], [b]) =>
-    b.localeCompare(a)
+  const frequencies = (airport?.frequencies || []).sort(({ type: a }, { type: b }) =>
+    b.localeCompare(a),
   );
-  const ref = metadata?.reference;
+  const ref = airport?.reference;
   const { poi } = partial.leg;
   let googleMapsUrl;
   if (poi) {
-    const coords = poi.coords.map(math.toDegrees).join(',');
+    const coordinates = poi.coordinates.map(math.toDegrees).join(',');
     if (poi.type === 'airport') {
       // https://developers.google.com/maps/documentation/urls/get-started#map-action
       const qs = new URLSearchParams({
         api: '1',
         basemap: 'satellite',
-        center: coords,
+        center: coordinates,
         map_action: 'map',
       });
       googleMapsUrl = `https://www.google.com/maps/@?${qs.toString()}`;
@@ -90,7 +104,7 @@ export function CommonCells({
       // https://developers.google.com/maps/documentation/urls/get-started#search-action
       const qs = new URLSearchParams({
         api: '1',
-        query: coords,
+        query: coordinates,
       });
       googleMapsUrl = `https://www.google.com/maps/search/?${qs.toString()}`;
     }
@@ -108,13 +122,13 @@ export function CommonCells({
       </TableCell>
       <TableCell>{index + 1}.</TableCell>
       <TableCell>{partial.leg.code}</TableCell>
-      {metadata ? (
+      {airport ? (
         <>
           {includeFrequencies && (
             <TableCell>
               <Grid>
-                {frequencies.map(([name, freq]) => (
-                  <Frequency key={name} name={name} frequency={freq} />
+                {frequencies.map(({ type, frequency }) => (
+                  <Labelled key={type} type={type} frequency={frequency} />
                 ))}
               </Grid>
             </TableCell>

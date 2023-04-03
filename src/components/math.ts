@@ -37,7 +37,7 @@ export function heading(
   course: number,
   cruiseSpeed: number,
   windSource: number,
-  windSpeed: number
+  windSpeed: number,
 ) {
   const swc = (windSpeed / cruiseSpeed) * sin(windSource - course);
   return swc > 1 ? -1 : course + asin(swc);
@@ -47,7 +47,7 @@ export function groundSpeed(
   cruiseSpeed: number,
   heading: number,
   windSource: number,
-  windSpeed: number
+  windSpeed: number,
 ) {
   const cruiseSpeed2 = cruiseSpeed ** 2;
   const windSpeed2 = windSpeed ** 2;

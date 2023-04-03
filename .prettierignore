@@ -1,0 +1,6 @@
+.DS_Store
+.husky
+.prettierignore
+dist
+dist-ssr
+node_modules

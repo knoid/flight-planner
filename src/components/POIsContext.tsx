@@ -1,17 +1,16 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
+
 import { Coords } from '../types';
-import { capitalize } from '../utils/capitalize';
-import extractName from '../utils/extractName';
 import cachedFetch from './cachedFetch';
 import * as math from './math';
 
 interface BasePOI {
-  code: string;
-  coords: Coords;
+  identifiers: { iata?: string; icao?: string; local: string };
+  coordinates: Coords;
 }
 
 interface Airport extends BasePOI {
-  type: 'airport';
+  type: 'airport' | 'helipad';
   name: string;
 }
 
@@ -29,45 +28,18 @@ interface ContextProps {
 const POIsContext = createContext<ContextProps>({ loading: false, options: [] });
 export default POIsContext;
 
-interface MadhelAirport {
-  data: {
-    helpers_system: {
-      radio: string[];
-    };
-  };
-  human_readable_identifier: string;
-  local_identifier: string;
-  the_geom: {
-    type: 'Feature';
-    properties: {
-      gg_point_coordinates: [lat: number, lon: number];
-    };
-  };
-  uri: string;
-}
-
-interface MadhelResponse {
-  count: number;
-  results: MadhelAirport[];
-}
-
 interface ProviderProps {
   children: ReactNode;
 }
 
-async function fetchFromMADHEL(): Promise<Airport[]> {
-  const request = await cachedFetch('https://datos.anac.gob.ar/madhel/api/v2/airports/');
+async function fetchPublicAirports(): Promise<Airport[]> {
+  const request = await cachedFetch('filterBy/condition/public.json');
   if (request.ok) {
-    const { results }: MadhelResponse = await request.json();
-    return results.map((airport) => {
-      const [lat, lon] = airport.the_geom.properties.gg_point_coordinates;
-      return {
-        code: airport.local_identifier,
-        coords: [math.toRadians(lat), math.toRadians(lon)],
-        name: capitalize(extractName(airport.human_readable_identifier)),
-        type: 'airport',
-      };
-    });
+    const result: Airport[] = await request.json();
+    return result.map(({ coordinates, ...airport }) => ({
+      ...airport,
+      coordinates: coordinates.map(math.toRadians) as Coords,
+    }));
   }
   return [];
 }
@@ -77,13 +49,13 @@ interface WaypointsResponse {
 }
 
 async function fetchWaypoints(): Promise<Waypoint[]> {
-  const request = await fetch('data/AR/waypoints.json');
+  const request = await cachedFetch('local/AR/waypoints.json');
   if (request.ok) {
     const results: WaypointsResponse = await request.json();
-    return Object.entries(results).map(([identifier, [lat, lon]]) => ({
-      code: identifier,
-      coords: [math.toRadians(lat), math.toRadians(lon)],
+    return Object.entries(results).map(([local, [lat, lon]]) => ({
       type: 'waypoint',
+      coordinates: [math.toRadians(lat), math.toRadians(lon)],
+      identifiers: { local },
     }));
   }
   return [];
@@ -105,7 +77,7 @@ export function POIsProvider({ children }: ProviderProps) {
     }
 
     (async () => {
-      const [res1, res2] = await Promise.allSettled([fetchFromMADHEL(), fetchWaypoints()]);
+      const [res1, res2] = await Promise.allSettled([fetchPublicAirports(), fetchWaypoints()]);
 
       if (active) {
         const newOptions = [];

@@ -1,5 +1,6 @@
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useState } from 'react';
+
 import * as math from '../../../../components/math';
 import { useStore } from '../../../../components/store';
 import { TableCell } from '../Table';
@@ -41,7 +42,7 @@ function formatTime(date: Date) {
   return `${hours}:${minutes}`;
 }
 
-interface TableRowProps extends Omit<CommonCellsProps, 'metadata'> {
+interface TableRowProps extends Omit<CommonCellsProps, 'airport'> {
   hasAltitude?: boolean;
   onAltitudeChange: (value: string) => void;
   onAltitudeCopyDown: () => void;
@@ -62,7 +63,7 @@ export default function WaypointRow({
   const { index, partial } = commonCellsProps;
   const { code } = partial.leg;
   const { fuel } = useStore();
-  const metadata = useWaypoint(code);
+  const airport = useWaypoint(code);
 
   const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
   function toggleNotes() {
@@ -76,7 +77,7 @@ export default function WaypointRow({
     return (
       <>
         <TableRow>
-          <CommonCells metadata={metadata} {...commonCellsProps} />
+          <CommonCells airport={airport} {...commonCellsProps} />
           <TableCell align="right">
             {partial.distance > 0 ? formatDistance(partial.distance) : ''}
           </TableCell>
@@ -120,7 +121,7 @@ export default function WaypointRow({
   return (
     <>
       <TableRow>
-        <CommonCells metadata={metadata} {...commonCellsProps} />
+        <CommonCells airport={airport} {...commonCellsProps} />
         <TableCell colSpan={6} />
         <TableCell hideInPrint={!hasAltitude} />
         <FillInCell>

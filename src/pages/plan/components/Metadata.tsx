@@ -1,5 +1,5 @@
-import Hiddenable from './Hiddenable';
 import { useStore } from '../../../components/store';
+import Hiddenable from './Hiddenable';
 import MetadataField from './TextFields/MetadataField';
 
 export default function Metadata() {

@@ -1,5 +1,5 @@
 @media print {
-    .root {
-        display: none !important;
-    }
+  .root {
+    display: none !important;
+  }
 }

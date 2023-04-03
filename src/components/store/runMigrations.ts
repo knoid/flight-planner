@@ -26,6 +26,7 @@ export default function runMigrations(data?: DeepPartial<State>): State {
 
   data.version = version;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { fuelCapacity, fuelFlow } = data as any;
   return {
     ...initialState,

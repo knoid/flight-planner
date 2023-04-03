@@ -1,6 +1,7 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { IconButton, InputAdornment, InputProps, styled } from '@mui/material';
 import { ChangeEvent, MouseEventHandler } from 'react';
+
 import PrintFriendlyInput from './PrintFriendlyInput';
 
 const DenseIconButton = styled(IconButton)({

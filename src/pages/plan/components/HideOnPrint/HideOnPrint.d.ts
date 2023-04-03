@@ -1,7 +1,5 @@
-import {
-  OverridableComponent,
-  OverrideProps,
-} from '@mui/material/OverridableComponent';
+/* eslint-disable @typescript-eslint/ban-types */
+import { OverridableComponent, OverrideProps } from '@mui/material/OverridableComponent';
 import { ElementType, ReactNode } from 'react';
 
 export interface HideOnPrintTypeMap<P = {}, D extends ElementType = 'div'> {
@@ -18,7 +16,7 @@ declare const HideOnPrint: OverridableComponent<HideOnPrintTypeMap>;
 
 export type HideOnPrintProps<
   D extends ElementType = HideOnPrintTypeMap['defaultComponent'],
-  P = {}
+  P = {},
 > = OverrideProps<HideOnPrintTypeMap<P, D>, D>;
 
 export default HideOnPrint;

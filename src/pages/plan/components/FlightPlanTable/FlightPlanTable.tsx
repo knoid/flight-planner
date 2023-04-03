@@ -8,13 +8,14 @@ import {
 } from '@mui/material';
 import { nanoid } from 'nanoid';
 import { SyntheticEvent } from 'react';
-import { WorldMagneticModel } from '../../WorldMagneticModel';
-import HideOnPrint from '../HideOnPrint';
+
 import { useLegs } from '../../../../components/LegsContext';
 import * as math from '../../../../components/math';
-import POIInput from '../POIInput';
 import { POI } from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
+import { WorldMagneticModel } from '../../WorldMagneticModel';
+import HideOnPrint from '../HideOnPrint';
+import POIInput from '../POIInput';
 import Table, { TableCell, TableHead } from '../Table';
 import { fuelUnits } from '../TextFields/FuelTextField';
 import { formatDistance, formatDuration } from './common';
@@ -59,7 +60,13 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     if (poi) {
       setLegs((legs) => [
         ...legs,
-        { altitude: '', code: poi.code, key: `${poi.code}-${nanoid()}`, poi, wind: '' },
+        {
+          altitude: '',
+          code: poi.identifiers.local,
+          key: `${poi.identifiers.local}-${nanoid()}`,
+          poi,
+          wind: '',
+        },
       ]);
     }
   }
@@ -109,11 +116,11 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const partials = legsToPartials(legs, cruiseSpeed, fuel.capacity, fuel.flow, startTime, wmm);
   const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
   const totalFuelConsumption = math.sum(
-    ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0)
+    ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0),
   );
   const totalTripDistance = math.sum(...partials.map((partial) => partial.distance));
   const totalTripDuration = math.sum(
-    ...partials.map((partial) => partial.ete).filter((ete) => ete > 0)
+    ...partials.map((partial) => partial.ete).filter((ete) => ete > 0),
   );
 
   return (
@@ -196,10 +203,16 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             Totals:
           </TotalsTableCell>
           <TableCell colSpan={1 + intIncludeFrequencies} />
-          <TableCell align="right">{formatDistance(totalTripDistance)}<Unit>nm</Unit></TableCell>
+          <TableCell align="right">
+            {formatDistance(totalTripDistance)}
+            <Unit>nm</Unit>
+          </TableCell>
           <TableCell hideInPrint={!hasAltitude} />
           <TableCell colSpan={4} />
-          <TableCell align="center">{formatDuration(totalTripDuration)}<Unit>hs</Unit></TableCell>
+          <TableCell align="center">
+            {formatDuration(totalTripDuration)}
+            <Unit>hs</Unit>
+          </TableCell>
           <TableCell colSpan={2} />
           <TableCell align="right">
             {totalFuelConsumption.toFixed(2)}

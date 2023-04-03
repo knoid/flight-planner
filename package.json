@@ -22,22 +22,35 @@
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.9.0",
-    "typescript": "^5.0.2",
     "web-vitals": "^3.3.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@vitejs/plugin-react": "^3.1.0",
     "@vitest/coverage-c8": "^0.29.7",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "husky": "^8.0.3",
     "jsdom": "^21.1.1",
+    "lint-staged": "^13.2.0",
+    "typescript": "^5.0.3",
     "vite": "^4.2.1",
     "vitest": "^0.29.8"
   },
   "scripts": {
     "build": "tsc && vite build && cp dist/index.html dist/404.html",
     "coverage": "vitest run --coverage",
+    "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
+    "lint:format": "prettier --loglevel warn --write \"./**/*.{ts,tsx,css,md,json}\"",
+    "lint": "npm run lint:format && npm run lint:fix",
     "serve": "vite preview",
     "start": "vite",
-    "test": "vitest"
+    "test": "vitest",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [

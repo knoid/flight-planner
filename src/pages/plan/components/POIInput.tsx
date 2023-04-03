@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { MouseEvent, SyntheticEvent, useContext, useState } from 'react';
+
 import POIsContext, { POI } from '../../../components/POIsContext';
 
 function normalize(value: string) {
@@ -25,9 +26,10 @@ function matches(search: string, inputValue: string) {
 function getOptionLabel(option: POI) {
   switch (option.type) {
     case 'airport':
-      return `(${option.code}) ${option.name}`;
+    case 'helipad':
+      return `(${Object.values(option.identifiers).join('/')}) ${option.name}`;
     case 'waypoint':
-      return option.code;
+      return Object.values(option.identifiers).join('/');
   }
 }
 
@@ -40,7 +42,7 @@ interface POIInputProps {
     event: SyntheticEvent,
     value: POI | null,
     reason: AutocompleteChangeReason,
-    details?: AutocompleteChangeDetails<POI>
+    details?: AutocompleteChangeDetails<POI>,
   ) => void;
 }
 
@@ -56,14 +58,17 @@ export default function POIInput({ onChange }: POIInputProps) {
       filterOptions={(options, { inputValue }) =>
         options.filter(
           (option) =>
-            matches(option.code, inputValue) ||
-            (option.type === 'airport' && matches(option.name, inputValue))
+            Object.values(option.identifiers).some((identifier) =>
+              matches(identifier, inputValue),
+            ) ||
+            ((option.type === 'airport' || option.type === 'helipad') &&
+              matches(option.name, inputValue)),
         )
       }
       getOptionLabel={getOptionLabel}
       id="poi-input"
       inputValue={value}
-      isOptionEqualToValue={(option, value) => option.code === value.code}
+      isOptionEqualToValue={(option, value) => option.identifiers.local === value.identifiers.local}
       onChange={onChange}
       onClose={() => setOpen(false)}
       onInputChange={(event, newValue, reason) => setValue(reason === 'reset' ? '' : newValue)}

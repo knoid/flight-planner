@@ -1,6 +1,6 @@
-import { WorldMagneticModel } from '../../WorldMagneticModel';
 import * as math from '../../../../components/math';
 import { POI } from '../../../../components/POIsContext';
+import { WorldMagneticModel } from '../../WorldMagneticModel';
 
 export interface Leg {
   altitude: string;
@@ -36,7 +36,7 @@ export default function legsToPartials(
   fuelCapacity: number,
   fuelFlow: number,
   startTime: Date | null,
-  wmm: WorldMagneticModel
+  wmm: WorldMagneticModel,
 ) {
   return legs.reduce((partials, leg) => {
     const empty = {
@@ -61,11 +61,11 @@ export default function legsToPartials(
     }
 
     const altitudeKm = math.toKilometers(leg.altitude) || defaultAltitudeKm;
-    const declination = wmm.declination(altitudeKm, leg.poi.coords, yearFloat);
+    const declination = wmm.declination(altitudeKm, leg.poi.coordinates, yearFloat);
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
     const windSource = math.toRadians(windSourceDeg) + declination;
-    const distance = math.distance(last.leg.poi.coords, leg.poi.coords);
-    const course = math.course(distance, last.leg.poi.coords, leg.poi.coords);
+    const distance = math.distance(last.leg.poi.coordinates, leg.poi.coordinates);
+    const course = math.course(distance, last.leg.poi.coordinates, leg.poi.coordinates);
     const heading = math.heading(course, cruiseSpeed, windSource, windSpeed);
     const groundSpeed =
       heading > -1 ? math.groundSpeed(cruiseSpeed, heading, windSource, windSpeed) : -1;

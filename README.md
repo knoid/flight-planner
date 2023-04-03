@@ -4,12 +4,12 @@ Use this flight planner to plan your flight across Argentina and print it to fil
 
 ## Flight Example
 
-| #  | POI | Dist | Course | Wind  | HD  | GS |
-| -- | --- | ---- | ------ | ----  | --- | -- |
-| 1. | GEZ |      |        |       |     |    |
-| 2. | CNA | 30.0 |   157  | 337/5 | 157 | 85 |
-| 3. | BOS | 21.0 |   261  | 337/5 | 264 | 79 |
-| 4. | GEZ | 32.2 |   017  | 337/5 | 014 | 76 |
+| #   | POI | Dist | Course | Wind  | HD  | GS  |
+| --- | --- | ---- | ------ | ----- | --- | --- |
+| 1.  | GEZ |      |        |       |     |     |
+| 2.  | CNA | 30.0 | 157    | 337/5 | 157 | 85  |
+| 3.  | BOS | 21.0 | 261    | 337/5 | 264 | 79  |
+| 4.  | GEZ | 32.2 | 017    | 337/5 | 014 | 76  |
 
 ## Available Scripts
 

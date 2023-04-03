@@ -1,4 +1,5 @@
 import { TableBody, TableRow as MuiTableRow } from '@mui/material';
+
 import { useLegs } from '../../../../components/LegsContext';
 import Table, { TableCell, TableHead } from '../Table';
 import TableRow from './TableRow';
@@ -22,7 +23,9 @@ export function AirportsTable() {
         </MuiTableRow>
       </TableHead>
       <TableBody>
-        {legs.map((leg) => <TableRow key={leg.key} leg={leg} />)}
+        {legs.map((leg) => (
+          <TableRow key={leg.key} leg={leg} />
+        ))}
       </TableBody>
     </Table>
   );

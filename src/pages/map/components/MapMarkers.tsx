@@ -3,6 +3,7 @@ import { Paper, styled } from '@mui/material';
 import { LatLngBounds } from 'leaflet';
 import { useContext, useEffect } from 'react';
 import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
+
 import { useLegs } from '../../../components/LegsContext';
 import * as math from '../../../components/math';
 import POIsContext from '../../../components/POIsContext';
@@ -11,7 +12,7 @@ import DivIcon from './DivIcon';
 
 const defaultBounds = new LatLngBounds(
   [-43.97361132750201, -72.95147269963724],
-  [-27.08690394764455, -54.34688571064547]
+  [-27.08690394764455, -54.34688571064547],
 );
 
 const PointOnMap = styled('div')({
@@ -35,13 +36,13 @@ export default function MapMarkers() {
   const map = useMap();
   const loaded = !loading && (legs.length === 0 || !!legs.find((leg) => leg.poi));
 
-  const left = Math.min(...legs.map((leg) => leg.poi?.coords[0] || NaN));
-  const top = Math.max(...legs.map((leg) => leg.poi?.coords[1] || NaN));
-  const right = Math.max(...legs.map((leg) => leg.poi?.coords[0] || NaN));
-  const bottom = Math.min(...legs.map((leg) => leg.poi?.coords[1] || NaN));
+  const left = Math.min(...legs.map((leg) => leg.poi?.coordinates[0] || NaN));
+  const top = Math.max(...legs.map((leg) => leg.poi?.coordinates[1] || NaN));
+  const right = Math.max(...legs.map((leg) => leg.poi?.coordinates[0] || NaN));
+  const bottom = Math.min(...legs.map((leg) => leg.poi?.coordinates[1] || NaN));
   const points = legs
-    .map((leg) => leg.poi?.coords.map(math.toDegrees) as Coords | undefined)
-    .filter((coords): coords is Coords => !!coords);
+    .map((leg) => leg.poi?.coordinates.map(math.toDegrees) as Coords | undefined)
+    .filter((coordinates): coordinates is Coords => !!coordinates);
 
   useEffect(() => {
     if (loaded) {
@@ -49,7 +50,7 @@ export default function MapMarkers() {
         points.length > 0
           ? new LatLngBounds(
               [left, top].map(math.toDegrees) as Coords,
-              [right, bottom].map(math.toDegrees) as Coords
+              [right, bottom].map(math.toDegrees) as Coords,
             )
           : defaultBounds;
       map.fitBounds(bounds);
@@ -62,11 +63,14 @@ export default function MapMarkers() {
       {options
         .filter((poi) => poi.type === 'airport')
         .map((poi) => (
-          <Marker key={poi.code} position={poi.coords.map(math.toDegrees) as Coords}>
+          <Marker
+            key={poi.identifiers.local}
+            position={poi.coordinates.map(math.toDegrees) as Coords}
+          >
             <DivIcon>
               <Airport />
             </DivIcon>
-            <Popup>{poi.code}</Popup>
+            <Popup>{poi.identifiers.local}</Popup>
           </Marker>
         ))}
       {legs.map((leg, index) => {
@@ -75,11 +79,11 @@ export default function MapMarkers() {
           return null;
         }
         return (
-          <Marker key={leg.key} position={poi.coords.map(math.toDegrees) as Coords}>
+          <Marker key={leg.key} position={poi.coordinates.map(math.toDegrees) as Coords}>
             <DivIcon>
               <Waypoint>{index + 1}</Waypoint>
             </DivIcon>
-            <Popup>{poi.code}</Popup>
+            <Popup>{poi.identifiers.local}</Popup>
           </Marker>
         );
       })}

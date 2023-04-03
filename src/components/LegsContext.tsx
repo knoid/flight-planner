@@ -8,6 +8,7 @@ import {
   useEffect,
   useState,
 } from 'react';
+
 import POIsContext, { POI } from './POIsContext';
 import { useStore } from './store';
 
@@ -23,6 +24,7 @@ export interface Leg {
 type UseState<S> = [S, Dispatch<SetStateAction<S>>];
 type ContextType = UseState<Leg[]>;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const LegsContext = createContext<ContextType>([[], () => {}]);
 
 interface LegsProviderProps {
@@ -42,19 +44,18 @@ export function LegsProvider({ children }: LegsProviderProps) {
       setLegs((legs) =>
         legs.map((leg) => ({
           ...leg,
-          poi: options.find((poi) => poi.code === leg.code),
-        }))
+          poi: options.find((poi) => poi.identifiers.local === leg.code),
+        })),
       );
     } else {
       // error loading data
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, options]);
 
   useEffect(() => {
     if (!loading) {
       setSavedLegs(
-        legs.map(({ altitude, code, notes, wind }) => ({ altitude, code, notes, wind }))
+        legs.map(({ altitude, code, notes, wind }) => ({ altitude, code, notes, wind })),
       );
     }
   }, [setSavedLegs, legs, loading]);

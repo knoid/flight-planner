@@ -1,6 +1,7 @@
 import { ArrowDropDown } from '@mui/icons-material';
 import { IconButton, InputAdornment, InputProps, styled } from '@mui/material';
 import { ChangeEvent, MouseEventHandler } from 'react';
+
 import PrintFriendlyInput from './PrintFriendlyInput';
 
 export const validation = /^(FL?)?[0-9]*$/iu;
@@ -33,7 +34,7 @@ export default function AltitudeInput({ onChange, onCopyDown, ...props }: WindIn
   function onBlurHandler() {
     let { value } = props;
     if (value.startsWith('FL')) {
-      value = `FL${value.substring(2).padStart(3, '0')}`
+      value = `FL${value.substring(2).padStart(3, '0')}`;
     }
     onChange?.(value);
   }

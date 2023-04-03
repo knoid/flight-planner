@@ -1,3 +1,3 @@
-import FlightPlanTable from "./FlightPlanTable";
+import FlightPlanTable from './FlightPlanTable';
 
 export default FlightPlanTable;

@@ -1,5 +1,6 @@
 import { IconButton, InputAdornment, styled } from '@mui/material';
 import { MouseEvent, useEffect, useState } from 'react';
+
 import * as math from '../../../../components/math';
 import { FuelUnit, State, useStore } from '../../../../components/store';
 import NumericTextField from './NumericTextField';

@@ -1,3 +1,3 @@
-import HideOnPrint from "./HideOnPrint";
+import HideOnPrint from './HideOnPrint';
 
 export default HideOnPrint;

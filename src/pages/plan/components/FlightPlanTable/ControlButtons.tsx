@@ -28,7 +28,7 @@ const UpDownButtonGroup = styled(ButtonGroup)({
   },
   '.MuiButton-root': {
     padding: 0,
-  }
+  },
 });
 
 export default function ControlButtons({
@@ -44,20 +44,10 @@ export default function ControlButtons({
         <Close />
       </CloseButton>
       <UpDownButtonGroup orientation="vertical" variant="text">
-        <Button
-          aria-label="move up"
-          disabled={disableUp}
-          onClick={onMoveUp}
-          size="small"
-        >
+        <Button aria-label="move up" disabled={disableUp} onClick={onMoveUp} size="small">
           <ArrowDropUp />
         </Button>
-        <Button
-          aria-label="move down"
-          disabled={disableDown}
-          onClick={onMoveDown}
-          size="small"
-        >
+        <Button aria-label="move down" disabled={disableDown} onClick={onMoveDown} size="small">
           <ArrowDropDown />
         </Button>
       </UpDownButtonGroup>

@@ -1,4 +1,4 @@
-import { styled, TextField, BaseTextFieldProps } from '@mui/material';
+import { BaseTextFieldProps, styled, TextField } from '@mui/material';
 
 export interface TextFieldProps extends BaseTextFieldProps {
   printAlign?: 'left' | 'center' | 'right';
