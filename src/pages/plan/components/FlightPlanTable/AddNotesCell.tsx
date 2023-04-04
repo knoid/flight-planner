@@ -12,7 +12,7 @@ export default function AddNotesCell({ onClick, open }: AddNotesCellProps) {
   const Icon = open ? CommentsDisabled : InsertComment;
   return (
     <TableCell>
-      <IconButton onClick={onClick} size="small">
+      <IconButton onClick={onClick} size="small" title={open ? 'close notes' : 'open notes'}>
         <Icon />
       </IconButton>
     </TableCell>

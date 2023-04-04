@@ -1,6 +1,7 @@
 import { Input, TableRow } from '@mui/material';
 import { useEffect, useState } from 'react';
 
+import { useStore } from '../../../../components/store';
 import { TableCell } from '../Table';
 
 interface NotesRowProps {
@@ -11,6 +12,7 @@ interface NotesRowProps {
 
 export default function NotesRow({ onChange, open, value: initialValue }: NotesRowProps) {
   const [value, setValue] = useState(initialValue);
+  const { includeFrequencies } = useStore();
 
   useEffect(() => {
     onChange(value || undefined);
@@ -23,7 +25,7 @@ export default function NotesRow({ onChange, open, value: initialValue }: NotesR
   return (
     <TableRow>
       <TableCell />
-      <TableCell colSpan={17}>
+      <TableCell colSpan={14 + (includeFrequencies ? 1 : 0)}>
         <Input
           disableUnderline
           fullWidth
