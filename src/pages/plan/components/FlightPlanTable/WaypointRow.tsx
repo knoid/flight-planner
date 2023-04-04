@@ -61,9 +61,8 @@ export default function WaypointRow({
   ...commonCellsProps
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
-  const { code } = partial.leg;
   const { fuel } = useStore();
-  const airport = useWaypoint(code);
+  const airport = useWaypoint(partial.leg);
 
   const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
   function toggleNotes() {

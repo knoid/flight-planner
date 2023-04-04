@@ -21,7 +21,7 @@ interface TableRowProps {
 }
 
 export default function TableRow({ leg }: TableRowProps) {
-  const airport = useWaypoint(leg.code);
+  const airport = useWaypoint(leg);
   function frequency(key: string) {
     return airport?.frequencies.find(({ type }) => type === key)?.frequency;
   }

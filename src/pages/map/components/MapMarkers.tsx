@@ -5,7 +5,6 @@ import { useContext, useEffect } from 'react';
 import { Marker, Polyline, Popup, useMap } from 'react-leaflet';
 
 import { useLegs } from '../../../components/LegsContext';
-import * as math from '../../../components/math';
 import POIsContext from '../../../components/POIsContext';
 import { Coords } from '../../../types';
 import DivIcon from './DivIcon';
@@ -28,6 +27,13 @@ const PointOnMap = styled('div')({
 //   borderRadius: '50%',
 // });
 const AirportIcon = PointOnMap.withComponent(LocalAirportIcon);
+const WaypointIcon = styled(PointOnMap)({
+  borderBottom: '10px solid black',
+  borderLeft: '5px solid transparent',
+  borderRight: '5px solid transparent',
+  height: 0,
+  width: 0,
+});
 const WaypointNumber = PointOnMap.withComponent(Paper);
 
 export default function MapMarkers() {
@@ -56,12 +62,10 @@ export default function MapMarkers() {
     <>
       <Polyline positions={points} />
       {options
-        .filter((poi) => poi.type === 'airport')
+        .filter((poi) => poi.type === 'airport' || poi.type === 'waypoint')
         .map((poi) => (
           <Marker key={poi.identifiers.local} position={poi.coordinates}>
-            <DivIcon>
-              <AirportIcon />
-            </DivIcon>
+            <DivIcon>{poi.type === 'airport' ? <AirportIcon /> : <WaypointIcon />}</DivIcon>
             <Popup>{poi.identifiers.local}</Popup>
           </Marker>
         ))}
