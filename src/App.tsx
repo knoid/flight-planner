@@ -2,6 +2,7 @@ import { createTheme, CssBaseline, LinkProps, ThemeProvider } from '@mui/materia
 import { AnchorHTMLAttributes, ForwardedRef, forwardRef } from 'react';
 import { createBrowserRouter, Link as ReactRouterLink, RouterProvider } from 'react-router-dom';
 
+import FeedbackLink from './components/FeedbackLink';
 import { LegsProvider } from './components/LegsContext';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
@@ -39,6 +40,7 @@ export default function App() {
         <LegsProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+            <FeedbackLink />
             <RouterProvider router={router} />
           </ThemeProvider>
         </LegsProvider>
