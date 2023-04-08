@@ -90,7 +90,7 @@ export function CommonCells({
   const { poi } = partial.leg;
   let googleMapsUrl;
   if (poi) {
-    const coordinates = poi.coordinates.map(math.toDegrees).join(',');
+    const coordinates = poi.coordinates.join(',');
     if (poi.type === 'airport') {
       // https://developers.google.com/maps/documentation/urls/get-started#map-action
       const qs = new URLSearchParams({
