@@ -47,8 +47,7 @@ describe('CommonCells', () => {
               disableDown
               disableUp
               index={1}
-              onMoveDown={noop}
-              onMoveUp={noop}
+              onMoveLeg={noop}
               onRemove={noop}
               partial={partial}
             />

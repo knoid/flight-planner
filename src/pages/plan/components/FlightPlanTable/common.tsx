@@ -1,5 +1,6 @@
 import { Map } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
+import { useCallback } from 'react';
 import { LocalizedString } from 'typesafe-i18n';
 
 import * as math from '../../../../components/math';
@@ -79,9 +80,8 @@ export interface CommonCellsProps {
   disableDown: boolean;
   disableUp: boolean;
   index: number;
-  onMoveDown: () => void;
-  onMoveUp: () => void;
-  onRemove: () => void;
+  onMoveLeg: (direction: number, index: number) => void;
+  onRemove: (index: number) => void;
   partial: Partial;
 }
 
@@ -90,9 +90,8 @@ export function CommonCells({
   disableDown,
   disableUp,
   index,
-  onMoveDown,
-  onMoveUp,
-  onRemove,
+  onMoveLeg,
+  onRemove: onRemoveProp,
   partial,
 }: CommonCellsProps) {
   const { LL } = useI18nContext();
@@ -123,6 +122,11 @@ export function CommonCells({
       googleMapsUrl = `https://www.google.com/maps/search/?${qs.toString()}`;
     }
   }
+
+  const onMoveDown = useCallback(() => onMoveLeg(+1, index), [index]);
+  const onMoveUp = useCallback(() => onMoveLeg(-1, index), [index]);
+  const onRemove = useCallback(() => onRemoveProp(index), [index]);
+
   return (
     <>
       <TableCell align="right" padding="none">

@@ -192,14 +192,13 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             hasAltitude={hasAltitude}
             index={index}
             key={partial.leg.key}
-            onAltitudeChange={onAltitudeChange.bind(null, index)}
-            onAltitudeCopyDown={onAltitudeCopyDown.bind(null, index)}
-            onMoveDown={moveLeg.bind(null, 1, index)}
-            onMoveUp={moveLeg.bind(null, -1, index)}
-            onNotesChange={onNotesChange.bind(null, index)}
-            onRemove={removeLeg.bind(null, index)}
-            onWindChange={onWindChange.bind(null, index)}
-            onWindCopyDown={onWindCopyDown.bind(null, index)}
+            onAltitudeChange={onAltitudeChange}
+            onAltitudeCopyDown={onAltitudeCopyDown}
+            onMoveLeg={moveLeg}
+            onNotesChange={onNotesChange}
+            onRemove={removeLeg}
+            onWindChange={onWindChange}
+            onWindCopyDown={onWindCopyDown}
             partial={partial}
           />
         ))}

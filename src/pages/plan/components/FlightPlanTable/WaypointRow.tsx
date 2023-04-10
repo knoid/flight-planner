@@ -1,5 +1,5 @@
 import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import * as math from '../../../../components/math';
 import { useStore } from '../../../../components/store';
@@ -44,20 +44,20 @@ function formatTime(date: Date) {
 
 interface TableRowProps extends Omit<CommonCellsProps, 'airport'> {
   hasAltitude?: boolean;
-  onAltitudeChange: (value: string) => void;
-  onAltitudeCopyDown: () => void;
-  onNotesChange: (value?: string) => void;
-  onWindChange: (value: string) => void;
-  onWindCopyDown: () => void;
+  onAltitudeChange: (index: number, value: string) => void;
+  onAltitudeCopyDown: (index: number) => void;
+  onNotesChange: (index: number, value?: string) => void;
+  onWindChange: (index: number, value: string) => void;
+  onWindCopyDown: (index: number) => void;
 }
 
 export default function WaypointRow({
   hasAltitude,
-  onAltitudeChange,
-  onAltitudeCopyDown,
-  onNotesChange,
-  onWindChange,
-  onWindCopyDown,
+  onAltitudeChange: onAltitudeChangeProp,
+  onAltitudeCopyDown: onAltitudeCopyDownProp,
+  onNotesChange: onNotesChangeProp,
+  onWindChange: onWindChangeProp,
+  onWindCopyDown: onWindCopyDownProp,
   ...commonCellsProps
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
@@ -68,6 +68,15 @@ export default function WaypointRow({
   function toggleNotes() {
     setOpen((open) => !open);
   }
+
+  const onAltitudeChange = useCallback(
+    (value: string) => onAltitudeChangeProp(index, value),
+    [index],
+  );
+  const onAltitudeCopyDown = useCallback(() => onAltitudeCopyDownProp(index), [index]);
+  const onNotesChange = useCallback((value?: string) => onNotesChangeProp(index, value), [index]);
+  const onWindChange = useCallback((value: string) => onWindChangeProp(index, value), [index]);
+  const onWindCopyDown = useCallback(() => onWindCopyDownProp(index), [index]);
 
   if (index > 0) {
     const hasRem = partial.remainingFuel !== -1;
