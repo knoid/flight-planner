@@ -1,6 +1,7 @@
 import { Feedback as FeedbackIcon } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
 
+import { useI18nContext } from '../i18n/i18n-react';
 import HideOnPrint from '../pages/plan/components/HideOnPrint';
 
 const FeedbackPosition = styled(HideOnPrint)({
@@ -11,6 +12,7 @@ const FeedbackPosition = styled(HideOnPrint)({
 });
 
 export default function FeedbackLink() {
+  const { LL } = useI18nContext();
   return (
     <FeedbackPosition>
       <IconButton
@@ -18,7 +20,7 @@ export default function FeedbackLink() {
         LinkComponent="a"
         rel="noopener nofollow"
         target="_blank"
-        title="leave a comment"
+        title={LL.leaveFeedback()}
       >
         <FeedbackIcon />
       </IconButton>

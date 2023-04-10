@@ -2,6 +2,7 @@ import { Input, TableRow } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 import { useStore } from '../../../../components/store';
+import { useI18nContext } from '../../../../i18n/i18n-react';
 import { TableCell } from '../Table';
 
 interface NotesRowProps {
@@ -11,6 +12,7 @@ interface NotesRowProps {
 }
 
 export default function NotesRow({ onChange, open, value: initialValue }: NotesRowProps) {
+  const { LL } = useI18nContext();
   const [value, setValue] = useState(initialValue);
   const { includeFrequencies } = useStore();
 
@@ -30,7 +32,7 @@ export default function NotesRow({ onChange, open, value: initialValue }: NotesR
           disableUnderline
           fullWidth
           onChange={(event) => setValue(event.currentTarget.value)}
-          placeholder="Notes…"
+          placeholder={LL.notes_placeholder()}
           size="small"
           value={value}
         />

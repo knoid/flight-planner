@@ -1,5 +1,6 @@
 import { lighten, Link, styled } from '@mui/material';
 
+import { useI18nContext } from '../../i18n/i18n-react';
 import AirportsTable from './components/AirportsTable';
 import FlightPlanTable from './components/FlightPlanTable';
 import HideOnPrint from './components/HideOnPrint';
@@ -46,6 +47,7 @@ const Fieldset = styled(Section)(({ theme }) => ({
 }));
 
 export const Component = function PlanPage() {
+  const { LL } = useI18nContext();
   return (
     <>
       <HideOnPrint component="header">
@@ -66,9 +68,9 @@ export const Component = function PlanPage() {
         <Metadata />
         <Fieldset>
           <CruiseSpeedInput />
-          <FuelTextField label="Fuel Capacity" name="capacity" />
-          <FuelTextField label="Fuel Reserve" name="reserve" />
-          <FuelTextField label="Fuel Flow" name="flow" />
+          <FuelTextField label={LL.fuelCapacity()} name="capacity" />
+          <FuelTextField label={LL.fuelReserve()} name="reserve" />
+          <FuelTextField label={LL.fuelFlow()} name="flow" />
         </Fieldset>
         <Section>
           <FlightPlanTable wmm={wmm} />
