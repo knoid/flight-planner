@@ -1,11 +1,15 @@
 import { createTheme, CssBaseline, LinkProps, ThemeProvider } from '@mui/material';
-import { AnchorHTMLAttributes, ForwardedRef, forwardRef } from 'react';
+import { AnchorHTMLAttributes, ForwardedRef, forwardRef, useEffect } from 'react';
 import { createBrowserRouter, Link as ReactRouterLink, RouterProvider } from 'react-router-dom';
+import { navigatorDetector } from 'typesafe-i18n/detectors';
 
 import FeedbackLink from './components/FeedbackLink';
 import { LegsProvider } from './components/LegsContext';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
+import TypesafeI18n from './i18n/i18n-react';
+import { detectLocale } from './i18n/i18n-util';
+import { loadLocale } from './i18n/i18n-util.sync';
 
 const router = createBrowserRouter(
   [
@@ -34,14 +38,24 @@ const theme = createTheme({
 });
 
 export default function App() {
+  const locale = detectLocale(navigatorDetector);
+  loadLocale(locale);
+
+  useEffect(() => {
+    const [htmlElement] = document.getElementsByTagName('html');
+    htmlElement.lang = locale;
+  }, [locale]);
+
   return (
     <StoreProvider>
       <POIsProvider>
         <LegsProvider>
           <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <FeedbackLink />
-            <RouterProvider router={router} />
+            <TypesafeI18n locale={locale}>
+              <CssBaseline />
+              <FeedbackLink />
+              <RouterProvider router={router} />
+            </TypesafeI18n>
           </ThemeProvider>
         </LegsProvider>
       </POIsProvider>

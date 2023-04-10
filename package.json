@@ -22,6 +22,7 @@
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.10.0",
+    "typesafe-i18n": "^5.24.3",
     "web-vitals": "^3.3.0"
   },
   "devDependencies": {
@@ -37,6 +38,7 @@
     "husky": "^8.0.3",
     "jsdom": "^21.1.1",
     "lint-staged": "^13.2.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^5.0.3",
     "vite": "^4.2.1",
     "vitest": "^0.29.8"
@@ -44,13 +46,15 @@
   "scripts": {
     "build": "tsc && vite build && cp dist/index.html dist/404.html",
     "coverage": "vitest run --coverage",
+    "dev": "vite",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier --loglevel warn --write \"./**/*.{ts,tsx,css,md,json}\"",
     "lint": "npm run lint:format && npm run lint:fix",
+    "prepare": "husky install",
     "serve": "vite preview",
-    "start": "vite",
+    "start": "npm-run-all --parallel dev typesafe-i18n",
     "test": "vitest",
-    "prepare": "husky install"
+    "typesafe-i18n": "typesafe-i18n"
   },
   "eslintConfig": {
     "extends": [

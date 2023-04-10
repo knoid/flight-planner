@@ -1,8 +1,10 @@
 import { Map } from '@mui/icons-material';
 import { IconButton, styled } from '@mui/material';
+import { LocalizedString } from 'typesafe-i18n';
 
 import * as math from '../../../../components/math';
 import { useStore } from '../../../../components/store';
+import { useI18nContext } from '../../../../i18n/i18n-react';
 import HideOnPrint from '../HideOnPrint';
 import { TableCell } from '../Table';
 import ControlButtons from './ControlButtons';
@@ -20,6 +22,17 @@ export function formatDistance(distance: number) {
 export function formatDuration(hours: number) {
   const minutes = hours * 60;
   return `${Math.floor(minutes / 60)}:${pad2(Math.round(minutes % 60))}`;
+}
+
+function translateCardinalDirections(
+  translations: Record<'N' | 'E' | 'S' | 'W', () => LocalizedString>,
+  value: string,
+) {
+  return value
+    .replaceAll('N', translations['N'])
+    .replaceAll('E', translations['E'])
+    .replaceAll('S', translations['S'])
+    .replaceAll('W', translations['W']);
 }
 
 const Grid = styled('div')({
@@ -82,6 +95,7 @@ export function CommonCells({
   onRemove,
   partial,
 }: CommonCellsProps) {
+  const { LL } = useI18nContext();
   const { includeFrequencies } = useStore();
   const frequencies = (airport?.frequencies || []).sort(({ type: a }, { type: b }) =>
     b.localeCompare(a),
@@ -134,7 +148,10 @@ export function CommonCells({
             </TableCell>
           )}
           <NoWrapTableCell align="center">
-            {ref && Math.round(ref.distance) + ' ' + ref.direction}
+            {ref &&
+              Math.round(ref.distance) +
+                ' ' +
+                translateCardinalDirections(LL.cardinalDirections, ref.direction)}
             {googleMapsUrl && (
               <HideOnPrint component="span">
                 <IconButton

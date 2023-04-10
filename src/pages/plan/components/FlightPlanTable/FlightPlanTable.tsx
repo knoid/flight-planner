@@ -13,6 +13,7 @@ import { useLegs } from '../../../../components/LegsContext';
 import * as math from '../../../../components/math';
 import { POI } from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
+import { useI18nContext } from '../../../../i18n/i18n-react';
 import { WorldMagneticModel } from '../../WorldMagneticModel';
 import HideOnPrint from '../HideOnPrint';
 import POIInput from '../POIInput';
@@ -45,6 +46,7 @@ interface FlightPlanTableProps {
 }
 
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
+  const { LL } = useI18nContext();
   const {
     cruiseSpeed,
     fuel,
@@ -138,13 +140,13 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
                     size="small"
                   />
                 }
-                label="Include frequencies"
+                label={LL.includeFrequencies()}
               />
             </HideOnPrint>
           </TableCell>
           <TableCell hideInPrint={!hasAltitude} />
           <TableCell align="center" colSpan={2}>
-            Fuel
+            {LL.fuel()}
           </TableCell>
           <TableCell />
         </TableRow>
@@ -152,15 +154,21 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           <TableCell />
           <TableCell>#</TableCell>
           <TableCell>POI</TableCell>
-          {includeFrequencies && <TableCell align="center">Freq.</TableCell>}
+          {includeFrequencies && (
+            <TableCell align="center" title={LL.frequencies()}>
+              {LL.frequencies_abbr()}
+            </TableCell>
+          )}
           <TableCell align="center">Aero</TableCell>
-          <TableCell title="Distance [nm]">Dist.</TableCell>
-          <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
-            Altitude
+          <TableCell title={`${LL.distance()} [${LL.nauticalMiles_unit()}]`}>
+            {LL.distance_abbr()}
           </TableCell>
-          <TableCell>Course</TableCell>
-          <TableCell id="wind-label" title="Wind speed and direction [dir/speed]">
-            Wind
+          <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
+            {LL.altitude()}
+          </TableCell>
+          <TableCell>{LL.course()}</TableCell>
+          <TableCell id="wind-label" title={LL.wind_help()}>
+            {LL.wind()}
           </TableCell>
           <TableCell title="Heading">HD</TableCell>
           <TableCell title="Ground Speed [kt]">GS</TableCell>
@@ -200,12 +208,12 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
         <TableRow>
           <TableCell />
           <TotalsTableCell align="right" colSpan={2}>
-            Totals:
+            {LL.totals()}:
           </TotalsTableCell>
           <TableCell colSpan={1 + intIncludeFrequencies} />
           <TableCell align="right">
             {formatDistance(totalTripDistance)}
-            <Unit>nm</Unit>
+            <Unit>{LL.nauticalMiles_unit()}</Unit>
           </TableCell>
           <TableCell hideInPrint={!hasAltitude} />
           <TableCell colSpan={4} />
@@ -224,7 +232,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
         <HideOnPrint component={TableRow}>
           <TableCell />
           <TableCell align="right" colSpan={2}>
-            Add new
+            {LL.addNew()}
           </TableCell>
           <TableCell colSpan={4 + intIncludeFrequencies}>
             <POIInput onChange={onChange} />

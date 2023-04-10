@@ -11,6 +11,7 @@ import {
 import { MouseEvent, SyntheticEvent, useContext, useState } from 'react';
 
 import POIsContext, { POI } from '../../../components/POIsContext';
+import { useI18nContext } from '../../../i18n/i18n-react';
 
 function normalize(value: string) {
   return value
@@ -47,6 +48,7 @@ interface POIInputProps {
 }
 
 export default function POIInput({ onChange }: POIInputProps) {
+  const { LL } = useI18nContext();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
 
@@ -78,7 +80,7 @@ export default function POIInput({ onChange }: POIInputProps) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Search POIs"
+          label={LL.searchPOI()}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
