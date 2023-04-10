@@ -18,9 +18,10 @@ export default function useWaypoint({ code, poi }: Leg) {
       if (poi?.type === 'airport' || poi?.type === 'helipad') {
         const moreData = await cachedFetch(`local/AR/${code}.json`);
 
-        if (active) {
-          if (isOK(moreData)) {
-            setData(await moreData.json());
+        if (isOK(moreData)) {
+          const data = await moreData.json();
+          if (active) {
+            setData(data);
           }
         }
       }
@@ -29,7 +30,7 @@ export default function useWaypoint({ code, poi }: Leg) {
     return () => {
       active = false;
     };
-  }, [code]);
+  }, [code, poi?.type]);
 
   return data;
 }
