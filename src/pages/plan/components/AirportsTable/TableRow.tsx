@@ -1,4 +1,4 @@
-import { styled, TableRow as MuiTableRow } from '@mui/material';
+import { Box, styled, TableRow as MuiTableRow } from '@mui/material';
 
 import { Leg } from '../../../../components/LegsContext';
 import { TableCell } from '../Table';
@@ -34,7 +34,13 @@ export default function TableRow({ leg }: TableRowProps) {
     <MuiTableRow>
       <TableCell />
       <TableCell align="center">{leg.code}</TableCell>
-      <TableCell />
+      <TableCell align="center">
+        {airport?.runways.map((runway) => (
+          <Box component="span" key={runway.orientations[0]} marginX={0.5}>
+            {runway.orientations.join('/')}
+          </Box>
+        ))}
+      </TableCell>
       <Frequency>{frequency('TWR') || frequency('COM')}</Frequency>
       <Frequency>{frequency('GND')}</Frequency>
       <Frequency>{frequency('CLRD')}</Frequency>

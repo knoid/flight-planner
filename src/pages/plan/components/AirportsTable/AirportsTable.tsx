@@ -15,7 +15,7 @@ export function AirportsTable() {
         <MuiTableRow>
           <TableCell />
           <TableCell>{LL.airport()}</TableCell>
-          <TableCell>{LL.runways()}</TableCell>
+          <TableCell align="center">{LL.runways()}</TableCell>
           <TableCell align="center">TWR</TableCell>
           <TableCell align="center">GND</TableCell>
           <TableCell align="center">CLRD</TableCell>
