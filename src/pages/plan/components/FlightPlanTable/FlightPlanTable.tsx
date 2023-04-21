@@ -92,11 +92,13 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
 
   function onCopyDownHandler(key: 'altitude' | 'wind') {
     return function onCopyDown(index: number) {
-      const value = legs[index][key];
-      setLegs((legs) => [
-        ...legs.slice(0, index + 1),
-        ...legs.slice(index + 1).map((leg) => ({ ...leg, [key]: value })),
-      ]);
+      setLegs((legs) => {
+        const value = legs[index][key];
+        return [
+          ...legs.slice(0, index + 1),
+          ...legs.slice(index + 1).map((leg) => ({ ...leg, [key]: value })),
+        ];
+      });
     };
   }
 
