@@ -73,6 +73,15 @@ export function useStore() {
     [setState],
   );
 
+  const toggleReminderOnMap = useCallback(
+    () =>
+      setState(({ showReminderOnMap, ...state }) => ({
+        ...state,
+        showReminderOnMap: !showReminderOnMap,
+      })),
+    [setState],
+  );
+
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(state));
   }, [state]);
@@ -85,6 +94,7 @@ export function useStore() {
       setLegs,
       setMetadata,
       setStartTime,
+      toggleReminderOnMap,
       ...state,
     }),
     [setCruiseSpeed, setFuel, setIncludeFrequencies, setLegs, setMetadata, setStartTime, state],

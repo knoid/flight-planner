@@ -4,7 +4,10 @@ import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { IconButton, Paper, styled } from '@mui/material';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
+import { useStore } from '../../components/store';
 import MapMarkers from './components/MapMarkers';
+import RemainingFuel from './components/RemainingFuel';
+import ToggleRemainingFuel from './components/ToggleRemainingFuel';
 import ZoomControls from './components/ZoomControls';
 
 const RoundPaper = styled(Paper)({
@@ -17,6 +20,7 @@ const RoundPaper = styled(Paper)({
 });
 
 export const Component = function MapPage() {
+  const { showReminderOnMap, toggleReminderOnMap } = useStore();
   return (
     <>
       <MapContainer zoomControl={false}>
@@ -25,6 +29,7 @@ export const Component = function MapPage() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapMarkers />
+        {showReminderOnMap && <RemainingFuel />}
         <ZoomControls />
       </MapContainer>
       <RoundPaper>
@@ -32,6 +37,7 @@ export const Component = function MapPage() {
           <ArrowBackIcon />
         </IconButton>
       </RoundPaper>
+      <ToggleRemainingFuel selected={showReminderOnMap} onChange={toggleReminderOnMap} />
     </>
   );
 };

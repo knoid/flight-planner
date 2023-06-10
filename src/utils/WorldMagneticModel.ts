@@ -31,7 +31,7 @@ email: w.chadwick<at>sky.com
 
 */
 
-import { Coords } from '../../types';
+import { Coords } from '../types';
 
 const a = 6378.137;
 const b = 6356.7523142;

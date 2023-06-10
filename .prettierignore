@@ -5,3 +5,4 @@ dist
 dist-ssr
 node_modules
 src/i18n/i18n-*
+*:Zone.Identifier

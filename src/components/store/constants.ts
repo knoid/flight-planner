@@ -27,6 +27,7 @@ export interface State {
   metadata: {
     [key: string]: string | undefined;
   };
+  showReminderOnMap: boolean;
   startTime: string;
   version: number;
 }
@@ -42,6 +43,7 @@ export const initialState: State = {
   includeFrequencies: true,
   legs: [],
   metadata: {},
+  showReminderOnMap: true,
   startTime: '',
   version,
 };

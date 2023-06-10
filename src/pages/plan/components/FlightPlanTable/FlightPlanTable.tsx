@@ -14,7 +14,8 @@ import * as math from '../../../../components/math';
 import { POI } from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
 import { useI18nContext } from '../../../../i18n/i18n-react';
-import { WorldMagneticModel } from '../../WorldMagneticModel';
+import timeToDate from '../../../../utils/timeToDate';
+import { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
 import HideOnPrint from '../HideOnPrint';
 import POIInput from '../POIInput';
 import Table, { TableCell, TableHead } from '../Table';
@@ -32,15 +33,6 @@ const Unit = styled('span')({
   marginLeft: '.3em',
 });
 
-function toDate(value: string) {
-  const [hours, minutes] = value.split(':');
-  const date = new Date();
-  date.setHours(+hours);
-  date.setMinutes(+minutes);
-  date.setSeconds(0);
-  return date;
-}
-
 interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
 }
@@ -56,7 +48,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   } = useStore();
   const intIncludeFrequencies = includeFrequencies ? 1 : 0;
   const [legs, setLegs] = useLegs();
-  const startTime = savedStartTime ? toDate(savedStartTime) : null;
+  const startTime = savedStartTime ? timeToDate(savedStartTime) : null;
 
   function onChange(event: SyntheticEvent, poi: POI | null) {
     if (poi) {

@@ -1,13 +1,13 @@
 import { lighten, Link, styled } from '@mui/material';
 
 import { useI18nContext } from '../../i18n/i18n-react';
+import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
 import AirportsTable from './components/AirportsTable';
 import FlightPlanTable from './components/FlightPlanTable';
 import HideOnPrint from './components/HideOnPrint';
 import Metadata from './components/Metadata';
 import CruiseSpeedInput from './components/TextFields/CruiseSpeedInput';
 import FuelTextField from './components/TextFields/FuelTextField';
-import { WorldMagneticModel } from './WorldMagneticModel';
 
 const wmm = new WorldMagneticModel();
 
