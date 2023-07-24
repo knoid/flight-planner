@@ -29,7 +29,7 @@ const LinkBehavior = forwardRef(function LinkBehavior(
 const theme = createTheme({
   components: {
     MuiLink: {
-      defaultProps: { component: LinkBehavior } as LinkProps,
+      defaultProps: { component: LinkBehavior },
     },
     MuiButtonBase: {
       defaultProps: { LinkComponent: LinkBehavior },
