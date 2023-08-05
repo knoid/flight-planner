@@ -1,4 +1,4 @@
-import { createTheme, CssBaseline, LinkProps, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { AnchorHTMLAttributes, ForwardedRef, forwardRef, useEffect } from 'react';
 import { createBrowserRouter, Link as ReactRouterLink, RouterProvider } from 'react-router-dom';
 import { navigatorDetector } from 'typesafe-i18n/detectors';
