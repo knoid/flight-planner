@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
+import fetchNOTAMs from './fetchNOTAMs';
+
 interface NotamContextProps {
   identifiers: string[];
   state: 'loading' | 'success' | 'error';
@@ -16,10 +18,9 @@ export function NotamProvider({ children }: NotamProviderProps) {
   const [state, setState] = useState(initialState);
 
   useEffect(() => {
-    fetch('http://ais.anac.gov.ar/notam')
-      .then((res) => res.text())
+    fetchNOTAMs()
       .then((text) => {
-        const matches = text.matchAll(/<option value="([A-Z]{3})"/g);
+        const matches = text.matchAll(/<option value="([A-Z]{3})"/gi);
         setState({
           identifiers: Array.from(matches).map(([, identifier]) => identifier),
           state: 'success',
@@ -33,5 +34,5 @@ export function NotamProvider({ children }: NotamProviderProps) {
 
 export function useNotam(identifier: string) {
   const { identifiers, state } = useContext(NotamContext);
-  return { hasNotam: identifiers.includes(identifier), state };
+  return { hasNOTAM: identifiers.includes(identifier), state };
 }
