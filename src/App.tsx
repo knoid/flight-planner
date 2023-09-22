@@ -5,6 +5,7 @@ import { navigatorDetector } from 'typesafe-i18n/detectors';
 
 import FeedbackLink from './components/FeedbackLink';
 import { LegsProvider } from './components/LegsContext';
+import { NotamProvider } from './components/Notam';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
 import TypesafeI18n from './i18n/i18n-react';
@@ -48,17 +49,19 @@ export default function App() {
 
   return (
     <StoreProvider>
-      <POIsProvider>
-        <LegsProvider>
-          <ThemeProvider theme={theme}>
-            <TypesafeI18n locale={locale}>
-              <CssBaseline />
-              <FeedbackLink />
-              <RouterProvider router={router} />
-            </TypesafeI18n>
-          </ThemeProvider>
-        </LegsProvider>
-      </POIsProvider>
+      <NotamProvider>
+        <POIsProvider>
+          <LegsProvider>
+            <ThemeProvider theme={theme}>
+              <TypesafeI18n locale={locale}>
+                <CssBaseline />
+                <FeedbackLink />
+                <RouterProvider router={router} />
+              </TypesafeI18n>
+            </ThemeProvider>
+          </LegsProvider>
+        </POIsProvider>
+      </NotamProvider>
     </StoreProvider>
   );
 }
