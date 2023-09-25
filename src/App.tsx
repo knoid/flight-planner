@@ -1,9 +1,14 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { AnchorHTMLAttributes, ForwardedRef, forwardRef, useEffect } from 'react';
-import { createBrowserRouter, Link as ReactRouterLink, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Link as ReactRouterLink,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
 import { navigatorDetector } from 'typesafe-i18n/detectors';
 
-import FeedbackLink from './components/FeedbackLink';
+import Layout from './components/Layout';
 import { LegsProvider } from './components/LegsContext';
 import { NotamProvider } from './components/Notam';
 import { POIsProvider } from './components/POIsContext';
@@ -14,8 +19,15 @@ import { loadLocale } from './i18n/i18n-util.sync';
 
 const router = createBrowserRouter(
   [
-    { lazy: () => import('./pages/plan'), path: '/' },
-    { lazy: () => import('./pages/map'), path: '/map' },
+    {
+      Component: Layout,
+      children: [
+        { lazy: () => import('./pages/map'), path: '/map' },
+        { lazy: () => import('./pages/plan'), path: '/plan' },
+        { lazy: () => import('./pages/plane'), path: '/plane' },
+        { Component: () => <Navigate to="/map" replace={true} />, path: '/' },
+      ],
+    },
   ],
   { basename: '/flight-planner' },
 );
@@ -55,7 +67,6 @@ export default function App() {
             <ThemeProvider theme={theme}>
               <TypesafeI18n locale={locale}>
                 <CssBaseline />
-                <FeedbackLink />
                 <RouterProvider router={router} />
               </TypesafeI18n>
             </ThemeProvider>

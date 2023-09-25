@@ -9,6 +9,7 @@ import {
 import { nanoid } from 'nanoid';
 import { SyntheticEvent } from 'react';
 
+import fuelUnits from '../../../../components/fuelUnits';
 import { useLegs } from '../../../../components/LegsContext';
 import * as math from '../../../../components/math';
 import { POI } from '../../../../components/POIsContext';
@@ -19,7 +20,6 @@ import { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
 import HideOnPrint from '../HideOnPrint';
 import POIInput from '../POIInput';
 import Table, { TableCell, TableHead } from '../Table';
-import { fuelUnits } from '../TextFields/FuelTextField';
 import { formatDistance, formatDuration } from './common';
 import legsToPartials from './legsToPartials';
 import WaypointRow from './WaypointRow';

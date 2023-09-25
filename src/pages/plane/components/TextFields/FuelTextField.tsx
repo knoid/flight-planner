@@ -1,8 +1,9 @@
 import { IconButton, InputAdornment, styled } from '@mui/material';
 import { MouseEvent, useEffect, useState } from 'react';
 
+import fuelUnits from '../../../../components/fuelUnits';
 import * as math from '../../../../components/math';
-import { FuelUnit, State, useStore } from '../../../../components/store';
+import { State, useStore } from '../../../../components/store';
 import NumericTextField from './NumericTextField';
 
 const UnitCycleButton = styled(IconButton)({
@@ -11,12 +12,6 @@ const UnitCycleButton = styled(IconButton)({
     fontSize: 'inherit',
   },
 });
-
-export const fuelUnits = new Map<FuelUnit, string>([
-  [FuelUnit.GallonUS, 'gal'],
-  [FuelUnit.Liter, 'lts'],
-  [FuelUnit.Pound, 'lbs'],
-]);
 
 interface FuelTextFieldProps {
   label: string;

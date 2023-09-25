@@ -73,6 +73,10 @@ type RootTranslation = {
 	 */
 	distance: string
 	/**
+	 * F​l​i​g​h​t​ ​P​l​a​n
+	 */
+	flightPlan: string
+	/**
 	 * F​r​e​q​.
 	 */
 	frequencies_abbr: string
@@ -105,6 +109,10 @@ type RootTranslation = {
 	 */
 	leaveFeedback: string
 	/**
+	 * M​a​p
+	 */
+	map: string
+	/**
 	 * n​m
 	 */
 	nauticalMiles_unit: string
@@ -116,6 +124,10 @@ type RootTranslation = {
 	 * o​p​e​n​ ​n​o​t​e​s
 	 */
 	openNotes: string
+	/**
+	 * P​l​a​n​e
+	 */
+	plane: string
 	/**
 	 * R​u​n​w​a​y​s
 	 */
@@ -202,6 +214,10 @@ export type TranslationFunctions = {
 	 */
 	distance: () => LocalizedString
 	/**
+	 * Flight Plan
+	 */
+	flightPlan: () => LocalizedString
+	/**
 	 * Freq.
 	 */
 	frequencies_abbr: () => LocalizedString
@@ -234,6 +250,10 @@ export type TranslationFunctions = {
 	 */
 	leaveFeedback: () => LocalizedString
 	/**
+	 * Map
+	 */
+	map: () => LocalizedString
+	/**
 	 * nm
 	 */
 	nauticalMiles_unit: () => LocalizedString
@@ -245,6 +265,10 @@ export type TranslationFunctions = {
 	 * open notes
 	 */
 	openNotes: () => LocalizedString
+	/**
+	 * Plane
+	 */
+	plane: () => LocalizedString
 	/**
 	 * Runways
 	 */

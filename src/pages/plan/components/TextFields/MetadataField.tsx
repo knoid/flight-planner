@@ -1,21 +1,10 @@
-import { styled } from '@mui/material';
+import { BaseTextFieldProps } from '@mui/material';
 import { ChangeEvent } from 'react';
 
 import { useStore } from '../../../../components/store';
-import TextField, { TextFieldProps } from './TextField';
+import TextField from '../../../../components/TextField';
 
-const StyledMetadataField = styled(TextField)<TextFieldProps>({
-  '@media print': {
-    '.MuiFormLabel-root': {
-      display: 'none',
-    },
-    '.MuiOutlinedInput-notchedOutline': {
-      borderWidth: 0,
-    },
-  },
-});
-
-export default function MetadataField({ name, ...props }: TextFieldProps) {
+export default function MetadataField({ name, ...props }: BaseTextFieldProps) {
   const { metadata, setMetadata } = useStore();
 
   function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -25,11 +14,6 @@ export default function MetadataField({ name, ...props }: TextFieldProps) {
   }
 
   return (
-    <StyledMetadataField
-      name={name}
-      onChange={onChange}
-      {...props}
-      value={name && (metadata[name] || '')}
-    />
+    <TextField name={name} onChange={onChange} {...props} value={name && (metadata[name] || '')} />
   );
 }
