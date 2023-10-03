@@ -1,14 +1,12 @@
-import { Map as MapIcon } from '@mui/icons-material';
 import {
   Autocomplete,
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
   CircularProgress,
-  IconButton,
   InputAdornment,
   TextField,
 } from '@mui/material';
-import { MouseEvent, SyntheticEvent, useContext, useState } from 'react';
+import { SyntheticEvent, useContext, useState } from 'react';
 
 import POIsContext, { POI } from '../../../components/POIsContext';
 import { useI18nContext } from '../../../i18n/i18n-react';
@@ -32,10 +30,6 @@ function getOptionLabel(option: POI) {
     case 'waypoint':
       return Object.values(option.identifiers).join('/');
   }
-}
-
-function handleOnClick(event: MouseEvent<HTMLElement>) {
-  event.stopPropagation();
 }
 
 interface POIInputProps {
@@ -85,13 +79,7 @@ export default function POIInput({ onChange }: POIInputProps) {
             ...params.InputProps,
             endAdornment: (
               <InputAdornment position="end">
-                {loading ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : (
-                  <IconButton onClick={handleOnClick} size="small" href="map">
-                    <MapIcon />
-                  </IconButton>
-                )}
+                {loading && <CircularProgress color="inherit" size={20} />}
                 {params.InputProps.endAdornment}
               </InputAdornment>
             ),
