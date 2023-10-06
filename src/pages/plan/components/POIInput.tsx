@@ -3,33 +3,22 @@ import {
   AutocompleteChangeDetails,
   AutocompleteChangeReason,
   CircularProgress,
+  FilterOptionsState,
   InputAdornment,
   TextField,
 } from '@mui/material';
-import { SyntheticEvent, useContext, useState } from 'react';
+import { SyntheticEvent, useContext, useEffect, useMemo, useState } from 'react';
 
-import POIsContext, { POI } from '../../../components/POIsContext';
+import { POI } from '../../../components/openAIP';
+import POIsContext from '../../../components/POIsContext';
 import { useI18nContext } from '../../../i18n/i18n-react';
 
-function normalize(value: string) {
-  return value
-    .toLocaleLowerCase()
-    .normalize('NFKD')
-    .replace(/\p{Diacritic}/gu, '');
-}
-
-function matches(search: string, inputValue: string) {
-  return normalize(search).includes(normalize(inputValue));
+function filterOptions(options: POI[], { inputValue }: FilterOptionsState<POI>) {
+  return options.filter((option) => option.matches(inputValue));
 }
 
 function getOptionLabel(option: POI) {
-  switch (option.type) {
-    case 'airport':
-    case 'helipad':
-      return `(${Object.values(option.identifiers).join('/')}) ${option.name}`;
-    case 'waypoint':
-      return Object.values(option.identifiers).join('/');
-  }
+  return option.getLabel();
 }
 
 interface POIInputProps {
@@ -46,25 +35,23 @@ export default function POIInput({ onChange }: POIInputProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
 
-  const { loading, options } = useContext(POIsContext);
+  const { airports, loading, reportingPoints, setSearch } = useContext(POIsContext);
+  const options = useMemo(
+    () =>
+      [...airports.values(), ...reportingPoints.values()].filter(
+        <T extends POI>(poi: T | undefined): poi is T => !!poi,
+      ),
+    [airports, reportingPoints],
+  );
+  useEffect(() => setSearch(value), [value]);
 
   return (
     <Autocomplete
       autoHighlight
-      filterOptions={(options, { inputValue }) =>
-        options.filter(
-          (option) =>
-            Object.values(option.identifiers).some((identifier) =>
-              matches(identifier, inputValue),
-            ) ||
-            ((option.type === 'airport' || option.type === 'helipad') &&
-              matches(option.name, inputValue)),
-        )
-      }
+      filterOptions={filterOptions}
       getOptionLabel={getOptionLabel}
       id="poi-input"
       inputValue={value}
-      isOptionEqualToValue={(option, value) => option.identifiers.local === value.identifiers.local}
       onChange={onChange}
       onClose={() => setOpen(false)}
       onInputChange={(event, newValue, reason) => setValue(reason === 'reset' ? '' : newValue)}

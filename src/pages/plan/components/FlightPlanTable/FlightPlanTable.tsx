@@ -10,18 +10,16 @@ import { nanoid } from 'nanoid';
 import { SyntheticEvent } from 'react';
 
 import fuelUnits from '../../../../components/fuelUnits';
-import { useLegs } from '../../../../components/LegsContext';
 import * as math from '../../../../components/math';
-import { POI } from '../../../../components/POIsContext';
+import { POI } from '../../../../components/openAIP';
 import { useStore } from '../../../../components/store';
 import { useI18nContext } from '../../../../i18n/i18n-react';
-import timeToDate from '../../../../utils/timeToDate';
 import { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
 import HideOnPrint from '../HideOnPrint';
 import POIInput from '../POIInput';
 import Table, { TableCell, TableHead } from '../Table';
 import { formatDistance, formatDuration } from './common';
-import legsToPartials from './legsToPartials';
+import usePartials from './usePartials';
 import WaypointRow from './WaypointRow';
 
 const TotalsTableCell = styled(TableCell)({
@@ -39,26 +37,17 @@ interface FlightPlanTableProps {
 
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const { LL } = useI18nContext();
-  const {
-    cruiseSpeed,
-    fuel,
-    includeFrequencies,
-    startTime: savedStartTime,
-    setIncludeFrequencies,
-  } = useStore();
+  const { fuel, includeFrequencies, legs, setIncludeFrequencies, setLegs } = useStore();
   const intIncludeFrequencies = includeFrequencies ? 1 : 0;
-  const [legs, setLegs] = useLegs();
-  const startTime = savedStartTime ? timeToDate(savedStartTime) : null;
 
   function onChange(event: SyntheticEvent, poi: POI | null) {
     if (poi) {
       setLegs((legs) => [
         ...legs,
         {
+          _id: poi._id,
           altitude: '',
-          code: poi.identifiers.local,
-          key: `${poi.identifiers.local}-${nanoid()}`,
-          poi,
+          key: nanoid(),
           wind: '',
         },
       ]);
@@ -109,7 +98,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     setLegs((legs) => legs.filter((leg, position) => position !== index));
   }
 
-  const partials = legsToPartials(legs, cruiseSpeed, fuel.capacity, fuel.flow, startTime, wmm);
+  const partials = usePartials(wmm);
   const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
   const totalFuelConsumption = math.sum(
     ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0),

@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 import { initialState, State, version } from './constants';
 
 type DeepPartial<T> = T extends object
@@ -6,8 +8,8 @@ type DeepPartial<T> = T extends object
     }
   : T;
 
-type WithCode<T> = T & {
-  code: string;
+type WithID<T> = T & {
+  _id: string;
 };
 
 export default function runMigrations(data?: DeepPartial<State>): State {
@@ -17,10 +19,11 @@ export default function runMigrations(data?: DeepPartial<State>): State {
 
   const legs = (data.legs || [])
     .filter(<T>(leg: T | undefined): leg is T => !!leg)
-    .filter(<T extends { code?: string }>(leg: T): leg is WithCode<T> => !!leg.code)
-    .map(({ altitude, wind, ...leg }) => ({
+    .filter(<T extends { _id?: string }>(leg: T): leg is WithID<T> => !!leg._id)
+    .map(({ altitude, key, wind, ...leg }) => ({
       altitude: altitude || '',
       wind: wind || '',
+      key: key || nanoid(),
       ...leg,
     }));
 

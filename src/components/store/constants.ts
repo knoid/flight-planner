@@ -8,8 +8,9 @@ export enum FuelUnit {
 }
 
 export interface Leg {
+  _id: string;
   altitude: string;
-  code: string;
+  key: string;
   wind: string;
   notes?: string;
 }

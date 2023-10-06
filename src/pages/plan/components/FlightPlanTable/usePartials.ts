@@ -1,16 +1,13 @@
-import * as math from '../../../../components/math';
-import { POI } from '../../../../components/POIsContext';
-import { Coords } from '../../../../types';
-import { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
+import { useContext } from 'react';
 
-export interface Leg {
-  altitude: string;
-  code: string;
-  key: string;
-  notes?: string;
-  readonly poi?: POI;
-  wind: string;
-}
+import * as math from '../../../../components/math';
+import type { Airport, ReportingPoint } from '../../../../components/openAIP';
+import POIsContext from '../../../../components/POIsContext';
+import { useStore } from '../../../../components/store';
+import type { Leg } from '../../../../components/store/constants';
+import type { Coords } from '../../../../types';
+import timeToDate from '../../../../utils/timeToDate';
+import type { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
 
 export interface Partial {
   course: number;
@@ -31,18 +28,20 @@ const hour = 60 * 60 * 1000;
 const now = new Date();
 const yearFloat = now.getFullYear() + now.getMonth() / 12;
 
-function toRadians(coords: Coords) {
-  return coords.map(math.toRadians) as Coords;
+function toRadians(poi: Airport | ReportingPoint) {
+  return poi.geometry.coordinates.toReversed().map(math.toRadians) as Coords;
 }
 
-export default function legsToPartials(
-  legs: Leg[],
-  cruiseSpeed: number,
-  fuelCapacity: number,
-  fuelFlow: number,
-  startTime: Date | null,
-  wmm: WorldMagneticModel,
-) {
+export default function usePartials(wmm: WorldMagneticModel) {
+  const {
+    cruiseSpeed,
+    fuel: { capacity: fuelCapacity, flow: fuelFlow },
+    legs,
+    startTime: savedStartTime,
+  } = useStore();
+  const { airports, reportingPoints } = useContext(POIsContext);
+  const startTime = savedStartTime ? timeToDate(savedStartTime) : null;
+
   return legs.reduce((partials, leg) => {
     const empty = {
       course: -1,
@@ -56,17 +55,19 @@ export default function legsToPartials(
       tripFuel: 0,
     };
 
-    if (!leg.poi || partials.length === 0) {
+    const poi = airports.get(leg._id) || reportingPoints.get(leg._id);
+    if (!poi || partials.length === 0) {
       return [...partials, empty];
     }
 
     const last = partials[partials.length - 1];
-    if (!last.leg.poi) {
+    const lastPoi = airports.get(last.leg._id) || reportingPoints.get(last.leg._id);
+    if (!lastPoi) {
       return [...partials, empty];
     }
 
-    const from = toRadians(last.leg.poi.coordinates);
-    const to = toRadians(leg.poi.coordinates);
+    const from = toRadians(lastPoi);
+    const to = toRadians(poi);
     const altitudeKm = math.toKilometers(leg.altitude) || defaultAltitudeKm;
     const declination = wmm.declination(altitudeKm, to, yearFloat);
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);

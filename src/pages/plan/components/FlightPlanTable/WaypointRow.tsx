@@ -2,12 +2,12 @@ import { alpha, darken, lighten, styled, TableRow } from '@mui/material';
 import { useCallback, useState } from 'react';
 
 import * as math from '../../../../components/math';
+import { useAirport, useReportingPoint } from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
 import { TableCell } from '../Table';
 import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
-import useWaypoint from '../useWaypoint';
 import AddNotesCell from './AddNotesCell';
 import { CommonCells, CommonCellsProps, formatDistance, formatDuration, pad2 } from './common';
 import NotesRow from './NotesRow';
@@ -42,7 +42,7 @@ function formatTime(date: Date) {
   return `${hours}:${minutes}`;
 }
 
-interface TableRowProps extends Omit<CommonCellsProps, 'airport'> {
+interface TableRowProps extends Omit<CommonCellsProps, 'poi'> {
   hasAltitude?: boolean;
   onAltitudeChange: (index: number, value: string) => void;
   onAltitudeCopyDown: (index: number) => void;
@@ -62,7 +62,8 @@ export default function WaypointRow({
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
   const { fuel } = useStore();
-  const airport = useWaypoint(partial.leg);
+  const airport = useAirport(partial.leg._id);
+  const reportingPoint = useReportingPoint(partial.leg._id);
 
   const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
   function toggleNotes() {
@@ -85,7 +86,7 @@ export default function WaypointRow({
     return (
       <>
         <TableRow>
-          <CommonCells airport={airport} {...commonCellsProps} />
+          <CommonCells poi={airport || reportingPoint} {...commonCellsProps} />
           <TableCell align="right">
             {partial.distance > 0 ? formatDistance(partial.distance) : ''}
           </TableCell>
@@ -129,7 +130,7 @@ export default function WaypointRow({
   return (
     <>
       <TableRow>
-        <CommonCells airport={airport} {...commonCellsProps} />
+        <CommonCells poi={airport} {...commonCellsProps} />
         <TableCell colSpan={6} />
         <TableCell hideInPrint={!hasAltitude} />
         <FillInCell>

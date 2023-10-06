@@ -1,7 +1,17 @@
 import { render, screen } from '@testing-library/react';
+import { nanoid } from 'nanoid';
 
-import { Airport, CommonCells } from './common';
-import { Leg, Partial } from './legsToPartials';
+import {
+  Airport,
+  AirportType,
+  Composite,
+  Condition,
+  FrequencyType,
+  FrequencyUnit,
+} from '../../../../components/openAIP';
+import { Leg } from '../../../../components/store/constants';
+import { CommonCells } from './common';
+import { Partial } from './usePartials';
 
 function noop() {
   // no op
@@ -9,23 +19,42 @@ function noop() {
 
 describe('CommonCells', () => {
   it('links to google with appropriate latitude and longitude', () => {
-    const airport = {
-      type: 'airport',
-      condition: 'public',
-      controlled: false,
-      coordinates: [-20, -30],
-      frequencies: [{ type: 'COM', frequency: 120.5 }],
-      identifiers: { local: 'TEST' },
+    const airport = Airport.fromJSON({
+      _id: nanoid(),
+      country: 'AR',
+      geometry: { type: 'Point', coordinates: [-30, -20] },
+      frequencies: [
+        { _id: nanoid(), type: FrequencyType.Multicom, unit: FrequencyUnit.MHz, value: '120.500' },
+      ],
+      altIdentifier: 'TEST',
       name: 'Test Airfield',
-      radio_helpers: [],
-      runways: [{ type: 'dirt', orientations: ['16', '34'] }],
-    } satisfies Airport;
+      type: AirportType.AirfieldCivil,
+      runways: [
+        {
+          _id: nanoid(),
+          designator: '16',
+          surface: {
+            composition: [Composite.Grass],
+            condition: Condition.Good,
+            mainComposite: Composite.Grass,
+          },
+        },
+        {
+          _id: nanoid(),
+          designator: '34',
+          surface: {
+            composition: [Composite.Grass],
+            condition: Condition.Good,
+            mainComposite: Composite.Grass,
+          },
+        },
+      ],
+    });
     const leg = {
+      _id: airport._id,
       altitude: '',
-      code: 'TEST',
       key: 'TEST-ABCD',
       wind: '',
-      poi: airport,
     } satisfies Leg;
     const partial = {
       course: Math.PI,
@@ -43,7 +72,7 @@ describe('CommonCells', () => {
         <tbody>
           <tr>
             <CommonCells
-              airport={airport}
+              poi={airport}
               disableDown
               disableUp
               index={1}

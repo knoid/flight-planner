@@ -9,7 +9,6 @@ import {
 import { navigatorDetector } from 'typesafe-i18n/detectors';
 
 import Layout from './components/Layout';
-import { LegsProvider } from './components/LegsContext';
 import { NotamProvider } from './components/Notam';
 import { POIsProvider } from './components/POIsContext';
 import { StoreProvider } from './components/store';
@@ -24,6 +23,7 @@ const router = createBrowserRouter(
       children: [
         { lazy: () => import('./pages/map'), path: '/map' },
         { lazy: () => import('./pages/plan'), path: '/plan' },
+        { lazy: () => import('./pages/plan-next'), path: '/plan-next' },
         { lazy: () => import('./pages/plane'), path: '/plane' },
         { Component: () => <Navigate to="/map" replace={true} />, path: '/' },
       ],
@@ -63,14 +63,12 @@ export default function App() {
     <StoreProvider>
       <NotamProvider>
         <POIsProvider>
-          <LegsProvider>
-            <ThemeProvider theme={theme}>
-              <TypesafeI18n locale={locale}>
-                <CssBaseline />
-                <RouterProvider router={router} />
-              </TypesafeI18n>
-            </ThemeProvider>
-          </LegsProvider>
+          <ThemeProvider theme={theme}>
+            <TypesafeI18n locale={locale}>
+              <CssBaseline />
+              <RouterProvider router={router} />
+            </TypesafeI18n>
+          </ThemeProvider>
         </POIsProvider>
       </NotamProvider>
     </StoreProvider>

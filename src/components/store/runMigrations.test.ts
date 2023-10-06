@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 import { version } from './constants';
 import runMigrations from './runMigrations';
 
@@ -9,7 +11,7 @@ test('create new empty state', () => {
 
 test('fixes legs', () => {
   const data = runMigrations({
-    legs: [{ code: 'EAP' }, {}, { code: 'GEZ', wind: '12' }, undefined],
+    legs: [{ _id: nanoid() }, {}, { _id: nanoid(), wind: '12' }, undefined],
     version: 1,
   });
   expect(data.legs).toHaveLength(2);

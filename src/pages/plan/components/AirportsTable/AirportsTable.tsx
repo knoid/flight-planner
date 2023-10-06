@@ -1,13 +1,13 @@
 import { TableBody, TableRow as MuiTableRow } from '@mui/material';
 
-import { useLegs } from '../../../../components/LegsContext';
+import { useStore } from '../../../../components/store';
 import { useI18nContext } from '../../../../i18n/i18n-react';
 import Table, { TableCell, TableHead } from '../Table';
 import TableRow from './TableRow';
 
 export function AirportsTable() {
   const { LL } = useI18nContext();
-  const [legs] = useLegs();
+  const { legs } = useStore();
 
   return (
     <Table>
@@ -18,7 +18,6 @@ export function AirportsTable() {
           <TableCell align="center">{LL.runways()}</TableCell>
           <TableCell align="center">TWR</TableCell>
           <TableCell align="center">GND</TableCell>
-          <TableCell align="center">CLRD</TableCell>
           <TableCell align="center">APP</TableCell>
           <TableCell align="center">ATIS</TableCell>
           <TableCell />
@@ -26,7 +25,7 @@ export function AirportsTable() {
       </TableHead>
       <TableBody>
         {legs.map((leg) => (
-          <TableRow key={leg.key} leg={leg} />
+          <TableRow key={leg._id} leg={leg} />
         ))}
       </TableBody>
     </Table>

@@ -1,19 +1,20 @@
 import { Box, styled, TableRow as MuiTableRow } from '@mui/material';
 
-import { Leg } from '../../../../components/LegsContext';
+import { FrequencyType } from '../../../../components/openAIP';
+import { useAirport } from '../../../../components/POIsContext';
+import type { Leg } from '../../../../components/store/constants';
 import { TableCell } from '../Table';
-import useWaypoint from '../useWaypoint';
 
 const FrequencyCell = styled(TableCell)({
   fontFamily: 'monospace',
 });
 
 interface FrequencyProps {
-  children?: number;
+  children?: string;
 }
 
 function Frequency({ children }: FrequencyProps) {
-  return <FrequencyCell>{children?.toFixed(2)}</FrequencyCell>;
+  return <FrequencyCell>{children}</FrequencyCell>;
 }
 
 interface TableRowProps {
@@ -21,31 +22,35 @@ interface TableRowProps {
 }
 
 export default function TableRow({ leg }: TableRowProps) {
-  const airport = useWaypoint(leg);
-  function frequency(key: string) {
-    return airport?.frequencies.find(({ type }) => type === key)?.frequency;
+  const airport = useAirport(leg._id);
+  function frequency(key: FrequencyType) {
+    return airport?.frequencies?.find(({ type }) => type === key)?.value;
   }
 
-  if (leg.poi?.type !== 'airport') {
+  if (!airport) {
     return null;
   }
 
   return (
     <MuiTableRow>
       <TableCell />
-      <TableCell align="center">{leg.code}</TableCell>
+      <TableCell align="center">{airport.getIdentifier()}</TableCell>
       <TableCell align="center">
-        {airport?.runways.map((runway) => (
-          <Box component="span" key={runway.orientations[0]} marginX={0.5}>
-            {runway.orientations.join('/')}
+        {airport?.runways?.map((runway) => (
+          <Box component="span" key={runway._id} marginX={0.5}>
+            {runway.designator}
           </Box>
         ))}
       </TableCell>
-      <Frequency>{frequency('TWR') || frequency('COM')}</Frequency>
-      <Frequency>{frequency('GND')}</Frequency>
-      <Frequency>{frequency('CLRD')}</Frequency>
-      <Frequency>{frequency('APP')}</Frequency>
-      <Frequency>{frequency('ATIS')}</Frequency>
+      <Frequency>
+        {frequency(FrequencyType.Tower) ||
+          frequency(FrequencyType.Multicom) ||
+          frequency(FrequencyType.Radio) ||
+          frequency(FrequencyType.Unicom)}
+      </Frequency>
+      <Frequency>{frequency(FrequencyType.Ground)}</Frequency>
+      <Frequency>{frequency(FrequencyType.Approach)}</Frequency>
+      <Frequency>{frequency(FrequencyType.ATIS)}</Frequency>
       <TableCell />
     </MuiTableRow>
   );

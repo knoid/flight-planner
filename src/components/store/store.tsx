@@ -58,7 +58,11 @@ export function useStore() {
   );
 
   const setLegs = useCallback(
-    (legs: Leg[]) => setState((state) => ({ ...state, legs })),
+    (legs: SetStateAction<Leg[]>) =>
+      setState((state) => ({
+        ...state,
+        legs: typeof legs === 'function' ? legs(state.legs) : legs,
+      })),
     [setState],
   );
 

@@ -1,4 +1,5 @@
 import { styled } from '@mui/material';
+import { ReactNode } from 'react';
 
 const Container = styled('div')({
   lineHeight: 1,
@@ -7,25 +8,20 @@ const Container = styled('div')({
 
 const Label = styled('div')({
   fontSize: '0.6em',
-  position: 'absolute',
+  // position: 'absolute',
   top: -10,
-  '@media print': { top: -5 },
-});
-const Value = styled('div')({
-  fontFamily: 'monospace',
-  transform: 'translate(0, 1px)',
 });
 
 interface LabelledProps {
+  children: ReactNode;
   type: string;
-  frequency: string;
 }
 
-export default function Labelled({ frequency, type }: LabelledProps) {
+export default function Labelled({ children, type }: LabelledProps) {
   return (
     <Container>
       <Label>{type}</Label>
-      <Value>{frequency}</Value>
+      {children}
     </Container>
   );
 }
