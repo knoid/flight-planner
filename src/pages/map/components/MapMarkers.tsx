@@ -27,7 +27,7 @@ export default function MapMarkers() {
       {[...airports.values()]
         .filter((poi): poi is Airport => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
-          <Marker key={poi._id} position={poi.latLng()}>
+          <Marker key={poi._id} position={poi.latLng()} zIndexOffset={1}>
             <DivIcon>
               <AirportIcon />
             </DivIcon>
@@ -37,7 +37,7 @@ export default function MapMarkers() {
       {[...reportingPoints.values()]
         .filter((poi): poi is ReportingPoint => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
-          <Marker key={poi._id} position={poi.latLng()}>
+          <Marker key={poi._id} position={poi.latLng()} zIndexOffset={2}>
             <DivIcon>
               <WaypointIcon />
             </DivIcon>
@@ -50,7 +50,7 @@ export default function MapMarkers() {
           return null;
         }
         return (
-          <Marker key={leg._id} position={poi.latLng()}>
+          <Marker key={leg._id} position={poi.latLng()} zIndexOffset={3}>
             <DivIcon>
               <WaypointNumber>{index + 1}</WaypointNumber>
             </DivIcon>
