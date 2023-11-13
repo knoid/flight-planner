@@ -16,9 +16,9 @@ export default function MapMarkers() {
     setLatLngBounds(map.getBounds());
   }, []);
   const points = legs
-    .map((leg) => airports.get(leg._id))
-    .filter((airport): airport is Airport => !!airport)
-    .map((airport) => airport.latLng());
+    .map((leg) => airports.get(leg._id) || reportingPoints.get(leg._id))
+    .filter((poi): poi is Airport | ReportingPoint => !!poi)
+    .map((poi) => poi.latLng());
 
   const bounds = map.getBounds();
   return (
@@ -45,7 +45,7 @@ export default function MapMarkers() {
           </Marker>
         ))}
       {legs.map((leg, index) => {
-        const poi = airports.get(leg._id);
+        const poi = airports.get(leg._id) || reportingPoints.get(leg._id);
         if (!poi) {
           return null;
         }
