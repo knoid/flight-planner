@@ -31,7 +31,7 @@ export default function MapMarkers() {
             <DivIcon>
               <AirportIcon />
             </DivIcon>
-            <Popup>{poi.name}</Popup>
+            <Popup>{poi.getIdentifier()}</Popup>
           </Marker>
         ))}
       {[...reportingPoints.values()]
@@ -41,7 +41,7 @@ export default function MapMarkers() {
             <DivIcon>
               <WaypointIcon />
             </DivIcon>
-            <Popup>{poi.name}</Popup>
+            <Popup>{poi.getIdentifier()}</Popup>
           </Marker>
         ))}
       {legs.map((leg, index) => {
@@ -54,7 +54,7 @@ export default function MapMarkers() {
             <DivIcon>
               <WaypointNumber>{index + 1}</WaypointNumber>
             </DivIcon>
-            <Popup>{poi.icaoCode || poi.iataCode || poi.altIdentifier || poi.name}</Popup>
+            <Popup>{poi.getIdentifier()}</Popup>
           </Marker>
         );
       })}
