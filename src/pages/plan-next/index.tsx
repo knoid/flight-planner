@@ -3,12 +3,15 @@ import { SyntheticEvent, useState } from 'react';
 import { useStore } from '../../components/store';
 import WaypointDetails from './components/WaypointDetails';
 
+let savedExpanded: string | false = false;
+
 export const Component = function PlanPage() {
   const { legs } = useStore();
-  const [expanded, setExpanded] = useState<string | false>(false);
+  const [expanded, setExpanded] = useState<string | false>(savedExpanded);
 
   const handleChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
+    savedExpanded = isExpanded ? panel : false;
+    setExpanded(savedExpanded);
   };
 
   return (
