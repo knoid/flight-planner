@@ -1,10 +1,11 @@
 import { useContext, useEffect } from 'react';
 import { Marker, Polyline, Popup, useMapEvent } from 'react-leaflet';
 
-import { AirportIcon, DivIcon, WaypointIcon, WaypointNumber } from '../../../components/map';
+import { AirportIcon, DivIcon, WaypointIcon } from '../../../components/map';
 import { Airport, ReportingPoint } from '../../../components/openAIP';
 import POIsContext from '../../../components/POIsContext';
 import { useStore } from '../../../components/store';
+import WaypointMarker from './WaypointMarker';
 
 export default function MapMarkers() {
   const { legs } = useStore();
@@ -44,20 +45,9 @@ export default function MapMarkers() {
             <Popup>{poi.getIdentifier()}</Popup>
           </Marker>
         ))}
-      {legs.map((leg, index) => {
-        const poi = airports.get(leg._id) || reportingPoints.get(leg._id);
-        if (!poi) {
-          return null;
-        }
-        return (
-          <Marker key={leg._id} position={poi.latLng()} zIndexOffset={3}>
-            <DivIcon>
-              <WaypointNumber>{index + 1}</WaypointNumber>
-            </DivIcon>
-            <Popup>{poi.getIdentifier()}</Popup>
-          </Marker>
-        );
-      })}
+      {legs.map((leg, index) => (
+        <WaypointMarker key={leg.key} leg={leg} index={index} zIndexOffset={3} />
+      ))}
     </>
   );
 }
