@@ -42,7 +42,7 @@
     "lint-staged": "^15.1.0",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.2.2",
-    "vite": "^4.5.1",
+    "vite": "^5.0.7",
     "vitest": "^0.34.6"
   },
   "scripts": {
@@ -58,6 +58,7 @@
     "test": "vitest",
     "typesafe-i18n": "typesafe-i18n"
   },
+  "type": "module",
   "eslintConfig": {
     "extends": [
       "react-app",
