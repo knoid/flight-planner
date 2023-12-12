@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 import * as math from '../../../../components/math';
 import { Airport, FrequencyType, ReportingPoint } from '../../../../components/openAIP';
 import { useStore } from '../../../../components/store';
+import reverse from '../../../../utils/reverse';
 import HideOnPrint from '../HideOnPrint';
 import { TableCell } from '../Table';
 import ControlButtons from './ControlButtons';
@@ -51,7 +52,7 @@ export function CommonCells({
   const { includeFrequencies } = useStore();
   let googleMapsUrl;
   if (poi) {
-    const coordinates = poi.geometry.coordinates.toReversed().join(',');
+    const coordinates = reverse(poi.geometry.coordinates).join(',');
     if (poi instanceof Airport) {
       // https://developers.google.com/maps/documentation/urls/get-started#map-action
       const qs = new URLSearchParams({

@@ -9,7 +9,7 @@ export const Component = function PlanPage() {
   const { legs } = useStore();
   const [expanded, setExpanded] = useState<string | false>(savedExpanded);
 
-  const handleChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
+  const handleChange = (panel: string) => (_event: SyntheticEvent, isExpanded: boolean) => {
     savedExpanded = isExpanded ? panel : false;
     setExpanded(savedExpanded);
   };

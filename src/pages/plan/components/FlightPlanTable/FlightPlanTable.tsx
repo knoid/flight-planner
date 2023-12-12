@@ -40,7 +40,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const { fuel, includeFrequencies, legs, setIncludeFrequencies, setLegs } = useStore();
   const intIncludeFrequencies = includeFrequencies ? 1 : 0;
 
-  function onChange(event: SyntheticEvent, poi: POI | null) {
+  function onChange(_event: SyntheticEvent, poi: POI | null) {
     if (poi) {
       setLegs((legs) => [
         ...legs,
@@ -95,7 +95,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   }
 
   function removeLeg(index: number) {
-    setLegs((legs) => legs.filter((leg, position) => position !== index));
+    setLegs((legs) => legs.filter((_leg, position) => position !== index));
   }
 
   const partials = usePartials(wmm);

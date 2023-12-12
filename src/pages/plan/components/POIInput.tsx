@@ -54,7 +54,7 @@ export default function POIInput({ onChange }: POIInputProps) {
       inputValue={value}
       onChange={onChange}
       onClose={() => setOpen(false)}
-      onInputChange={(event, newValue, reason) => setValue(reason === 'reset' ? '' : newValue)}
+      onInputChange={(_event, newValue, reason) => setValue(reason === 'reset' ? '' : newValue)}
       onOpen={() => setOpen(true)}
       open={open}
       options={options}

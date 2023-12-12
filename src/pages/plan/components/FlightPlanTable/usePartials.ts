@@ -6,6 +6,7 @@ import POIsContext from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
 import type { Leg } from '../../../../components/store/constants';
 import type { Coords } from '../../../../types';
+import reverse from '../../../../utils/reverse';
 import timeToDate from '../../../../utils/timeToDate';
 import type { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
 
@@ -29,7 +30,7 @@ const now = new Date();
 const yearFloat = now.getFullYear() + now.getMonth() / 12;
 
 function toRadians(poi: Airport | ReportingPoint) {
-  return poi.geometry.coordinates.toReversed().map(math.toRadians) as Coords;
+  return reverse(poi.geometry.coordinates).map(math.toRadians) as Coords;
 }
 
 export default function usePartials(wmm: WorldMagneticModel) {
