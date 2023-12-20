@@ -102,43 +102,14 @@ async function fetchReportingPoints({ id, latLngBounds, search }: POIFetchParams
   });
 }
 
-function isFulfilled<T>(promise: PromiseSettledResult<T>): promise is PromiseFulfilledResult<T> {
-  return promise.status === 'fulfilled';
-}
-
-function useSetNewPOI<T extends POI>(
-  fetchPOIs: ({ id }: { id: string }) => Promise<T[]>,
-): [POIMap<T>, (newPOIs: T[]) => void, Dispatch<SetStateAction<string[]>>] {
+function usePOI<T extends POI>(
+  fetchPOIs: ({ id, latLngBounds, search }: POIFetchParams) => Promise<T[]>,
+  latLngBounds?: LatLngBounds,
+  search?: string,
+): [POIMap<T>, Dispatch<SetStateAction<string[]>>, boolean] {
+  const [loading, setLoading] = useState(false);
   const [pois, setPOIs, setPOI] = usePOIMap<T>();
   const [newPOIs, setNewPOIs] = useState<string[]>([]);
-
-  const debouncedPOIs = useDebounce(newPOIs, 100);
-  useEffect(() => {
-    debouncedPOIs
-      .filter((id) => !pois.has(id))
-      .forEach((id) => {
-        fetchPOIs({ id }).then((reportingPoints) => {
-          if (reportingPoints.length > 0) {
-            setPOIs(reportingPoints);
-          } else {
-            setPOI(id);
-          }
-        });
-      });
-  }, [debouncedPOIs]);
-
-  return [pois, setPOIs, setNewPOIs];
-}
-
-export function POIsProvider({ children }: ProviderProps) {
-  const [airports, setAirports, setNewAirports] = useSetNewPOI(fetchAirports);
-  const [airspaces, setAirspaces, setNewAirspaces] = useSetNewPOI(fetchAirspaces);
-  const [reportingPoints, setReportingPoints, setNewReportingPoints] =
-    useSetNewPOI(fetchReportingPoints);
-
-  const [loading, setLoading] = useState(false);
-  const [latLngBounds, setLatLngBounds] = useState<LatLngBounds | undefined>();
-  const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
     let active = true;
@@ -146,22 +117,9 @@ export function POIsProvider({ children }: ProviderProps) {
     if (latLngBounds) {
       setLoading(true);
       (async () => {
-        const [airports, airspaces, reportingPoints] = await Promise.allSettled([
-          fetchAirports({ latLngBounds }),
-          fetchAirspaces({ latLngBounds }),
-          fetchReportingPoints({ latLngBounds }),
-        ]);
-
+        const fetchedPOIs = await fetchPOIs({ latLngBounds });
         if (active) {
-          if (isFulfilled(airports)) {
-            setAirports(airports.value);
-          }
-          if (isFulfilled(airspaces)) {
-            setAirspaces(airspaces.value);
-          }
-          if (isFulfilled(reportingPoints)) {
-            setReportingPoints(reportingPoints.value);
-          }
+          setPOIs(fetchedPOIs);
           setLoading(false);
         }
       })();
@@ -174,22 +132,49 @@ export function POIsProvider({ children }: ProviderProps) {
 
   const debouncedSearch = useDebounce(search);
   useEffect(() => {
-    if (debouncedSearch.length > 2) {
-      fetchAirports({ search: debouncedSearch }).then((result) => {
-        setAirports(result);
-      });
-      fetchReportingPoints({ search: debouncedSearch }).then((result) => {
-        setReportingPoints(result);
+    if (debouncedSearch && debouncedSearch.length > 2) {
+      fetchPOIs({ search: debouncedSearch }).then((result) => {
+        setPOIs(result);
       });
     }
   }, [debouncedSearch]);
+
+  const debouncedPOIs = useDebounce(newPOIs, 100);
+  useEffect(() => {
+    debouncedPOIs
+      .filter((id) => !pois.has(id))
+      .forEach((id) => {
+        fetchPOIs({ id }).then((fetchedPOIs) => {
+          if (fetchedPOIs.length > 0) {
+            setPOIs(fetchedPOIs);
+          } else {
+            setPOI(id);
+          }
+        });
+      });
+  }, [debouncedPOIs]);
+
+  return [pois, setNewPOIs, loading];
+}
+
+export function POIsProvider({ children }: ProviderProps) {
+  const [latLngBounds, setLatLngBounds] = useState<LatLngBounds | undefined>();
+  const [search, setSearch] = useState<string>('');
+
+  const [airports, setNewAirports, loadingAirports] = usePOI(fetchAirports, latLngBounds, search);
+  const [airspaces, setNewAirspaces, loadingAirspaces] = usePOI(fetchAirspaces, latLngBounds);
+  const [reportingPoints, setNewReportingPoints, loadingReportingPoints] = usePOI(
+    fetchReportingPoints,
+    latLngBounds,
+    search,
+  );
 
   return (
     <POIsContext.Provider
       value={{
         airports,
         airspaces,
-        loading,
+        loading: loadingAirports || loadingAirspaces || loadingReportingPoints,
         reportingPoints,
         setLatLngBounds,
         setNewAirports,
