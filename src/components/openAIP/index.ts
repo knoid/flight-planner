@@ -39,12 +39,13 @@ function fetchObjects<T>(path: string, iterator: (item: T) => T) {
 }
 
 export const fetchAirports = fetchObjects('airports', Airport.fromJSON);
-export const fetchAirspace = fetchObjects('airspaces', Airspace.fromJSON);
+export const fetchAirspaces = fetchObjects('airspaces', Airspace.fromJSON);
 export const fetchReportingPoints = fetchObjects('reporting-points', ReportingPoint.fromJSON);
 
 export {
   Airport,
   AirportType,
+  Airspace,
   Composite,
   Condition,
   FrequencyType,
