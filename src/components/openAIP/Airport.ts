@@ -73,7 +73,7 @@ export enum Condition {
 }
 
 export enum AirportType {
-  /**  civil / military */
+  /** civil / military */
   Airport,
   GliderSite,
   AirfieldCivil,

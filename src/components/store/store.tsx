@@ -1,3 +1,4 @@
+import { LatLng } from 'leaflet';
 import {
   createContext,
   Dispatch,
@@ -41,6 +42,11 @@ export function StoreProvider({ children }: StoreProviderProps) {
 export function useStore() {
   const [state, setState] = useContext(StoreContext);
 
+  const setCenter = useCallback(
+    ({ lat, lng }: LatLng) => setState((state) => ({ ...state, center: [lat, lng] })),
+    [setState],
+  );
+
   const setCruiseSpeed = useCallback(
     (cruiseSpeed: number) => setState((state) => ({ ...state, cruiseSpeed })),
     [setState],
@@ -77,6 +83,11 @@ export function useStore() {
     [setState],
   );
 
+  const setZoom = useCallback(
+    (zoom: number) => setState((state) => ({ ...state, zoom })),
+    [setState],
+  );
+
   const toggleReminderOnMap = useCallback(
     () =>
       setState(({ showReminderOnMap, ...state }) => ({
@@ -92,12 +103,14 @@ export function useStore() {
 
   return useMemo(
     () => ({
+      setCenter,
       setCruiseSpeed,
       setFuel,
       setIncludeFrequencies,
       setLegs,
       setMetadata,
       setStartTime,
+      setZoom,
       toggleReminderOnMap,
       ...state,
     }),

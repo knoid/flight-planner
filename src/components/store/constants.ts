@@ -16,6 +16,7 @@ export interface Leg {
 }
 
 export interface State {
+  center: [lat: number, lng: number];
   cruiseSpeed: number;
   fuel: {
     capacity: number;
@@ -31,9 +32,11 @@ export interface State {
   showReminderOnMap: boolean;
   startTime: string;
   version: number;
+  zoom: number;
 }
 
 export const initialState: State = {
+  center: [0, 0],
   cruiseSpeed: -1,
   fuel: {
     capacity: -1,
@@ -47,4 +50,5 @@ export const initialState: State = {
   showReminderOnMap: true,
   startTime: '',
   version,
+  zoom: 3,
 };

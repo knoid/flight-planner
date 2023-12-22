@@ -18,7 +18,7 @@ function Action(props: BottomNavigationActionOwnProps) {
 
 export default function BottomNavigation() {
   const { LL } = useI18nContext();
-  const match = useMatch('/:page');
+  const match = useMatch('/:page/*');
   return (
     <MuiBottomNavigation value={match?.params.page}>
       <Action icon={<MapIcon />} label={LL.map()} value="map" />

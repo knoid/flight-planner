@@ -21,7 +21,7 @@ const router = createBrowserRouter(
     {
       Component: Layout,
       children: [
-        { lazy: () => import('./pages/map'), path: '/map' },
+        { lazy: () => import('./pages/map'), path: '/map/*' },
         { lazy: () => import('./pages/plan'), path: '/plan' },
         { lazy: () => import('./pages/plan-next'), path: '/plan-next' },
         { lazy: () => import('./pages/plane'), path: '/plane' },

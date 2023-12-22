@@ -31,9 +31,14 @@ export default function runMigrations(data?: DeepPartial<State>): State {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { fuelCapacity, fuelFlow } = data as any;
+
+  const [lat, lng] = data.center || [];
+  const center = [lat || 0, lng || 0] as [number, number];
+
   return {
     ...initialState,
     ...data,
+    center,
     fuel: {
       ...initialState.fuel,
       ...(fuelCapacity ? { capacity: Number(fuelCapacity) } : {}),
