@@ -5,7 +5,7 @@ import Airport, {
   FrequencyType,
   FrequencyUnit,
 } from './Airport';
-import Airspace from './Airspace';
+import Airspace, { AirspaceType, Limit, LimitUnit } from './Airspace';
 import POI from './POI';
 import ReportingPoint from './ReportingPoint';
 
@@ -46,10 +46,13 @@ export {
   Airport,
   AirportType,
   Airspace,
+  AirspaceType,
   Composite,
   Condition,
   FrequencyType,
   FrequencyUnit,
+  type Limit,
+  LimitUnit,
   POI,
   ReportingPoint,
 };
