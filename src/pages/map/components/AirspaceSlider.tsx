@@ -1,22 +1,32 @@
 import { Box, Slider, SliderProps } from '@mui/material';
 
+import { linear, log } from './logScale';
+
 type AirspaceSliderProps = Pick<SliderProps, 'onChange' | 'value'>;
 
 function toFL(num: number) {
-  return `${num / 100}`.padStart(3, '0');
+  return `${Math.round(num / 100)}`.padStart(3, '0');
 }
 
-export default function AirspaceSlider(props: AirspaceSliderProps) {
+function altitudeFormat(value: number) {
+  return value >= 4000 ? `FL${toFL(value)}` : `${value}ft`;
+}
+
+export default function AirspaceSlider({ value: values, onChange }: AirspaceSliderProps) {
+  const value = values && (Array.isArray(values) ? values.map(linear) : linear(values));
   return (
     <Box bottom="12em" position="absolute" right="1em" height={300} zIndex={1000}>
       <Slider
-        max={50 * 1000}
-        min={0}
+        onChange={
+          onChange &&
+          ((event, values, activeThumb) => {
+            onChange(event, Array.isArray(values) ? values.map(log) : log(values), activeThumb);
+          })
+        }
         orientation="vertical"
-        step={500}
+        value={value}
         valueLabelDisplay="auto"
-        valueLabelFormat={(value) => (value >= 4000 ? `FL${toFL(value)}` : `${value}ft`)}
-        {...props}
+        valueLabelFormat={(value) => altitudeFormat(Math.round(log(value)))}
       />
     </Box>
   );
