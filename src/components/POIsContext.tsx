@@ -130,7 +130,7 @@ function usePOI<T extends POI>(
     };
   }, [latLngBounds]);
 
-  const debouncedSearch = useDebounce(search);
+  const debouncedSearch = useDebounce(search?.trim());
   useEffect(() => {
     if (debouncedSearch && debouncedSearch.length > 2) {
       fetchPOIs({ search: debouncedSearch }).then((result) => {
