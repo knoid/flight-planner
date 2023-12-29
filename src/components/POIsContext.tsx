@@ -14,9 +14,10 @@ import {
   Airport,
   Airspace,
   fetchAirports as fetchOpenAIPAirports,
-  fetchAirspaces as fetchOpenAIPAirspaces,
-  fetchReportingPoints as fetchOpenAIPReportingPoints,
+  fetchAirspaces,
+  fetchReportingPoints,
   POI,
+  POIFetchParams,
   ReportingPoint,
 } from './openAIP';
 import usePOIMap, { POIMap } from './usePOIMap';
@@ -50,16 +51,8 @@ interface ProviderProps {
   children: ReactNode;
 }
 
-interface POIFetchParams {
-  id?: string;
-  latLngBounds?: LatLngBounds;
-  search?: string;
-}
-
-async function fetchAirports({ id, latLngBounds, search }: POIFetchParams) {
+async function fetchAirports(params: POIFetchParams) {
   return await fetchOpenAIPAirports({
-    limit: '50',
-
     /**
      * The type of the airport. Possible values:
      *  0: Airport (civil/military)
@@ -78,32 +71,12 @@ async function fetchAirports({ id, latLngBounds, search }: POIFetchParams) {
      *  13: Altiport
      */
     type: [0, 2, 3].join(','),
-    ...(id ? { id } : {}),
-    ...(latLngBounds ? { bbox: latLngBounds.toBBoxString() } : {}),
-    ...(search ? { search } : {}),
-  });
-}
-
-async function fetchAirspaces({ id, latLngBounds, search }: POIFetchParams) {
-  return await fetchOpenAIPAirspaces({
-    limit: '50',
-    ...(id ? { id } : {}),
-    ...(latLngBounds ? { bbox: latLngBounds.toBBoxString() } : {}),
-    ...(search ? { search } : {}),
-  });
-}
-
-async function fetchReportingPoints({ id, latLngBounds, search }: POIFetchParams) {
-  return await fetchOpenAIPReportingPoints({
-    limit: '50',
-    ...(id ? { id } : {}),
-    ...(latLngBounds ? { bbox: latLngBounds.toBBoxString() } : {}),
-    ...(search ? { search } : {}),
+    ...params,
   });
 }
 
 function usePOI<T extends POI>(
-  fetchPOIs: ({ id, latLngBounds, search }: POIFetchParams) => Promise<T[]>,
+  fetchPOIs: (params: POIFetchParams) => Promise<T[]>,
   latLngBounds?: LatLngBounds,
   search?: string,
 ): [POIMap<T>, Dispatch<SetStateAction<string[]>>, boolean] {
