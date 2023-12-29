@@ -1,3 +1,5 @@
+import { LatLngBounds } from 'leaflet';
+
 import Airport, {
   AirportType,
   Composite,
@@ -19,7 +21,7 @@ interface PagingResult<Item> {
 
 const baseURL = 'https://api.core.openaip.net/api/';
 
-export default async function openAIP<T>(path: string, params?: Record<string, string>) {
+export default async function openAIP<T>(path: string, params: Record<string, string>) {
   const searchParams = new URLSearchParams({
     apiKey: '72a6755bd7f6b13109de4c0f4ed2b694',
     ...params,
@@ -31,9 +33,19 @@ export default async function openAIP<T>(path: string, params?: Record<string, s
   return (await response.json()) as PagingResult<T>;
 }
 
+export interface POIFetchParams {
+  id?: string;
+  latLngBounds?: LatLngBounds;
+  search?: string;
+  type?: string;
+}
+
 function fetchObjects<T>(path: string, iterator: (item: T) => T) {
-  return async function (params?: Record<string, string>) {
-    const result = await openAIP<T>(path, params);
+  return async function ({ latLngBounds, ...params }: POIFetchParams) {
+    const result = await openAIP<T>(path, {
+      ...(latLngBounds ? { bbox: latLngBounds.toBBoxString() } : {}),
+      ...params,
+    });
     return result.items.map(iterator);
   };
 }
