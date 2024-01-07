@@ -48,6 +48,7 @@ export default function Airspaces({ altitude }: AirspacesProps) {
               dashArray={[5, 15]}
               fill={true}
               fillColor={colors[poi.type % colors.length]}
+              interactive={false}
               key={`${poi._id}-${index}`}
               pathOptions={{ color: colors[poi.type % colors.length] }}
               positions={coords.slice(1).map(([lng, lat]) => new LatLng(lat, lng))}

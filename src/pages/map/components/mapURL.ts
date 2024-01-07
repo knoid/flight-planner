@@ -6,9 +6,9 @@ function latLngURL(latLng: LatLng) {
 }
 
 export function detailsURL(map: Map, latLng: LatLng) {
-  return `${mapURL(map)}/details/${latLngURL(latLng)}`;
+  return mapURL(map, 'details', latLngURL(latLng));
 }
 
-export default function mapURL(map: Map) {
-  return `/map/${latLngURL(map.getCenter())},z${map.getZoom()}`;
+export default function mapURL(map: Map, ...paths: string[]) {
+  return ['', 'map', `${latLngURL(map.getCenter())},z${map.getZoom()}`, ...paths].join('/');
 }
