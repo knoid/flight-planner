@@ -4,6 +4,7 @@ import { Polygon, useMap } from 'react-leaflet';
 
 import { Airspace, AirspaceType, Limit, LimitUnit } from '../../../components/openAIP';
 import POIsContext from '../../../components/POIsContext';
+import SelectedPOIs from './SelectedPOIs';
 
 const colors = [
   'blue',
@@ -29,6 +30,7 @@ interface AirspacesProps {
 
 export default function Airspaces({ altitude }: AirspacesProps) {
   const { airspaces } = useContext(POIsContext);
+  const { clickedAirspace } = useContext(SelectedPOIs);
   const map = useMap();
 
   const bounds = map.getBounds();
@@ -46,9 +48,10 @@ export default function Airspaces({ altitude }: AirspacesProps) {
           poi.geometry.coordinates.map((coords, index) => (
             <Polygon
               dashArray={[5, 15]}
+              eventHandlers={{ click: () => clickedAirspace(poi) }}
               fill={true}
               fillColor={colors[poi.type % colors.length]}
-              interactive={false}
+              interactive={true}
               key={`${poi._id}-${index}`}
               pathOptions={{ color: colors[poi.type % colors.length] }}
               positions={coords.slice(1).map(([lng, lat]) => new LatLng(lat, lng))}

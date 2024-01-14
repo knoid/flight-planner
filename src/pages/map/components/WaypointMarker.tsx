@@ -1,4 +1,4 @@
-import { Marker, Popup } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 
 import { DivIcon, WaypointNumber } from '../../../components/map';
 import { useAirport, useReportingPoint } from '../../../components/POIsContext';
@@ -18,11 +18,10 @@ export default function WaypointMarker({ index, leg, zIndexOffset }: WaypointMar
     return null;
   }
   return (
-    <Marker key={leg._id} position={poi.latLng()} zIndexOffset={zIndexOffset}>
+    <Marker interactive={false} key={leg._id} position={poi.latLng()} zIndexOffset={zIndexOffset}>
       <DivIcon>
         <WaypointNumber>{index + 1}</WaypointNumber>
       </DivIcon>
-      <Popup>{poi.getIdentifier()}</Popup>
     </Marker>
   );
 }

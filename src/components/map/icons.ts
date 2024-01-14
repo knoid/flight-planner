@@ -3,9 +3,6 @@ import { Paper, styled } from '@mui/material';
 
 const PointOnMap = styled('div')({
   aspectRatio: '1',
-  position: 'absolute',
-  textAlign: 'center',
-  transform: 'translate(-50%, -50%)',
   width: 19,
 });
 
@@ -17,4 +14,8 @@ export const WaypointIcon = styled(PointOnMap)({
   height: 0,
   width: 0,
 });
-export const WaypointNumber = PointOnMap.withComponent(Paper);
+export const WaypointNumber = styled(PointOnMap)({
+  position: 'absolute',
+  textAlign: 'center',
+  transform: 'translate(-50%, -50%)',
+}).withComponent(Paper);
