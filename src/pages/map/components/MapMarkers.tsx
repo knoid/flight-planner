@@ -1,15 +1,21 @@
+import { Point } from 'leaflet';
 import { useContext, useEffect } from 'react';
-import { Marker, Polyline, Popup, useMapEvent } from 'react-leaflet';
+import { Marker, Polyline, useMapEvent } from 'react-leaflet';
 
 import { AirportIcon, DivIcon, WaypointIcon } from '../../../components/map';
 import { Airport, ReportingPoint } from '../../../components/openAIP';
 import POIsContext from '../../../components/POIsContext';
 import { useStore } from '../../../components/store';
+import SelectedPOIs from './SelectedPOIs';
 import WaypointMarker from './WaypointMarker';
+
+const airportIconSize = new Point(19, 24);
+const waypointIconSize = new Point(10, 10);
 
 export default function MapMarkers() {
   const { legs } = useStore();
   const { airports, reportingPoints, setLatLngBounds } = useContext(POIsContext);
+  const { clickedAirport, clickedReportingPoint } = useContext(SelectedPOIs);
   const map = useMapEvent('moveend', () => {
     setLatLngBounds(map.getBounds());
   });
@@ -28,21 +34,33 @@ export default function MapMarkers() {
       {[...airports.values()]
         .filter((poi): poi is Airport => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
-          <Marker key={poi._id} position={poi.latLng()} zIndexOffset={1}>
-            <DivIcon>
+          <Marker
+            eventHandlers={{
+              click: () => clickedAirport(poi),
+            }}
+            key={poi._id}
+            position={poi.latLng()}
+            zIndexOffset={1}
+          >
+            <DivIcon iconSize={airportIconSize}>
               <AirportIcon />
             </DivIcon>
-            <Popup>{poi.getIdentifier()}</Popup>
           </Marker>
         ))}
       {[...reportingPoints.values()]
         .filter((poi): poi is ReportingPoint => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
-          <Marker key={poi._id} position={poi.latLng()} zIndexOffset={2}>
-            <DivIcon>
+          <Marker
+            eventHandlers={{
+              click: () => clickedReportingPoint(poi),
+            }}
+            key={poi._id}
+            position={poi.latLng()}
+            zIndexOffset={2}
+          >
+            <DivIcon iconSize={waypointIconSize}>
               <WaypointIcon />
             </DivIcon>
-            <Popup>{poi.getIdentifier()}</Popup>
           </Marker>
         ))}
       {legs.map((leg, index) => (

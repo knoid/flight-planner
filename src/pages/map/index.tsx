@@ -1,15 +1,17 @@
-import { LatLng } from 'leaflet';
-import { useEffect, useState } from 'react';
-import { useMapEvents } from 'react-leaflet';
+import { LatLng, Map } from 'leaflet';
+import { useEffect, useRef, useState } from 'react';
+import { Pane, useMapEvents } from 'react-leaflet';
 import { useMatch, useNavigate } from 'react-router-dom';
 
 import { MapContainer } from '../../components/map';
 import { useStore } from '../../components/store';
 import Airspaces from './components/Airspaces';
 import AirspaceSlider from './components/AirspaceSlider';
+import Details from './components/Details';
 import MapMarkers from './components/MapMarkers';
 import mapURL from './components/mapURL';
 import RemainingFuel from './components/RemainingFuel';
+import { SelectedPOIsProvider } from './components/SelectedPOIs';
 import ToggleRemainingFuel from './components/ToggleRemainingFuel';
 import ZoomControls from './components/ZoomControls';
 
@@ -59,12 +61,24 @@ function useCenterZoomLocation() {
 export const Component = function MapPage() {
   const { showReminderOnMap, toggleReminderOnMap } = useStore();
   const { center, zoom } = useCenterZoomLocation();
+  const mapRef = useRef<Map>(null);
   const [rawAltitude, setRawAltitude] = useState(0);
+  const paneRef = useRef<HTMLElement>(null);
+
   return (
-    <>
-      <MapContainer center={center} zoom={zoom} zoomControl={false}>
-        <Airspaces altitude={rawAltitude} />
-        <MapMarkers />
+    <SelectedPOIsProvider pane={paneRef}>
+      <Details />
+      <MapContainer
+        center={center}
+        doubleClickZoom={false}
+        ref={mapRef}
+        zoom={zoom}
+        zoomControl={false}
+      >
+        <Pane name="clickable" ref={paneRef}>
+          <Airspaces altitude={rawAltitude} />
+          <MapMarkers />
+        </Pane>
         {showReminderOnMap && <RemainingFuel />}
         <SaveLocation />
         <ZoomControls />
@@ -77,6 +91,6 @@ export const Component = function MapPage() {
         }}
       />
       <ToggleRemainingFuel selected={showReminderOnMap} onChange={toggleReminderOnMap} />
-    </>
+    </SelectedPOIsProvider>
   );
 };
