@@ -170,6 +170,15 @@ export function useAirport(_id: string) {
   return airports.get(_id);
 }
 
+export function useAirspace(_id: string) {
+  const { airspaces, setNewAirspaces } = useContext(POIsContext);
+  useEffect(() => {
+    setNewAirspaces((prev) => [...prev, _id]);
+    return () => setNewAirspaces((prev) => prev.filter((id) => id !== _id));
+  }, []);
+  return airspaces.get(_id);
+}
+
 export function useReportingPoint(_id: string) {
   const { reportingPoints, setNewReportingPoints } = useContext(POIsContext);
   useEffect(() => {

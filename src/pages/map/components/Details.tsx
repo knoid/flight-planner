@@ -1,7 +1,8 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogContent } from '@mui/material';
 import { useContext } from 'react';
 import { useDebounce } from 'usehooks-ts';
 
+import { AirportIcon, WaypointIcon } from '../../../components/map';
 import SelectedPOIs from './SelectedPOIs';
 
 function max<A, B>(a: A[], b: B[]) {
@@ -28,16 +29,41 @@ export default function Details() {
 
   return (
     <Dialog open={count > 0} onClose={clear}>
-      <DialogTitle>POIs</DialogTitle>
       <DialogContent>
         {airports.map((poi) => (
-          <div key={poi._id}>{poi.getIdentifier()}</div>
+          <Button
+            href={`/airport/${poi._id}`}
+            key={poi._id}
+            size="small"
+            startIcon={<AirportIcon />}
+            variant="contained"
+            sx={{ margin: 0.5 }}
+          >
+            {poi.getIdentifier()}
+          </Button>
         ))}
         {airspaces.map((poi) => (
-          <div key={poi._id}>{poi.getIdentifier()}</div>
+          <Button
+            href={`/airspace/${poi._id}`}
+            key={poi._id}
+            size="small"
+            variant="contained"
+            sx={{ margin: 0.5 }}
+          >
+            {poi.getIdentifier()}
+          </Button>
         ))}
         {reportingPoints.map((poi) => (
-          <div key={poi._id}>{poi.getIdentifier()}</div>
+          <Button
+            href={`/reporting-point/${poi._id}`}
+            key={poi._id}
+            size="small"
+            startIcon={<WaypointIcon />}
+            variant="contained"
+            sx={{ margin: 0.5 }}
+          >
+            {poi.getIdentifier()}
+          </Button>
         ))}
       </DialogContent>
     </Dialog>

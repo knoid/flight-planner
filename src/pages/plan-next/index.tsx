@@ -8,8 +8,8 @@ import { useI18nContext } from '../../i18n/i18n-react';
 import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
 import { formatDistance, formatDuration } from '../plan/components/FlightPlanTable/common';
 import usePartials from '../plan/components/FlightPlanTable/usePartials';
+import LegDetails from './components/LegDetails';
 import Total from './components/Total';
-import WaypointDetails from './components/WaypointDetails';
 
 let savedExpanded: string | false = false;
 const wmm = new WorldMagneticModel();
@@ -44,7 +44,7 @@ export const Component = function PlanPage() {
         </Total>
       </Box>
       {legs.map((leg, index) => (
-        <WaypointDetails
+        <LegDetails
           expanded={expanded === leg._id}
           index={index}
           key={leg.key}
