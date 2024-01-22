@@ -8,7 +8,7 @@ const PointOnMap = styled('div')({
 
 export const AirportIcon = PointOnMap.withComponent(LocalAirportIcon);
 export const WaypointIcon = styled(PointOnMap)({
-  borderBottom: '10px solid black',
+  borderBottom: '10px solid currentColor',
   borderLeft: '5px solid transparent',
   borderRight: '5px solid transparent',
   height: 0,
