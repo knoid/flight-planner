@@ -5,7 +5,7 @@ import { Marker } from 'react-leaflet';
 import { useI18nContext } from '../i18n/i18n-react';
 import Labelled from './Labelled';
 import { AirportIcon, AirspaceMarker, DivIcon, MapContainer, WaypointIcon } from './map';
-import { Composite, FrequencyType } from './openAIP';
+import { Composite, FrequencyType, Limit, LimitUnit } from './openAIP';
 import { useAirport, useAirspace, useReportingPoint } from './POIsContext';
 
 type CardinalDirections = 'W' | 'S' | 'E' | 'N';
@@ -21,6 +21,20 @@ function convertDDToDMS(D: number, lng: boolean) {
     min: 0 | (((D += 1e-9) % 1) * 60),
     sec: (0 | (((D * 60) % 1) * 6000)) / 100,
   };
+}
+
+function AirspaceLimit(limit: Limit) {
+  if (!limit.value) {
+    return '*';
+  }
+
+  return (
+    <>
+      {limit.unit === LimitUnit.FlightLevel && 'FL'}
+      {`${limit.value}`.padStart(3, '0')}
+      {limit.unit === LimitUnit.Feet && 'ft'}
+    </>
+  );
 }
 
 export interface WaypointDetailsProps {
@@ -83,7 +97,19 @@ export default function WaypointDetails({ expanded, id }: WaypointDetailsProps) 
         )}
         {airspace && (
           <>
-            {airspace.lowerLimit.value}-{airspace.upperLimit.value}
+            <AirspaceLimit {...airspace.lowerLimit} />-<AirspaceLimit {...airspace.upperLimit} />
+            {airspace.frequencies && airspace.frequencies.length > 0 && (
+              <>
+                <Typography variant="subtitle1">Radios</Typography>
+                {airspace.frequencies
+                  ?.sort((a, b) => FrequencyType[a.type].localeCompare(FrequencyType[b.type]))
+                  .map(({ _id, name, remarks, type, value }) => (
+                    <Labelled key={_id} type={name || FrequencyType[type]}>
+                      {value} {remarks}
+                    </Labelled>
+                  ))}
+              </>
+            )}
           </>
         )}
         {poi && (

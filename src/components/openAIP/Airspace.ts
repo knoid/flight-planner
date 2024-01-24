@@ -1,5 +1,6 @@
 import { LatLngBounds } from 'leaflet';
 
+import { Frequency } from './Frequency';
 import POI, { POIProps } from './POI';
 
 export enum AirspaceType {
@@ -78,6 +79,31 @@ enum ReferenceDatum {
   STD,
 }
 
+export enum Activity {
+  /** No specific activity (default) */
+  None,
+  Parachuting,
+  Aerobatics,
+  /** Aeroclub And Arial Work Area */
+  Aeroclub,
+  /** Ultra Light Machine (ULM) Activity */
+  ULM,
+  /** Hang Gliding / Paragliding */
+  Paragliding,
+}
+
+export enum IcaoClass {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  /** Unclassified / Special Use Airspace (SUA) */
+  SUA = 8,
+}
+
 export interface Limit {
   value: number;
   unit: LimitUnit;
@@ -85,17 +111,29 @@ export interface Limit {
 }
 
 export interface AirspaceProps extends POIProps {
+  activity: Activity;
+  frequencies?: Frequency[];
   geometry: Polygon;
+  icaoClass: IcaoClass;
   lowerLimit: Limit;
+  lowerLimitMin: Limit;
+  remarks?: string;
   type: AirspaceType;
   upperLimit: Limit;
+  upperLimitMax?: Limit;
 }
 
 export default class Airspace extends POI {
+  activity!: Activity;
+  frequencies?: Frequency[];
   geometry!: Polygon;
+  icaoClass!: IcaoClass;
   lowerLimit!: Limit;
+  lowerLimitMin?: Limit;
+  remarks?: string;
   type!: AirspaceType;
   upperLimit!: Limit;
+  upperLimitMax?: Limit;
 
   static fromJSON(json: AirspaceProps) {
     return Object.assign(new Airspace(), json);

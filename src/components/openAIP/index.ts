@@ -1,13 +1,8 @@
 import { LatLngBounds } from 'leaflet';
 
-import Airport, {
-  AirportType,
-  Composite,
-  Condition,
-  FrequencyType,
-  FrequencyUnit,
-} from './Airport';
+import Airport, { AirportType, Composite, Condition } from './Airport';
 import Airspace, { AirspaceType, Limit, LimitUnit } from './Airspace';
+import { FrequencyType, FrequencyUnit } from './Frequency';
 import POI from './POI';
 import ReportingPoint from './ReportingPoint';
 
