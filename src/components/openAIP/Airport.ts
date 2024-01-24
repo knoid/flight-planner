@@ -1,7 +1,5 @@
-import { LatLng } from 'leaflet';
-
 import { Frequency } from './Frequency';
-import POI, { POIProps } from './POI';
+import PointPOI, { PointPOIProps } from './PointPOI';
 
 export enum Composite {
   Asphalt,
@@ -68,28 +66,21 @@ interface Runway {
   surface: { composition: Composite[]; condition: Condition; mainComposite: Composite };
 }
 
-interface Point {
-  type: 'Point';
-  coordinates: [number, number];
-}
-
-export interface AirportProps extends POIProps {
+export interface AirportProps extends PointPOIProps {
   icaoCode?: string;
   iataCode?: string;
   altIdentifier?: string;
   type: AirportType;
   frequencies?: Frequency[];
-  geometry: Point;
   runways?: Runway[];
 }
 
-export default class Airport extends POI implements AirportProps {
+export default class Airport extends PointPOI implements AirportProps {
   icaoCode?: string;
   iataCode?: string;
   altIdentifier?: string;
   type!: AirportType;
   frequencies?: Frequency[];
-  geometry!: Point;
   runways?: Runway[];
 
   static fromJSON(json: AirportProps) {
@@ -108,10 +99,5 @@ export default class Airport extends POI implements AirportProps {
       return `(${identifiers}) ${this.name}`;
     }
     return super.getLabel();
-  }
-
-  latLng() {
-    const [longitude, latitude] = this.geometry.coordinates;
-    return new LatLng(latitude, longitude);
   }
 }

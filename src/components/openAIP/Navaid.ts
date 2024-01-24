@@ -1,8 +1,24 @@
-import POI, { POIProps } from './POI';
+import PointPOI, { PointPOIProps } from './PointPOI';
 
-export interface NavaidProps extends POIProps {}
+enum NavaidType {
+  DME,
+  TACAN,
+  NDB,
+  VOR,
+  VORDME,
+  VORTAC,
+  DVOR,
+  DVORDME,
+  DVORTAC,
+}
 
-export default class Navaid extends POI implements NavaidProps {
+export interface NavaidProps extends PointPOIProps {
+  type: NavaidType;
+}
+
+export default class Navaid extends PointPOI implements NavaidProps {
+  type!: NavaidType;
+
   static fromJSON(json: NavaidProps) {
     return Object.assign(new Navaid(), json);
   }
