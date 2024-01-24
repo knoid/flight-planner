@@ -64,7 +64,7 @@ export enum AirspaceType {
 
 interface Polygon {
   type: 'Polygon';
-  coordinates: [number, number][][];
+  coordinates: [lng: number, lat: number][][];
 }
 
 export enum LimitUnit {
