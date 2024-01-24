@@ -16,7 +16,9 @@ interface AirspacesProps {
 }
 
 export default function Airspaces({ altitude }: AirspacesProps) {
-  const { airspaces } = useContext(POIsContext);
+  const {
+    airspaces: [airspaces],
+  } = useContext(POIsContext);
   const { clickedAirspace } = useContext(SelectedPOIs);
   const map = useMap();
 

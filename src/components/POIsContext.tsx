@@ -15,7 +15,9 @@ import {
   Airspace,
   fetchAirports as fetchOpenAIPAirports,
   fetchAirspaces,
+  fetchNavaids,
   fetchReportingPoints,
+  Navaid,
   POI,
   POIFetchParams,
   ReportingPoint,
@@ -23,27 +25,24 @@ import {
 import usePOIMap, { POIMap } from './usePOIMap';
 
 interface ContextProps {
-  airports: POIMap<Airport>;
-  airspaces: POIMap<Airspace>;
+  airports: UsePOI<Airport>;
+  airspaces: UsePOI<Airspace>;
   loading: boolean;
-  reportingPoints: POIMap<ReportingPoint>;
+  navaids: UsePOI<Navaid>;
+  reportingPoints: UsePOI<ReportingPoint>;
   setLatLngBounds: Dispatch<SetStateAction<LatLngBounds | undefined>>;
-  setNewAirports: Dispatch<SetStateAction<string[]>>;
-  setNewAirspaces: Dispatch<SetStateAction<string[]>>;
-  setNewReportingPoints: Dispatch<SetStateAction<string[]>>;
   setSearch: Dispatch<SetStateAction<string>>;
 }
 
+const noop = () => {};
 const POIsContext = createContext<ContextProps>({
-  airports: new Map(),
-  airspaces: new Map(),
+  airports: [new Map(), noop, false],
+  airspaces: [new Map(), noop, false],
   loading: false,
-  reportingPoints: new Map(),
-  setLatLngBounds: () => {},
-  setNewAirports: () => {},
-  setNewAirspaces: () => {},
-  setNewReportingPoints: () => {},
-  setSearch: () => {},
+  navaids: [new Map(), noop, false],
+  reportingPoints: [new Map(), noop, false],
+  setLatLngBounds: noop,
+  setSearch: noop,
 });
 export default POIsContext;
 
@@ -75,11 +74,13 @@ async function fetchAirports(params: POIFetchParams) {
   });
 }
 
+type UsePOI<T> = [POIMap<T>, Dispatch<SetStateAction<string[]>>, boolean];
+
 function usePOI<T extends POI>(
   fetchPOIs: (params: POIFetchParams) => Promise<T[]>,
   latLngBounds?: LatLngBounds,
   search?: string,
-): [POIMap<T>, Dispatch<SetStateAction<string[]>>, boolean] {
+): UsePOI<T> {
   const [loading, setLoading] = useState(false);
   const [pois, setPOIs, setPOI] = usePOIMap<T>();
   const [newPOIs, setNewPOIs] = useState<string[]>([]);
@@ -134,25 +135,20 @@ export function POIsProvider({ children }: ProviderProps) {
   const [latLngBounds, setLatLngBounds] = useState<LatLngBounds | undefined>();
   const [search, setSearch] = useState<string>('');
 
-  const [airports, setNewAirports, loadingAirports] = usePOI(fetchAirports, latLngBounds, search);
-  const [airspaces, setNewAirspaces, loadingAirspaces] = usePOI(fetchAirspaces, latLngBounds);
-  const [reportingPoints, setNewReportingPoints, loadingReportingPoints] = usePOI(
-    fetchReportingPoints,
-    latLngBounds,
-    search,
-  );
+  const airports = usePOI(fetchAirports, latLngBounds, search);
+  const airspaces = usePOI(fetchAirspaces, latLngBounds);
+  const navaids = usePOI(fetchNavaids, latLngBounds);
+  const reportingPoints = usePOI(fetchReportingPoints, latLngBounds, search);
 
   return (
     <POIsContext.Provider
       value={{
         airports,
         airspaces,
-        loading: loadingAirports || loadingAirspaces || loadingReportingPoints,
+        loading: airports[2] || airspaces[2] || navaids[2] || reportingPoints[2],
+        navaids,
         reportingPoints,
         setLatLngBounds,
-        setNewAirports,
-        setNewAirspaces,
-        setNewReportingPoints,
         setSearch,
       }}
     >
@@ -161,29 +157,24 @@ export function POIsProvider({ children }: ProviderProps) {
   );
 }
 
-export function useAirport(_id: string) {
-  const { airports, setNewAirports } = useContext(POIsContext);
-  useEffect(() => {
-    setNewAirports((prev) => [...prev, _id]);
-    return () => setNewAirports((prev) => prev.filter((id) => id !== _id));
-  }, []);
-  return airports.get(_id);
+type POIProp = {
+  [key in keyof ContextProps as ContextProps[key] extends UsePOI<unknown>
+    ? key
+    : never]: ContextProps[key] extends UsePOI<infer T> ? T : never;
+};
+
+function createUsePOI<Key extends keyof POIProp>(name: Key) {
+  return function useFetchPOI(_id: string) {
+    const [pois, setNewPOIs] = useContext(POIsContext)[name] as UsePOI<POIProp[Key]>;
+    useEffect(() => {
+      setNewPOIs((prev) => [...prev, _id]);
+      return () => setNewPOIs((prev) => prev.filter((id) => id !== _id));
+    }, []);
+    return pois.get(_id);
+  };
 }
 
-export function useAirspace(_id: string) {
-  const { airspaces, setNewAirspaces } = useContext(POIsContext);
-  useEffect(() => {
-    setNewAirspaces((prev) => [...prev, _id]);
-    return () => setNewAirspaces((prev) => prev.filter((id) => id !== _id));
-  }, []);
-  return airspaces.get(_id);
-}
-
-export function useReportingPoint(_id: string) {
-  const { reportingPoints, setNewReportingPoints } = useContext(POIsContext);
-  useEffect(() => {
-    setNewReportingPoints((prev) => [...prev, _id]);
-    return () => setNewReportingPoints((prev) => prev.filter((id) => id !== _id));
-  }, []);
-  return reportingPoints.get(_id);
-}
+export const useAirport = createUsePOI('airports');
+export const useAirspace = createUsePOI('airspaces');
+export const useNavaids = createUsePOI('navaids');
+export const useReportingPoint = createUsePOI('reportingPoints');

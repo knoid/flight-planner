@@ -14,7 +14,11 @@ const waypointIconSize = new Point(10, 10);
 
 export default function MapMarkers() {
   const { legs } = useStore();
-  const { airports, reportingPoints, setLatLngBounds } = useContext(POIsContext);
+  const {
+    airports: [airports],
+    reportingPoints: [reportingPoints],
+    setLatLngBounds,
+  } = useContext(POIsContext);
   const { clickedAirport, clickedReportingPoint } = useContext(SelectedPOIs);
   const map = useMapEvent('moveend', () => {
     setLatLngBounds(map.getBounds());
