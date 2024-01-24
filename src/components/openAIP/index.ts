@@ -3,6 +3,7 @@ import { LatLngBounds } from 'leaflet';
 import Airport, { AirportType, Composite, Condition } from './Airport';
 import Airspace, { AirspaceType, Limit, LimitUnit } from './Airspace';
 import { FrequencyType, FrequencyUnit } from './Frequency';
+import Navaid from './Navaid';
 import POI from './POI';
 import ReportingPoint from './ReportingPoint';
 
@@ -47,6 +48,7 @@ function fetchObjects<T>(path: string, iterator: (item: T) => T) {
 
 export const fetchAirports = fetchObjects('airports', Airport.fromJSON);
 export const fetchAirspaces = fetchObjects('airspaces', Airspace.fromJSON);
+export const fetchNavaids = fetchObjects('navaids', Navaid.fromJSON);
 export const fetchReportingPoints = fetchObjects('reporting-points', ReportingPoint.fromJSON);
 
 export {
@@ -60,6 +62,7 @@ export {
   FrequencyUnit,
   type Limit,
   LimitUnit,
+  Navaid,
   POI,
   ReportingPoint,
 };

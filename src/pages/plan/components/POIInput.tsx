@@ -35,7 +35,12 @@ export default function POIInput({ onChange }: POIInputProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
 
-  const { airports, loading, reportingPoints, setSearch } = useContext(POIsContext);
+  const {
+    airports: [airports],
+    loading,
+    reportingPoints: [reportingPoints],
+    setSearch,
+  } = useContext(POIsContext);
   const options = useMemo(
     () =>
       [...airports.values(), ...reportingPoints.values()].filter(

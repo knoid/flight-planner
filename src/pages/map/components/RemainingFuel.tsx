@@ -12,7 +12,10 @@ const wmm = new WorldMagneticModel();
 export default function RemainingFuel() {
   const { cruiseSpeed, fuel } = useStore();
   const partials = usePartials(wmm);
-  const { airports, reportingPoints } = useContext(POIsContext);
+  const {
+    airports: [airports],
+    reportingPoints: [reportingPoints],
+  } = useContext(POIsContext);
 
   function fuelToMeters(remainingFuel: number) {
     return (remainingFuel / fuel.flow) * cruiseSpeed * nm2m;

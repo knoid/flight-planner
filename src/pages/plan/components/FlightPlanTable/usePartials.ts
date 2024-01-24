@@ -40,7 +40,10 @@ export default function usePartials(wmm: WorldMagneticModel) {
     legs,
     startTime: savedStartTime,
   } = useStore();
-  const { airports, reportingPoints } = useContext(POIsContext);
+  const {
+    airports: [airports],
+    reportingPoints: [reportingPoints],
+  } = useContext(POIsContext);
   const startTime = savedStartTime ? timeToDate(savedStartTime) : null;
 
   return legs.reduce((partials, leg) => {
