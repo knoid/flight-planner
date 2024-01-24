@@ -12,7 +12,7 @@ export interface ReportingPointProps extends POIProps {
   geometry: Point;
 }
 
-export default class ReportingPoint extends POI {
+export default class ReportingPoint extends POI implements ReportingPointProps {
   airports!: string[];
   geometry!: Point;
 

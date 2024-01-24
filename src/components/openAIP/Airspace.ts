@@ -116,14 +116,14 @@ export interface AirspaceProps extends POIProps {
   geometry: Polygon;
   icaoClass: IcaoClass;
   lowerLimit: Limit;
-  lowerLimitMin: Limit;
+  lowerLimitMin?: Limit;
   remarks?: string;
   type: AirspaceType;
   upperLimit: Limit;
   upperLimitMax?: Limit;
 }
 
-export default class Airspace extends POI {
+export default class Airspace extends POI implements AirspaceProps {
   activity!: Activity;
   frequencies?: Frequency[];
   geometry!: Polygon;
