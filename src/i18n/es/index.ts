@@ -12,6 +12,7 @@ const es = {
   date: 'Fecha',
   distance_abbr: 'Dist.',
   distance: 'Distancia',
+  dragLeg: 'arrastrar tramo',
   flightPlan: 'Plan de vuelo',
   frequencies_abbr: 'Frec.',
   frequencies: 'Frecuencias',

@@ -12,6 +12,7 @@ const en = {
   date: 'Date',
   distance_abbr: 'Dist.',
   distance: 'Distance',
+  dragLeg: 'drag leg',
   flightPlan: 'Flight Plan',
   frequencies_abbr: 'Freq.',
   frequencies: 'Frequencies',

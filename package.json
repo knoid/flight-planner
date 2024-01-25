@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://knoid.github.io/flight-planner/",
   "dependencies": {
+    "@dnd-kit/sortable": "^8.0.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
