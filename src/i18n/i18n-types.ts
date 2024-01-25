@@ -73,6 +73,10 @@ type RootTranslation = {
 	 */
 	distance: string
 	/**
+	 * d​r​a​g​ ​l​e​g
+	 */
+	dragLeg: string
+	/**
 	 * F​l​i​g​h​t​ ​P​l​a​n
 	 */
 	flightPlan: string
@@ -213,6 +217,10 @@ export type TranslationFunctions = {
 	 * Distance
 	 */
 	distance: () => LocalizedString
+	/**
+	 * drag leg
+	 */
+	dragLeg: () => LocalizedString
 	/**
 	 * Flight Plan
 	 */

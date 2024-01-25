@@ -1,3 +1,18 @@
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { Box } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 
@@ -16,7 +31,7 @@ const wmm = new WorldMagneticModel();
 
 export const Component = function PlanPage() {
   const { LL } = useI18nContext();
-  const { fuel, legs } = useStore();
+  const { fuel, legs, setLegs } = useStore();
   const [expanded, setExpanded] = useState<string | false>(savedExpanded);
   const partials = usePartials(wmm);
   const totalFuelConsumption = math.sum(
@@ -32,6 +47,26 @@ export const Component = function PlanPage() {
     setExpanded(savedExpanded);
   };
 
+  function onDragStart() {
+    setExpanded(false);
+  }
+
+  function onDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setLegs((legs) => {
+        const oldIndex = legs.findIndex((leg) => leg.key === active.id);
+        const newIndex = legs.findIndex((leg) => leg.key === over.id);
+        return arrayMove(legs, oldIndex, newIndex);
+      });
+    }
+  }
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
   return (
     <>
       <Box display="flex" m={1}>
@@ -43,15 +78,24 @@ export const Component = function PlanPage() {
           {totalFuelConsumption.toFixed(2)} {fuelUnits.get(fuel.unit)}
         </Total>
       </Box>
-      {legs.map((leg, index) => (
-        <LegDetails
-          expanded={expanded === leg._id}
-          index={index}
-          key={leg.key}
-          leg={leg}
-          onChange={handleChange(leg._id)}
-        />
-      ))}
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragEnd={onDragEnd}
+        onDragStart={onDragStart}
+        sensors={sensors}
+      >
+        <SortableContext items={legs.map((leg) => leg.key)} strategy={verticalListSortingStrategy}>
+          {legs.map((leg, index) => (
+            <LegDetails
+              expanded={expanded === leg._id}
+              index={index}
+              key={leg.key}
+              leg={leg}
+              onChange={handleChange(leg._id)}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
     </>
   );
 };
