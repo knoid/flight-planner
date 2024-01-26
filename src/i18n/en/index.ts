@@ -12,6 +12,19 @@ const en = {
   date: 'Date',
   distance_abbr: 'Dist.',
   distance: 'Distance',
+  dnd: {
+    draggable: `
+      To pick up a draggable item, press the space bar.
+      While dragging, use the arrow keys to move the item.
+      Press space again to drop the item in its new position, or press escape to cancel.
+    `,
+    onDragCancel: 'Dragging was cancelled. Draggable item {active:string} was dropped.',
+    onDragEnd: 'Draggable item {active:string} was dropped.',
+    onDragEnd_over: 'Draggable item {active:string} was dropped over droppable area {over:string}.',
+    onDragOver: 'Draggable item {active:string} is no longer over a droppable area.',
+    onDragOver_over: 'Draggable item {active:string} was moved over droppable area {over:string}.',
+    onDragStart: 'Picked up draggable item {active:string}.',
+  },
   dragLeg: 'drag leg',
   flightPlan: 'Flight Plan',
   frequencies_abbr: 'Freq.',

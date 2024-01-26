@@ -1,18 +1,5 @@
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Box } from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 
@@ -23,6 +10,7 @@ import { useI18nContext } from '../../i18n/i18n-react';
 import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
 import { formatDistance, formatDuration } from '../plan/components/FlightPlanTable/common';
 import usePartials from '../plan/components/FlightPlanTable/usePartials';
+import DndContext from './components/DndContext';
 import LegDetails from './components/LegDetails';
 import Total from './components/Total';
 
@@ -62,11 +50,6 @@ export const Component = function PlanPage() {
     }
   }
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
   return (
     <>
       <Box display="flex" m={1}>
@@ -78,12 +61,7 @@ export const Component = function PlanPage() {
           {totalFuelConsumption.toFixed(2)} {fuelUnits.get(fuel.unit)}
         </Total>
       </Box>
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragEnd={onDragEnd}
-        onDragStart={onDragStart}
-        sensors={sensors}
-      >
+      <DndContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <SortableContext items={legs.map((leg) => leg.key)} strategy={verticalListSortingStrategy}>
           {legs.map((leg, index) => (
             <LegDetails

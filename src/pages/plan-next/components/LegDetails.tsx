@@ -29,9 +29,9 @@ export default function LegDetails({ expanded, index, leg, onChange }: LegDetail
   const poi = airport || reportingPoint;
   const { LL } = useI18nContext();
   const { attributes, listeners, setActivatorNodeRef, setNodeRef, transform, transition } =
-    useSortable({ id: leg.key });
+    useSortable({ id: leg.key, data: { label: poi?.getLabel() } });
   const style = {
-    transform: CSS.Transform.toString(transform && { ...transform, x: 0, scaleX: 1, scaleY: 1 }),
+    transform: CSS.Transform.toString(transform && { ...transform, scaleY: 1 }),
     transition,
   };
 
