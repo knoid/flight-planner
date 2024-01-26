@@ -12,6 +12,19 @@ const es = {
   date: 'Fecha',
   distance_abbr: 'Dist.',
   distance: 'Distancia',
+  dnd: {
+    draggable: `
+      Para tomar un elemento arrastable, presione la barra espaciadora.
+      Mientras arrastra, use las flechas para mover el elemento.
+      Presione espacio nuevamente para soltar el elemento en su nueva posición, o presione escape para cancelar.
+    `,
+    onDragCancel: 'El movimiento fue cancelado. El elemento {active} fue soltado.',
+    onDragEnd: 'El elemento {active} fue soltado.',
+    onDragEnd_over: 'El elemento {active} fue soltado sobre el area {over}.',
+    onDragOver: 'El elemento {active} no está sobre un area válida para soltarlo.',
+    onDragOver_over: 'El elemento {active} ha sido movido al area {over}.',
+    onDragStart: 'Tomó el elemento {active}.',
+  },
   dragLeg: 'arrastrar tramo',
   flightPlan: 'Plan de vuelo',
   frequencies_abbr: 'Frec.',
