@@ -18,7 +18,8 @@ import { useI18nContext } from '../../../i18n/i18n-react';
 
 const Identifier = styled('span')({ fontFamily: 'monospace' });
 
-interface LegDetailsProps extends Pick<AccordionProps, 'expanded' | 'onChange'> {
+interface LegDetailsProps extends Pick<AccordionProps, 'onChange'> {
+  expanded: string | false;
   index: number;
   leg: Leg;
 }
@@ -34,10 +35,11 @@ export default function LegDetails({ expanded, index, leg, onChange }: LegDetail
     transform: CSS.Transform.toString(transform && { ...transform, scaleY: 1 }),
     transition,
   };
+  const isExpanded = expanded === leg.key;
 
   return (
     <Accordion
-      expanded={expanded}
+      expanded={isExpanded}
       onChange={onChange}
       ref={setNodeRef}
       style={style}
@@ -48,20 +50,22 @@ export default function LegDetails({ expanded, index, leg, onChange }: LegDetail
         expandIcon={<ExpandMoreIcon />}
         id={leg.key}
       >
-        <IconButton
-          ref={setActivatorNodeRef}
-          sx={{ margin: -1, marginRight: 0, touchAction: 'none' }}
-          aria-label={LL.dragLeg()}
-          {...listeners}
-        >
-          <DragIndicator />
-        </IconButton>
+        {!expanded && (
+          <IconButton
+            ref={setActivatorNodeRef}
+            sx={{ margin: -1, marginRight: 0, touchAction: 'none' }}
+            aria-label={LL.dragLeg()}
+            {...listeners}
+          >
+            <DragIndicator />
+          </IconButton>
+        )}
         <Typography>
           {index + 1}. <Identifier>{poi?.getIdentifier()}</Identifier>
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ display: 'flex', padding: 0 }}>
-        <WaypointDetails id={leg._id} expanded={expanded} />
+        <WaypointDetails id={leg._id} expanded={isExpanded} />
       </AccordionDetails>
     </Accordion>
   );
