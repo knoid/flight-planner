@@ -35,10 +35,6 @@ export const Component = function PlanPage() {
     setExpanded(savedExpanded);
   };
 
-  function onDragStart() {
-    setExpanded(false);
-  }
-
   function onDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -61,15 +57,15 @@ export const Component = function PlanPage() {
           {totalFuelConsumption.toFixed(2)} {fuelUnits.get(fuel.unit)}
         </Total>
       </Box>
-      <DndContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
+      <DndContext onDragEnd={onDragEnd}>
         <SortableContext items={legs.map((leg) => leg.key)} strategy={verticalListSortingStrategy}>
           {legs.map((leg, index) => (
             <LegDetails
-              expanded={expanded === leg._id}
+              expanded={expanded}
               index={index}
               key={leg.key}
               leg={leg}
-              onChange={handleChange(leg._id)}
+              onChange={handleChange(leg.key)}
             />
           ))}
         </SortableContext>
