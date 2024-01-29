@@ -7,6 +7,7 @@ const es = {
   callSign: 'Matrícula',
   cardinalDirections: { N: 'N', E: 'E', S: 'S', W: 'O' },
   closeNotes: 'cerrar notas',
+  coordinates: 'Coordenadas',
   course: 'Curso',
   cruiseSpeed: 'Velocidad crusero',
   date: 'Fecha',

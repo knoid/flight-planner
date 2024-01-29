@@ -7,6 +7,7 @@ const en = {
   callSign: 'Call Sign',
   cardinalDirections: { N: 'N', E: 'E', S: 'S', W: 'W' },
   closeNotes: 'close notes',
+  coordinates: 'Coordinates',
   course: 'Course',
   cruiseSpeed: 'Cruise speed',
   date: 'Date',
