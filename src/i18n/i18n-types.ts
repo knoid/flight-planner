@@ -53,6 +53,10 @@ type RootTranslation = {
 	 */
 	closeNotes: string
 	/**
+	 * C​o​o​r​d​i​n​a​t​e​s
+	 */
+	coordinates: string
+	/**
 	 * C​o​u​r​s​e
 	 */
 	course: string
@@ -239,6 +243,10 @@ export type TranslationFunctions = {
 	 * close notes
 	 */
 	closeNotes: () => LocalizedString
+	/**
+	 * Coordinates
+	 */
+	coordinates: () => LocalizedString
 	/**
 	 * Course
 	 */

@@ -1,6 +1,6 @@
 import { LatLngBounds } from 'leaflet';
 
-import Airport, { AirportType, Composite, Condition } from './Airport';
+import Airport, { AirportType, Composite, Condition, Runway } from './Airport';
 import Airspace, { AirspaceType, Limit, LimitUnit } from './Airspace';
 import { FrequencyType, FrequencyUnit } from './Frequency';
 import Navaid from './Navaid';
@@ -65,4 +65,5 @@ export {
   Navaid,
   POI,
   ReportingPoint,
+  type Runway,
 };

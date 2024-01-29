@@ -60,10 +60,17 @@ export enum AirportType {
   Altiport,
 }
 
-interface Runway {
+export interface Runway {
   _id: string;
   designator: string;
+  landingOnly: boolean;
+  mainRunway: boolean;
+  operations: number;
+  pilotCtrlLighting: boolean;
   surface: { composition: Composite[]; condition: Condition; mainComposite: Composite };
+  takeOffOnly: boolean;
+  trueHeading: number;
+  turnDirection: number;
 }
 
 export interface AirportProps extends PointPOIProps {
