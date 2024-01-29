@@ -60,12 +60,18 @@ export enum AirportType {
   Altiport,
 }
 
+export enum Operations {
+  Active,
+  TemporarilyClosed,
+  Closed,
+}
+
 export interface Runway {
   _id: string;
   designator: string;
   landingOnly: boolean;
   mainRunway: boolean;
-  operations: number;
+  operations: Operations;
   pilotCtrlLighting: boolean;
   surface: { composition: Composite[]; condition: Condition; mainComposite: Composite };
   takeOffOnly: boolean;
