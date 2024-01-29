@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 
-import { Airport, Composite, FrequencyType, Runway } from '../openAIP';
+import { Airport, Composite, FrequencyType, Operations, Runway } from '../openAIP';
 import Labelled from './Labelled';
 
 function similarObjects<T>(a: T, b: T, fields: (keyof T)[]) {
@@ -21,6 +21,8 @@ function sameRunway(a: Runway, b: Runway) {
     a.surface.mainComposite === b.surface.mainComposite
   );
 }
+
+const lineThrough = { textDecoration: 'line-through' };
 
 interface AirportDetailsProps {
   airport: Airport;
@@ -49,7 +51,10 @@ export default function AirportDetails({ airport }: AirportDetailsProps) {
         ))}
       <Typography variant="subtitle1">Runways</Typography>
       {runways?.map(([runway, runway2]) => (
-        <Typography key={runway._id}>
+        <Typography
+          key={runway._id}
+          sx={runway.operations > Operations.Active ? lineThrough : undefined}
+        >
           {runway.designator} {runway2 ? `/ ${runway2.designator}` : ''}{' '}
           {Composite[runway.surface.mainComposite]}
         </Typography>
