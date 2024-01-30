@@ -1,33 +1,30 @@
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Box } from '@mui/material';
-import { SyntheticEvent, useState } from 'react';
+import { Fragment, SyntheticEvent, useState } from 'react';
 
-import fuelUnits from '../../components/fuelUnits';
-import * as math from '../../components/math';
 import { useStore } from '../../components/store';
-import { useI18nContext } from '../../i18n/i18n-react';
 import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
-import { formatDistance, formatDuration } from '../plan/components/FlightPlanTable/common';
-import usePartials from '../plan/components/FlightPlanTable/usePartials';
+import usePartials, { initialValues } from '../plan/components/FlightPlanTable/usePartials';
 import DndContext from './components/DndContext';
 import LegDetails from './components/LegDetails';
-import Total from './components/Total';
+import TripStats, { TripStatsProps } from './components/TripStats';
 
 let savedExpanded: string | false = false;
 const wmm = new WorldMagneticModel();
+const partialNumericKeys = Object.keys(initialValues) as (keyof typeof initialValues)[];
 
 export const Component = function PlanPage() {
-  const { LL } = useI18nContext();
-  const { fuel, legs, setLegs } = useStore();
+  const { legs, setLegs } = useStore();
   const [expanded, setExpanded] = useState<string | false>(savedExpanded);
   const partials = usePartials(wmm);
-  const totalFuelConsumption = math.sum(
-    ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0),
-  );
-  const totalTripDistance = math.sum(...partials.map((partial) => partial.distance));
-  const totalTripDuration = math.sum(
-    ...partials.map((partial) => partial.ete).filter((ete) => ete > 0),
+  const totals = partials.reduce(
+    (total: TripStatsProps['partial'], partial) => {
+      partialNumericKeys.forEach((key) => {
+        total[key] = (total[key] >= 0 ? total[key] : 0) + partial[key];
+      });
+      return total;
+    },
+    { ...initialValues },
   );
 
   const handleChange = (panel: string) => (_event: SyntheticEvent, isExpanded: boolean) => {
@@ -48,26 +45,20 @@ export const Component = function PlanPage() {
 
   return (
     <>
-      <Box display="flex" m={1}>
-        <Total>
-          {formatDistance(totalTripDistance)} {LL.nauticalMiles_unit()}
-        </Total>
-        <Total>{formatDuration(totalTripDuration)} hs</Total>
-        <Total>
-          {totalFuelConsumption.toFixed(2)} {fuelUnits.get(fuel.unit)}
-        </Total>
-      </Box>
       <DndContext onDragEnd={onDragEnd}>
         <SortableContext items={legs.map((leg) => leg.key)} strategy={verticalListSortingStrategy}>
           {legs.map((leg, index) => (
-            <LegDetails
-              expanded={expanded}
-              index={index}
-              key={leg.key}
-              leg={leg}
-              onChange={handleChange(leg.key)}
-            />
+            <Fragment key={leg.key}>
+              {index > 0 && <TripStats partial={partials[index]} />}
+              <LegDetails
+                expanded={expanded}
+                index={index}
+                leg={leg}
+                onChange={handleChange(leg.key)}
+              />
+            </Fragment>
           ))}
+          <TripStats partial={totals} total />
         </SortableContext>
       </DndContext>
     </>

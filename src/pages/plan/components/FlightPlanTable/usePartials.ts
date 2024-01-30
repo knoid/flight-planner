@@ -28,6 +28,15 @@ const defaultAltitudeKm = math.toKilometers('2000');
 const hour = 60 * 60 * 1000;
 const now = new Date();
 const yearFloat = now.getFullYear() + now.getMonth() / 12;
+export const initialValues = {
+  course: -1,
+  distance: 0,
+  ete: -1,
+  groundSpeed: -1,
+  heading: -1,
+  remainingFuel: 0,
+  tripFuel: 0,
+} as const;
 
 function toRadians(poi: Airport | ReportingPoint) {
   return reverse(poi.geometry.coordinates).map(math.toRadians) as Coords;
@@ -48,15 +57,10 @@ export default function usePartials(wmm: WorldMagneticModel) {
 
   return legs.reduce((partials, leg) => {
     const empty = {
-      course: -1,
-      distance: 0,
+      ...initialValues,
       eta: startTime,
-      ete: -1,
-      groundSpeed: -1,
-      heading: -1,
       leg,
       remainingFuel: fuelCapacity,
-      tripFuel: 0,
     };
 
     const poi = airports.get(leg._id) || reportingPoints.get(leg._id);
