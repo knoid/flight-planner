@@ -30,9 +30,9 @@ interface AirportDetailsProps {
 
 export default function AirportDetails({ airport }: AirportDetailsProps) {
   const runways = airport.runways?.reduce((accumulator: Runway[][], runway) => {
-    const sameRunwayIndex = accumulator.findIndex(([runway1]) => sameRunway(runway1, runway));
-    if (sameRunwayIndex >= 0) {
-      accumulator[sameRunwayIndex].push(runway);
+    const runwayGroup = accumulator.find(([runway1]) => sameRunway(runway1, runway));
+    if (runwayGroup) {
+      runwayGroup.push(runway);
     } else {
       accumulator.push([runway]);
     }
