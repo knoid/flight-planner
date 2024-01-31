@@ -65,7 +65,7 @@ export default function LegDetails({ expanded, index, leg, onChange }: LegDetail
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ display: 'flex', padding: 0 }}>
-        <WaypointDetails id={leg._id} expanded={isExpanded} />
+        <WaypointDetails airport={airport} expanded={isExpanded} reportingPoint={reportingPoint} />
       </AccordionDetails>
     </Accordion>
   );

@@ -2,8 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { Marker } from 'react-leaflet';
 
 import { AirportIcon, AirspaceMarker, DivIcon, MapContainer, WaypointIcon } from '../map';
-import { FrequencyType, Limit, LimitUnit } from '../openAIP';
-import { useAirport, useAirspace, useReportingPoint } from '../POIsContext';
+import { Airport, Airspace, FrequencyType, Limit, LimitUnit, ReportingPoint } from '../openAIP';
 import AirportDetails from './AirportDetails';
 import Labelled from './Labelled';
 import PointPOI from './PointPOI';
@@ -23,14 +22,18 @@ function AirspaceLimit(limit: Limit) {
 }
 
 export interface WaypointDetailsProps {
+  airport?: Airport;
+  airspace?: Airspace;
   expanded?: boolean;
-  id: string;
+  reportingPoint?: ReportingPoint;
 }
 
-export default function WaypointDetails({ expanded, id }: WaypointDetailsProps) {
-  const airport = useAirport(id);
-  const airspace = useAirspace(id);
-  const reportingPoint = useReportingPoint(id);
+export default function WaypointDetails({
+  airport,
+  airspace,
+  expanded,
+  reportingPoint,
+}: WaypointDetailsProps) {
   const poi = airport || reportingPoint;
   return (
     <>

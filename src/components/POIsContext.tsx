@@ -164,13 +164,15 @@ type POIProp = {
 };
 
 function createUsePOI<Key extends keyof POIProp>(name: Key) {
-  return function useFetchPOI(_id: string) {
+  return function useFetchPOI(_id: string | false) {
     const [pois, setNewPOIs] = useContext(POIsContext)[name] as UsePOI<POIProp[Key]>;
     useEffect(() => {
-      setNewPOIs((prev) => [...prev, _id]);
-      return () => setNewPOIs((prev) => prev.filter((id) => id !== _id));
+      if (_id) {
+        setNewPOIs((prev) => [...prev, _id]);
+        return () => setNewPOIs((prev) => prev.filter((id) => id !== _id));
+      }
     }, []);
-    return pois.get(_id);
+    return _id ? pois.get(_id) : undefined;
   };
 }
 
