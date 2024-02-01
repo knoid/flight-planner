@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react';
 import * as math from '../../../../components/math';
 import { useAirport, useReportingPoint } from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
+import { Leg } from '../../../../components/store/constants';
+import timeToDate from '../../../../utils/timeToDate';
 import { TableCell } from '../Table';
 import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
@@ -11,6 +13,7 @@ import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
 import { CommonCells, CommonCellsProps, formatDistance, formatDuration, pad2 } from './common';
 import NotesRow from './NotesRow';
+import { Partial } from './usePartials';
 
 export const FillInCell = styled(TableCell)(({ theme }) => {
   const borderColor =
@@ -42,30 +45,37 @@ function formatTime(date: Date) {
   return `${hours}:${minutes}`;
 }
 
+const hour = 60 * 60 * 1000;
+
 interface TableRowProps extends Omit<CommonCellsProps, 'poi'> {
   hasAltitude?: boolean;
+  leg: Leg;
   onAltitudeChange: (index: number, value: string) => void;
   onAltitudeCopyDown: (index: number) => void;
   onNotesChange: (index: number, value?: string) => void;
   onWindChange: (index: number, value: string) => void;
   onWindCopyDown: (index: number) => void;
+  totals: Partial;
 }
 
 export default function WaypointRow({
   hasAltitude,
+  leg,
   onAltitudeChange: onAltitudeChangeProp,
   onAltitudeCopyDown: onAltitudeCopyDownProp,
   onNotesChange: onNotesChangeProp,
   onWindChange: onWindChangeProp,
   onWindCopyDown: onWindCopyDownProp,
+  totals,
   ...commonCellsProps
 }: TableRowProps) {
   const { index, partial } = commonCellsProps;
-  const { fuel } = useStore();
-  const airport = useAirport(partial.leg._id);
-  const reportingPoint = useReportingPoint(partial.leg._id);
+  const { fuel, startTime: savedStartTime } = useStore();
+  const remainingFuel = fuel.capacity - totals.tripFuel;
+  const airport = useAirport(leg._id);
+  const reportingPoint = useReportingPoint(leg._id);
 
-  const [open, setOpen] = useState(typeof partial.leg.notes === 'string');
+  const [open, setOpen] = useState(typeof leg.notes === 'string');
   function toggleNotes() {
     setOpen((open) => !open);
   }
@@ -80,9 +90,11 @@ export default function WaypointRow({
   const onWindCopyDown = useCallback(() => onWindCopyDownProp(index), [index]);
 
   if (index > 0) {
-    const hasRem = partial.remainingFuel !== -1;
-    const inReserve = hasRem && partial.remainingFuel <= fuel.reserve;
-    const noFuel = hasRem && partial.remainingFuel <= 0;
+    const hasRem = fuel.capacity >= 0;
+    const inReserve = hasRem && remainingFuel <= fuel.reserve;
+    const noFuel = hasRem && remainingFuel <= 0;
+    const startTime = savedStartTime ? timeToDate(savedStartTime) : null;
+    const eta = startTime ? new Date(startTime.getTime() + totals.ete * hour) : null;
     return (
       <>
         <TableRow>
@@ -95,7 +107,7 @@ export default function WaypointRow({
               aria-describedby="altitude-label"
               onChange={onAltitudeChange}
               onCopyDown={onAltitudeCopyDown}
-              value={partial.leg.altitude}
+              value={leg.altitude}
             />
           </TableCell>
           <TableCell align="center">
@@ -106,7 +118,7 @@ export default function WaypointRow({
               aria-describedby="wind-label"
               onCopyDown={onWindCopyDown}
               onChange={onWindChange}
-              value={partial.leg.wind}
+              value={leg.wind}
             />
           </TableCell>
           <TableCell align="center">
@@ -114,15 +126,15 @@ export default function WaypointRow({
           </TableCell>
           <TableCell>{partial.groundSpeed > -1 ? Math.round(partial.groundSpeed) : ''}</TableCell>
           <TableCell align="center">{partial.ete > 0 ? formatDuration(partial.ete) : ''}</TableCell>
-          <FillInCell>{partial.eta ? formatTime(partial.eta) : ''}</FillInCell>
+          <FillInCell>{eta ? formatTime(eta) : ''}</FillInCell>
           <FillInCell />
           <TableCell>{partial.tripFuel !== -1 ? partial.tripFuel.toFixed(2) : ''}</TableCell>
           <TableCell color={noFuel ? 'error' : inReserve ? 'warning' : undefined}>
-            {hasRem ? partial.remainingFuel.toFixed(2) : ''}
+            {hasRem ? remainingFuel.toFixed(2) : ''}
           </TableCell>
           <AddNotesCell onClick={toggleNotes} open={open} />
         </TableRow>
-        <NotesRow onChange={onNotesChange} value={partial.leg.notes || ''} open={open} />
+        <NotesRow onChange={onNotesChange} value={leg.notes || ''} open={open} />
       </>
     );
   }
@@ -142,12 +154,10 @@ export default function WaypointRow({
           </VisuallyHidden>
         </FillInCell>
         <TableCell />
-        <TableCell>
-          {partial.remainingFuel !== -1 ? partial.remainingFuel.toFixed(2) : ''}
-        </TableCell>
+        <TableCell>{remainingFuel !== -1 ? remainingFuel.toFixed(2) : ''}</TableCell>
         <AddNotesCell onClick={toggleNotes} open={open} />
       </TableRow>
-      <NotesRow onChange={onNotesChange} open={open} value={partial.leg.notes || ''} />
+      <NotesRow onChange={onNotesChange} open={open} value={leg.notes || ''} />
     </>
   );
 }

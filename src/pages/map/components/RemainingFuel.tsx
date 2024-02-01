@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Circle } from 'react-leaflet';
 
+import * as math from '../../../components/math';
 import POIsContext from '../../../components/POIsContext';
 import { useStore } from '../../../components/store';
 import { WorldMagneticModel } from '../../../utils/WorldMagneticModel';
@@ -10,7 +11,7 @@ const nm2m = 1852;
 const wmm = new WorldMagneticModel();
 
 export default function RemainingFuel() {
-  const { cruiseSpeed, fuel } = useStore();
+  const { cruiseSpeed, fuel, legs } = useStore();
   const partials = usePartials(wmm);
   const {
     airports: [airports],
@@ -20,13 +21,15 @@ export default function RemainingFuel() {
   function fuelToMeters(remainingFuel: number) {
     return (remainingFuel / fuel.flow) * cruiseSpeed * nm2m;
   }
+  const totalFuel = math.sum(...partials.map((partial) => partial.tripFuel));
+  const remainingFuel = fuel.capacity - totalFuel;
 
   if (partials.length > 0) {
-    const lastPartial = partials[partials.length - 1];
-    const lastPOI = airports.get(lastPartial.leg._id) || reportingPoints.get(lastPartial.leg._id);
+    const leg = legs[partials.length - 1];
+    const lastPOI = airports.get(leg._id) || reportingPoints.get(leg._id);
     const lastCoords = lastPOI?.latLng();
-    const remainingRadius = fuelToMeters(lastPartial.remainingFuel - fuel.reserve);
-    const reserveRadius = fuelToMeters(lastPartial.remainingFuel);
+    const remainingRadius = fuelToMeters(remainingFuel - fuel.reserve);
+    const reserveRadius = fuelToMeters(remainingFuel);
     if (lastCoords) {
       return (
         <>

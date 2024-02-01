@@ -4,28 +4,21 @@ import * as math from '../../../../components/math';
 import type { Airport, ReportingPoint } from '../../../../components/openAIP';
 import POIsContext from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
-import type { Leg } from '../../../../components/store/constants';
 import type { Coords } from '../../../../types';
 import reverse from '../../../../utils/reverse';
-import timeToDate from '../../../../utils/timeToDate';
 import type { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
 
 export interface Partial {
   course: number;
   distance: number;
-  /** Estimated time of arrival in hours. */
-  eta: Date | null;
   /** Estimated time enroute in hours. */
   ete: number;
   groundSpeed: number;
   heading: number;
-  leg: Leg;
-  remainingFuel: number;
   tripFuel: number;
 }
 
 const defaultAltitudeKm = math.toKilometers('2000');
-const hour = 60 * 60 * 1000;
 const now = new Date();
 const yearFloat = now.getFullYear() + now.getMonth() / 12;
 export const initialValues = {
@@ -34,7 +27,6 @@ export const initialValues = {
   ete: -1,
   groundSpeed: -1,
   heading: -1,
-  remainingFuel: 0,
   tripFuel: 0,
 } as const;
 
@@ -45,31 +37,24 @@ function toRadians(poi: Airport | ReportingPoint) {
 export default function usePartials(wmm: WorldMagneticModel) {
   const {
     cruiseSpeed,
-    fuel: { capacity: fuelCapacity, flow: fuelFlow },
+    fuel: { flow: fuelFlow },
     legs,
-    startTime: savedStartTime,
   } = useStore();
   const {
     airports: [airports],
     reportingPoints: [reportingPoints],
   } = useContext(POIsContext);
-  const startTime = savedStartTime ? timeToDate(savedStartTime) : null;
 
   return legs.reduce((partials, leg) => {
-    const empty = {
-      ...initialValues,
-      eta: startTime,
-      leg,
-      remainingFuel: fuelCapacity,
-    };
+    const empty = { ...initialValues };
 
     const poi = airports.get(leg._id) || reportingPoints.get(leg._id);
     if (!poi || partials.length === 0) {
       return [...partials, empty];
     }
 
-    const last = partials[partials.length - 1];
-    const lastPoi = airports.get(last.leg._id) || reportingPoints.get(last.leg._id);
+    const lastLeg = legs[partials.length - 1];
+    const lastPoi = airports.get(lastLeg._id) || reportingPoints.get(lastLeg._id);
     if (!lastPoi) {
       return [...partials, empty];
     }
@@ -92,12 +77,9 @@ export default function usePartials(wmm: WorldMagneticModel) {
       {
         course: course - declination,
         distance,
-        eta: groundSpeed > -1 && last.eta ? new Date(last.eta.getTime() + ete * hour) : null,
         ete,
         groundSpeed,
         heading: heading > 0 ? heading - declination : heading,
-        leg,
-        remainingFuel: last.remainingFuel > 0 ? last.remainingFuel - tripFuel : -1,
         tripFuel,
       },
     ];
