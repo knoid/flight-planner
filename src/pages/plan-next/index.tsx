@@ -7,19 +7,19 @@ import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
 import usePartials, { initialValues } from '../plan/components/FlightPlanTable/usePartials';
 import DndContext from './components/DndContext';
 import LegDetails from './components/LegDetails';
-import TripStats, { TripStatsProps } from './components/TripStats';
+import TripStats from './components/TripStats';
 
 let savedExpanded: string | false = false;
 const wmm = new WorldMagneticModel();
-const partialNumericKeys = Object.keys(initialValues) as (keyof typeof initialValues)[];
+const partialKeys = Object.keys(initialValues) as (keyof typeof initialValues)[];
 
 export const Component = function PlanPage() {
   const { legs, setLegs } = useStore();
   const [expanded, setExpanded] = useState<string | false>(savedExpanded);
   const partials = usePartials(wmm);
   const totals = partials.reduce(
-    (total: TripStatsProps['partial'], partial) => {
-      partialNumericKeys.forEach((key) => {
+    (total, partial) => {
+      partialKeys.forEach((key) => {
         total[key] = (total[key] >= 0 ? total[key] : 0) + partial[key];
       });
       return total;
