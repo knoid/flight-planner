@@ -5,6 +5,7 @@ import Airspace, { AirspaceType, Limit, LimitUnit } from './Airspace';
 import { FrequencyType, FrequencyUnit } from './Frequency';
 import Navaid from './Navaid';
 import POI from './POI';
+import PointPOI from './PointPOI';
 import ReportingPoint from './ReportingPoint';
 
 interface PagingResult<Item> {
@@ -65,6 +66,7 @@ export {
   Navaid,
   Operations,
   POI,
+  PointPOI,
   ReportingPoint,
   type Runway,
 };

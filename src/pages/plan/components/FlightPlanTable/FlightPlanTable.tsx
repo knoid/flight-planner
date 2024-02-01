@@ -10,7 +10,6 @@ import { nanoid } from 'nanoid';
 import { SyntheticEvent } from 'react';
 
 import fuelUnits from '../../../../components/fuelUnits';
-import * as math from '../../../../components/math';
 import { POI } from '../../../../components/openAIP';
 import { useStore } from '../../../../components/store';
 import { useI18nContext } from '../../../../i18n/i18n-react';
@@ -19,7 +18,7 @@ import HideOnPrint from '../HideOnPrint';
 import POIInput from '../POIInput';
 import Table, { TableCell, TableHead } from '../Table';
 import { formatDistance, formatDuration } from './common';
-import usePartials, { initialValues } from './usePartials';
+import usePartials, { initialValues, Partial } from './usePartials';
 import WaypointRow from './WaypointRow';
 
 const TotalsTableCell = styled(TableCell)({
@@ -102,25 +101,18 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
 
   const partials = usePartials(wmm);
   const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
-  const addedPartials = partials.map((partial, index) => {
+  const addedPartials = partials.reduce((previousPartials: Partial[], partial, index) => {
     if (index === 0) {
-      return partial;
+      return [partial];
     }
 
-    const last = { ...partials[index - 1] };
+    const last = { ...previousPartials[index - 1] };
     partialKeys.forEach((key) => {
       last[key] = (last[key] >= 0 ? last[key] : 0) + partial[key];
     });
-    return last;
-  });
-
-  const totalFuelConsumption = math.sum(
-    ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0),
-  );
-  const totalTripDistance = math.sum(...partials.map((partial) => partial.distance));
-  const totalTripDuration = math.sum(
-    ...partials.map((partial) => partial.ete).filter((ete) => ete > 0),
-  );
+    return [...previousPartials, last];
+  }, []);
+  const totals = addedPartials[addedPartials.length - 1];
 
   return (
     <Table>
@@ -210,18 +202,18 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           </TotalsTableCell>
           <TableCell colSpan={1 + intIncludeFrequencies} />
           <TableCell align="right">
-            {formatDistance(totalTripDistance)}
+            {formatDistance(totals.distance)}
             <Unit>{LL.nauticalMiles_unit()}</Unit>
           </TableCell>
           <TableCell hideInPrint={!hasAltitude} />
           <TableCell colSpan={4} />
           <TableCell align="center">
-            {formatDuration(totalTripDuration)}
+            {totals.ete >= 0 ? formatDuration(totals.ete) : 0}
             <Unit>hs</Unit>
           </TableCell>
           <TableCell colSpan={2} />
           <TableCell align="right">
-            {totalFuelConsumption.toFixed(2)}
+            {totals.tripFuel.toFixed(2)}
             <Unit>{fuelUnits.get(fuel.unit)}</Unit>
           </TableCell>
           <TableCell />

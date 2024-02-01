@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
 import * as math from '../../../../components/math';
-import type { Airport, ReportingPoint } from '../../../../components/openAIP';
+import type { PointPOI } from '../../../../components/openAIP';
 import POIsContext from '../../../../components/POIsContext';
 import { useStore } from '../../../../components/store';
 import type { Coords } from '../../../../types';
@@ -30,7 +30,7 @@ export const initialValues = {
   tripFuel: 0,
 } as const;
 
-function toRadians(poi: Airport | ReportingPoint) {
+function toRadians(poi: PointPOI) {
   return reverse(poi.geometry.coordinates).map(math.toRadians) as Coords;
 }
 
