@@ -9,7 +9,6 @@ import {
   FrequencyType,
   FrequencyUnit,
 } from '../../../../components/openAIP';
-import { Leg } from '../../../../components/store/constants';
 import { CommonCells } from './common';
 import { Partial } from './usePartials';
 
@@ -64,21 +63,12 @@ describe('CommonCells', () => {
         },
       ],
     });
-    const leg = {
-      _id: airport._id,
-      altitude: '',
-      key: 'TEST-ABCD',
-      wind: '',
-    } satisfies Leg;
     const partial = {
       course: Math.PI,
       distance: 1,
-      eta: new Date(),
       ete: 3,
       groundSpeed: 4,
       heading: 5,
-      leg,
-      remainingFuel: 6,
       tripFuel: 7,
     } satisfies Partial;
     render(

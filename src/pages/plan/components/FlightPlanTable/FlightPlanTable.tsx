@@ -19,7 +19,7 @@ import HideOnPrint from '../HideOnPrint';
 import POIInput from '../POIInput';
 import Table, { TableCell, TableHead } from '../Table';
 import { formatDistance, formatDuration } from './common';
-import usePartials from './usePartials';
+import usePartials, { initialValues } from './usePartials';
 import WaypointRow from './WaypointRow';
 
 const TotalsTableCell = styled(TableCell)({
@@ -34,6 +34,8 @@ const Unit = styled('span')({
 interface FlightPlanTableProps {
   wmm: WorldMagneticModel;
 }
+
+const partialKeys = Object.keys(initialValues) as (keyof typeof initialValues)[];
 
 export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   const { LL } = useI18nContext();
@@ -100,6 +102,18 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
 
   const partials = usePartials(wmm);
   const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
+  const addedPartials = partials.map((partial, index) => {
+    if (index === 0) {
+      return partial;
+    }
+
+    const last = { ...partials[index - 1] };
+    partialKeys.forEach((key) => {
+      last[key] = (last[key] >= 0 ? last[key] : 0) + partial[key];
+    });
+    return last;
+  });
+
   const totalFuelConsumption = math.sum(
     ...partials.map((partial) => partial.tripFuel).filter((trip) => trip > 0),
   );
@@ -174,7 +188,8 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             disableUp={index === 0}
             hasAltitude={hasAltitude}
             index={index}
-            key={partial.leg.key}
+            key={legs[index].key}
+            leg={legs[index]}
             onAltitudeChange={onAltitudeChange}
             onAltitudeCopyDown={onAltitudeCopyDown}
             onMoveLeg={moveLeg}
@@ -183,6 +198,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             onWindChange={onWindChange}
             onWindCopyDown={onWindCopyDown}
             partial={partial}
+            totals={addedPartials[index]}
           />
         ))}
       </TableBody>

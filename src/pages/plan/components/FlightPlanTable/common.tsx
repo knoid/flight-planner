@@ -32,13 +32,13 @@ const Grid = styled('div')({
 });
 
 export interface CommonCellsProps {
-  poi: Airport | ReportingPoint | undefined;
   disableDown: boolean;
   disableUp: boolean;
   index: number;
   onMoveLeg: (direction: number, index: number) => void;
   onRemove: (index: number) => void;
   partial: Partial;
+  poi: Airport | ReportingPoint | undefined;
 }
 
 export function CommonCells({
