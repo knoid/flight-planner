@@ -1,5 +1,6 @@
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Grid } from '@mui/material';
 import { Fragment, SyntheticEvent, useState } from 'react';
 
 import { useStore } from '../../components/store';
@@ -7,6 +8,7 @@ import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
 import usePartials, { initialValues } from '../plan/components/FlightPlanTable/usePartials';
 import DndContext from './components/DndContext';
 import LegDetails from './components/LegDetails';
+import TimeInput from './components/TimeInput';
 import TripStats from './components/TripStats';
 
 let savedExpanded: string | false = false;
@@ -45,6 +47,12 @@ export const Component = function PlanPage() {
 
   return (
     <>
+      <Grid container p={1} spacing={1}>
+        <Grid item xs={6} />
+        <Grid item xs={6}>
+          <TimeInput />
+        </Grid>
+      </Grid>
       <DndContext onDragEnd={onDragEnd}>
         <SortableContext items={legs.map((leg) => leg.key)} strategy={verticalListSortingStrategy}>
           {legs.map((leg, index) => (

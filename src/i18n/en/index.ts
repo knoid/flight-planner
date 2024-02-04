@@ -11,6 +11,7 @@ const en = {
   course: 'Course',
   cruiseSpeed: 'Cruise speed',
   date: 'Date',
+  departureTime: 'Departure time',
   distance_abbr: 'Dist.',
   distance: 'Distance',
   dnd: {
