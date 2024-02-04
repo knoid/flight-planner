@@ -1,4 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AnchorHTMLAttributes, ForwardedRef, forwardRef, useEffect } from 'react';
 import {
   createBrowserRouter,
@@ -64,16 +66,18 @@ export default function App() {
 
   return (
     <StoreProvider>
-      <NotamProvider>
-        <POIsProvider>
-          <ThemeProvider theme={theme}>
-            <TypesafeI18n locale={locale}>
-              <CssBaseline />
-              <RouterProvider router={router} />
-            </TypesafeI18n>
-          </ThemeProvider>
-        </POIsProvider>
-      </NotamProvider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <NotamProvider>
+          <POIsProvider>
+            <ThemeProvider theme={theme}>
+              <TypesafeI18n locale={locale}>
+                <CssBaseline />
+                <RouterProvider router={router} />
+              </TypesafeI18n>
+            </ThemeProvider>
+          </POIsProvider>
+        </NotamProvider>
+      </LocalizationProvider>
     </StoreProvider>
   );
 }

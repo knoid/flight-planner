@@ -69,6 +69,10 @@ type RootTranslation = {
 	 */
 	date: string
 	/**
+	 * D​e​p​a​r​t​u​r​e​ ​t​i​m​e
+	 */
+	departureTime: string
+	/**
 	 * D​i​s​t​.
 	 */
 	distance_abbr: string
@@ -259,6 +263,10 @@ export type TranslationFunctions = {
 	 * Date
 	 */
 	date: () => LocalizedString
+	/**
+	 * Departure time
+	 */
+	departureTime: () => LocalizedString
 	/**
 	 * Dist.
 	 */
