@@ -57,7 +57,7 @@ export const Component = function PlanPage() {
         <SortableContext items={legs.map((leg) => leg.key)} strategy={verticalListSortingStrategy}>
           {legs.map((leg, index) => (
             <Fragment key={leg.key}>
-              {index > 0 && <TripStats partial={partials[index]} />}
+              {index > 0 && <TripStats leg={leg} partial={partials[index]} />}
               <LegDetails
                 expanded={expanded}
                 index={index}
