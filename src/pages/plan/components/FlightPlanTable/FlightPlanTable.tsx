@@ -112,7 +112,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     });
     return [...previousPartials, last];
   }, []);
-  const totals = addedPartials[addedPartials.length - 1];
+  const totals = addedPartials.length > 0 ? addedPartials[addedPartials.length - 1] : initialValues;
 
   return (
     <Table>
