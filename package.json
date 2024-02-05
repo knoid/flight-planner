@@ -27,7 +27,7 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.22.0",
     "typesafe-i18n": "^5.26.2",
-    "usehooks-ts": "^2.10.0",
+    "usehooks-ts": "^2.12.1",
     "web-vitals": "^3.5.2"
   },
   "devDependencies": {
