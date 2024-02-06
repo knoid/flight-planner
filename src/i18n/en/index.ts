@@ -2,6 +2,7 @@ import type { BaseTranslation } from '../i18n-types';
 
 const en = {
   addNew: 'Add new',
+  addToPlan: 'Add to flight plan',
   airport: 'Airport',
   altitude: 'Altitude',
   callSign: 'Call Sign',
@@ -42,6 +43,7 @@ const en = {
   notes_placeholder: 'Notes…',
   openNotes: 'open notes',
   plane: 'Plane',
+  removeFromPlan: 'Remove from flight plan',
   runways: 'Runways',
   searchPOI: 'Search POIs',
   title: 'Title',

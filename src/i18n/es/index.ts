@@ -2,6 +2,7 @@ import type { Translation } from '../i18n-types';
 
 const es = {
   addNew: 'Agregar otro',
+  addToPlan: 'Agregar al plan de vuelo',
   airport: 'Aeropuerto',
   altitude: 'Altitud',
   callSign: 'Matrícula',
@@ -42,6 +43,7 @@ const es = {
   notes_placeholder: 'Notas…',
   openNotes: 'abrir notas',
   plane: 'Avión',
+  removeFromPlan: 'Sacar del plan de vuelo',
   runways: 'Pistas',
   searchPOI: 'Buscar punto de interés',
   title: 'Título',

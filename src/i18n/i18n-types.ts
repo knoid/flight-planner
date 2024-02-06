@@ -19,6 +19,10 @@ type RootTranslation = {
 	 */
 	addNew: string
 	/**
+	 * A​d​d​ ​t​o​ ​f​l​i​g​h​t​ ​p​l​a​n
+	 */
+	addToPlan: string
+	/**
 	 * A​i​r​p​o​r​t
 	 */
 	airport: string
@@ -183,6 +187,10 @@ type RootTranslation = {
 	 */
 	plane: string
 	/**
+	 * R​e​m​o​v​e​ ​f​r​o​m​ ​f​l​i​g​h​t​ ​p​l​a​n
+	 */
+	removeFromPlan: string
+	/**
 	 * R​u​n​w​a​y​s
 	 */
 	runways: string
@@ -213,6 +221,10 @@ export type TranslationFunctions = {
 	 * Add new
 	 */
 	addNew: () => LocalizedString
+	/**
+	 * Add to flight plan
+	 */
+	addToPlan: () => LocalizedString
 	/**
 	 * Airport
 	 */
@@ -369,6 +381,10 @@ export type TranslationFunctions = {
 	 * Plane
 	 */
 	plane: () => LocalizedString
+	/**
+	 * Remove from flight plan
+	 */
+	removeFromPlan: () => LocalizedString
 	/**
 	 * Runways
 	 */
