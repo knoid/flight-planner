@@ -237,8 +237,8 @@ export const MobileWindPicker = forwardRef(function MobileWindPicker(
                     style={{
                       fontSize: `${0.15 * value.speed}em`,
                       transform: [
-                        `rotate(${(180 + value.direction) % 360}deg)`,
                         'translate(-50%, -50%)',
+                        `rotate(${(180 + value.direction) % 360}deg)`,
                       ].join(' '),
                     }}
                   />
