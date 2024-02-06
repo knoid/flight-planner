@@ -8,7 +8,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { useDebounce } from 'usehooks-ts';
 
 import {
   Airport,
@@ -22,6 +21,7 @@ import {
   POIFetchParams,
   ReportingPoint,
 } from './openAIP';
+import useDebounce from './useDebounce';
 import usePOIMap, { POIMap } from './usePOIMap';
 
 interface ContextProps {
