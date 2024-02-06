@@ -38,7 +38,7 @@ export interface State {
 export const initialState: State = {
   altitude: 0,
   center: [0, 0],
-  cruiseSpeed: -1,
+  cruiseSpeed: 0,
   fuel: {
     capacity: -1,
     flow: -1,
