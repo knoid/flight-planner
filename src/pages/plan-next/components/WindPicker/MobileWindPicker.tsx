@@ -230,7 +230,6 @@ export const MobileWindPicker = forwardRef(function MobileWindPicker(
                   onMouseUp={handleMouseUp}
                   onMouseMove={handleMouseMove}
                 />
-                <WindPin />
                 {value.speed > 0 && (
                   <NavigationIcon
                     sx={{ left: '50%', position: 'absolute', top: '50%' }}
@@ -243,6 +242,7 @@ export const MobileWindPicker = forwardRef(function MobileWindPicker(
                     }}
                   />
                 )}
+                <WindPin />
                 <WindSelector role="listbox" tabIndex={0}>
                   <Direction angle={0}>{LL.cardinalDirections.N()}</Direction>
                   <Direction angle={45}>
