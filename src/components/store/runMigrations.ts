@@ -20,8 +20,7 @@ export default function runMigrations(data?: DeepPartial<State>): State {
   const legs = (data.legs || [])
     .filter(<T>(leg: T | undefined): leg is T => !!leg)
     .filter(<T extends { _id?: string }>(leg: T): leg is WithID<T> => !!leg._id)
-    .map(({ altitude, key, wind, ...leg }) => ({
-      altitude: altitude || '',
+    .map(({ key, wind, ...leg }) => ({
       wind: wind || '',
       key: key || nanoid(),
       ...leg,

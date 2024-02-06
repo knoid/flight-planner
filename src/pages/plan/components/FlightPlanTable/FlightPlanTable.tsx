@@ -61,7 +61,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     ]);
   }
 
-  function onChangeHandler(key: 'altitude' | 'wind') {
+  function onChangeHandler(key: 'wind') {
     return function onChange(modifiedIndex: number, value: string) {
       setLegs((legs) => [
         ...legs.map((leg, index) => (index === modifiedIndex ? { ...leg, [key]: value } : leg)),
@@ -69,10 +69,9 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     };
   }
 
-  const onAltitudeChange = onChangeHandler('altitude');
   const onWindChange = onChangeHandler('wind');
 
-  function onCopyDownHandler(key: 'altitude' | 'wind') {
+  function onCopyDownHandler(key: 'wind') {
     return function onCopyDown(index: number) {
       setLegs((legs) => {
         const value = legs[index][key];
@@ -84,7 +83,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
     };
   }
 
-  const onAltitudeCopyDown = onCopyDownHandler('altitude');
   const onWindCopyDown = onCopyDownHandler('wind');
 
   function moveLeg(dir: number, index: number) {
@@ -100,7 +98,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
   }
 
   const partials = usePartials(wmm);
-  const hasAltitude = !!legs.find((leg) => leg.altitude.length > 0);
   const addedPartials = partials.reduce((previousPartials: Partial[], partial, index) => {
     if (index === 0) {
       return [partial];
@@ -133,7 +130,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
               />
             </HideOnPrint>
           </TableCell>
-          <TableCell hideInPrint={!hasAltitude} />
           <TableCell align="center" colSpan={2}>
             {LL.fuel()}
           </TableCell>
@@ -151,9 +147,6 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           <TableCell align="center">Aero</TableCell>
           <TableCell title={`${LL.distance()} [${LL.nauticalMiles_unit()}]`}>
             {LL.distance_abbr()}
-          </TableCell>
-          <TableCell id="altitude-label" hideInPrint={!hasAltitude}>
-            {LL.altitude()}
           </TableCell>
           <TableCell>{LL.course()}</TableCell>
           <TableCell id="wind-label" title={LL.wind_help()}>
@@ -178,12 +171,9 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
           <WaypointRow
             disableDown={index === legs.length - 1}
             disableUp={index === 0}
-            hasAltitude={hasAltitude}
             index={index}
             key={legs[index].key}
             leg={legs[index]}
-            onAltitudeChange={onAltitudeChange}
-            onAltitudeCopyDown={onAltitudeCopyDown}
             onMoveLeg={moveLeg}
             onNotesChange={onNotesChange}
             onRemove={removeLeg}
@@ -205,7 +195,7 @@ export default function FlightPlanTable({ wmm }: FlightPlanTableProps) {
             {formatDistance(totals.distance)}
             <Unit>{LL.nauticalMiles_unit()}</Unit>
           </TableCell>
-          <TableCell hideInPrint={!hasAltitude} />
+          <TableCell hideInPrint={true} />
           <TableCell colSpan={4} />
           <TableCell align="center">
             {totals.ete >= 0 ? formatDuration(totals.ete) : 0}

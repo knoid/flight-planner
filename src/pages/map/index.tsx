@@ -1,5 +1,5 @@
 import { LatLng, Map } from 'leaflet';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Pane, useMapEvents } from 'react-leaflet';
 import { useMatch, useNavigate } from 'react-router-dom';
 
@@ -59,10 +59,9 @@ function useCenterZoomLocation() {
 }
 
 export const Component = function MapPage() {
-  const { showReminderOnMap, toggleReminderOnMap } = useStore();
+  const { altitude, setAltitude, showReminderOnMap, toggleReminderOnMap } = useStore();
   const { center, zoom } = useCenterZoomLocation();
   const mapRef = useRef<Map>(null);
-  const [rawAltitude, setRawAltitude] = useState(0);
   const paneRef = useRef<HTMLElement>(null);
 
   return (
@@ -76,7 +75,7 @@ export const Component = function MapPage() {
         zoomControl={false}
       >
         <Pane name="clickable" ref={paneRef}>
-          <Airspaces altitude={rawAltitude} />
+          <Airspaces altitude={altitude} />
           <MapMarkers />
         </Pane>
         {showReminderOnMap && <RemainingFuel />}
@@ -84,10 +83,10 @@ export const Component = function MapPage() {
         <ZoomControls />
       </MapContainer>
       <AirspaceSlider
-        value={rawAltitude}
+        value={altitude}
         onChange={(_event, values) => {
           const value = Array.isArray(values) ? values[0] : values;
-          setRawAltitude(value);
+          setAltitude(value);
         }}
       />
       <ToggleRemainingFuel selected={showReminderOnMap} onChange={toggleReminderOnMap} />

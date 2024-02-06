@@ -7,7 +7,6 @@ import { useStore } from '../../../../components/store';
 import { Leg } from '../../../../components/store/constants';
 import timeToDate from '../../../../utils/timeToDate';
 import { TableCell } from '../Table';
-import AltitudeInput from '../TextFields/AltitudeInput';
 import TimeInput from '../TextFields/TimeInput';
 import WindInput from '../TextFields/WindInput';
 import AddNotesCell from './AddNotesCell';
@@ -48,10 +47,7 @@ function formatTime(date: Date) {
 const hour = 60 * 60 * 1000;
 
 interface TableRowProps extends Omit<CommonCellsProps, 'poi'> {
-  hasAltitude?: boolean;
   leg: Leg;
-  onAltitudeChange: (index: number, value: string) => void;
-  onAltitudeCopyDown: (index: number) => void;
   onNotesChange: (index: number, value?: string) => void;
   onWindChange: (index: number, value: string) => void;
   onWindCopyDown: (index: number) => void;
@@ -59,10 +55,7 @@ interface TableRowProps extends Omit<CommonCellsProps, 'poi'> {
 }
 
 export default function WaypointRow({
-  hasAltitude,
   leg,
-  onAltitudeChange: onAltitudeChangeProp,
-  onAltitudeCopyDown: onAltitudeCopyDownProp,
   onNotesChange: onNotesChangeProp,
   onWindChange: onWindChangeProp,
   onWindCopyDown: onWindCopyDownProp,
@@ -80,11 +73,6 @@ export default function WaypointRow({
     setOpen((open) => !open);
   }
 
-  const onAltitudeChange = useCallback(
-    (value: string) => onAltitudeChangeProp(index, value),
-    [index],
-  );
-  const onAltitudeCopyDown = useCallback(() => onAltitudeCopyDownProp(index), [index]);
   const onNotesChange = useCallback((value?: string) => onNotesChangeProp(index, value), [index]);
   const onWindChange = useCallback((value: string) => onWindChangeProp(index, value), [index]);
   const onWindCopyDown = useCallback(() => onWindCopyDownProp(index), [index]);
@@ -101,14 +89,6 @@ export default function WaypointRow({
           <CommonCells poi={airport || reportingPoint} {...commonCellsProps} />
           <TableCell align="right">
             {partial.distance > 0 ? formatDistance(partial.distance) : ''}
-          </TableCell>
-          <TableCell hideInPrint={!hasAltitude}>
-            <AltitudeInput
-              aria-describedby="altitude-label"
-              onChange={onAltitudeChange}
-              onCopyDown={onAltitudeCopyDown}
-              value={leg.altitude}
-            />
           </TableCell>
           <TableCell align="center">
             {partial.course > -1 ? formatDegrees(partial.course) : ''}
@@ -144,7 +124,6 @@ export default function WaypointRow({
       <TableRow>
         <CommonCells poi={airport} {...commonCellsProps} />
         <TableCell colSpan={6} />
-        <TableCell hideInPrint={!hasAltitude} />
         <FillInCell>
           <TimeInput />
         </FillInCell>
