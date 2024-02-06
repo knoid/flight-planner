@@ -9,13 +9,13 @@ export enum FuelUnit {
 
 export interface Leg {
   _id: string;
-  altitude: string;
   key: string;
   wind: string;
   notes?: string;
 }
 
 export interface State {
+  altitude: number;
   center: [lat: number, lng: number];
   cruiseSpeed: number;
   fuel: {
@@ -36,6 +36,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  altitude: 0,
   center: [0, 0],
   cruiseSpeed: -1,
   fuel: {

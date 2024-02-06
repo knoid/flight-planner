@@ -18,7 +18,6 @@ export interface Partial {
   tripFuel: number;
 }
 
-const defaultAltitudeKm = math.toKilometers('2000');
 const now = new Date();
 const yearFloat = now.getFullYear() + now.getMonth() / 12;
 export const initialValues = {
@@ -36,6 +35,7 @@ function toRadians(poi: PointPOI) {
 
 export default function usePartials(wmm: WorldMagneticModel) {
   const {
+    altitude,
     cruiseSpeed,
     fuel: { flow: fuelFlow },
     legs,
@@ -61,7 +61,7 @@ export default function usePartials(wmm: WorldMagneticModel) {
 
     const from = toRadians(lastPoi);
     const to = toRadians(poi);
-    const altitudeKm = math.toKilometers(leg.altitude) || defaultAltitudeKm;
+    const altitudeKm = math.toKilometers(altitude);
     const declination = wmm.declination(altitudeKm, to, yearFloat);
     const [windSourceDeg, windSpeed = 0] = leg.wind.split('/').map(Number);
     const windSource = math.toRadians(windSourceDeg) + declination;

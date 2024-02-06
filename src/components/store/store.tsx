@@ -42,6 +42,11 @@ export function StoreProvider({ children }: StoreProviderProps) {
 export function useStore() {
   const [state, setState] = useContext(StoreContext);
 
+  const setAltitude = useCallback(
+    (altitude: number) => setState((state) => ({ ...state, altitude })),
+    [setState],
+  );
+
   const setCenter = useCallback(
     ({ lat, lng }: LatLng) => setState((state) => ({ ...state, center: [lat, lng] })),
     [setState],
@@ -103,6 +108,7 @@ export function useStore() {
 
   return useMemo(
     () => ({
+      setAltitude,
       setCenter,
       setCruiseSpeed,
       setFuel,

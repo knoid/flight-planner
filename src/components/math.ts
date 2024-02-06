@@ -66,11 +66,7 @@ export function toDegrees(radians: number) {
   return (180 / PI) * radians;
 }
 
-export function toKilometers(value: string) {
-  let feet = Number(value);
-  if (value.startsWith('FL')) {
-    feet = Number(value.substring(2)) * 100;
-  }
+export function toKilometers(feet: number) {
   return feet / 3280.8;
 }
 
