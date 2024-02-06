@@ -4,11 +4,19 @@ import fuelUnits from '../../../components/fuelUnits';
 import * as math from '../../../components/math';
 import { useStore } from '../../../components/store';
 import { Leg } from '../../../components/store/constants';
+import { Partial } from '../../../components/usePartials';
 import { useI18nContext } from '../../../i18n/i18n-react';
-import { formatDistance, formatDuration } from '../../plan/components/FlightPlanTable/common';
-import { Partial } from '../../plan/components/FlightPlanTable/usePartials';
 import Stat from './Stat';
 import WindPicker from './WindPicker';
+
+export function formatDistance(distance: number) {
+  return (math.toDegrees(distance) * 60).toFixed(1);
+}
+
+export function formatDuration(hours: number) {
+  const minutes = hours * 60;
+  return `${Math.floor(minutes / 60)}:${pad2(Math.round(minutes % 60))}`;
+}
 
 function formatDegrees(radians: number) {
   const degrees = math.remainder(math.toDegrees(radians), 360);

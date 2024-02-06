@@ -24,7 +24,6 @@ export interface State {
     reserve: number;
     unit: FuelUnit;
   };
-  includeFrequencies: boolean;
   legs: Leg[];
   metadata: {
     [key: string]: string | undefined;
@@ -45,7 +44,6 @@ export const initialState: State = {
     reserve: -1,
     unit: FuelUnit.GallonUS,
   },
-  includeFrequencies: true,
   legs: [],
   metadata: {},
   showReminderOnMap: true,

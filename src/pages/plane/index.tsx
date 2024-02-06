@@ -2,9 +2,9 @@ import { styled } from '@mui/material';
 
 import Section from '../../components/Section';
 import { useI18nContext } from '../../i18n/i18n-react';
-import MetadataField from '../plan/components/TextFields/MetadataField';
 import CruiseSpeedInput from './components/TextFields/CruiseSpeedInput';
 import FuelTextField from './components/TextFields/FuelTextField';
+import MetadataField from './components/TextFields/MetadataField';
 
 const Fieldset = styled(Section)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,

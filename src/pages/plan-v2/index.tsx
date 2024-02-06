@@ -4,8 +4,8 @@ import { Grid } from '@mui/material';
 import { Fragment, SyntheticEvent, useState } from 'react';
 
 import { useStore } from '../../components/store';
+import usePartials, { initialValues } from '../../components/usePartials';
 import { WorldMagneticModel } from '../../utils/WorldMagneticModel';
-import usePartials, { initialValues } from '../plan/components/FlightPlanTable/usePartials';
 import DndContext from './components/DndContext';
 import LegDetails from './components/LegDetails';
 import TimeInput from './components/TimeInput';
