@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogContent } from '@mui/material';
 import { useContext } from 'react';
-import { useDebounce } from 'usehooks-ts';
 
 import { AirportIcon, WaypointIcon } from '../../../components/map';
+import useDebounce from '../../../components/useDebounce';
 import SelectedPOIs from './SelectedPOIs';
 
 function max<A, B>(a: A[], b: B[]) {
