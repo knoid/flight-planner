@@ -4,8 +4,8 @@ import { Circle } from 'react-leaflet';
 import * as math from '../../../components/math';
 import POIsContext from '../../../components/POIsContext';
 import { useStore } from '../../../components/store';
+import usePartials from '../../../components/usePartials';
 import { WorldMagneticModel } from '../../../utils/WorldMagneticModel';
-import usePartials from '../../plan/components/FlightPlanTable/usePartials';
 
 const nm2m = 1852;
 const wmm = new WorldMagneticModel();

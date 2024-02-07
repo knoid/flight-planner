@@ -63,11 +63,6 @@ export function useStore() {
     [setState],
   );
 
-  const setIncludeFrequencies = useCallback(
-    (includeFrequencies: boolean) => setState((state) => ({ ...state, includeFrequencies })),
-    [setState],
-  );
-
   const setLegs = useCallback(
     (legs: SetStateAction<Leg[]>) =>
       setState((state) => ({
@@ -112,7 +107,6 @@ export function useStore() {
       setCenter,
       setCruiseSpeed,
       setFuel,
-      setIncludeFrequencies,
       setLegs,
       setMetadata,
       setStartTime,
@@ -120,6 +114,6 @@ export function useStore() {
       toggleReminderOnMap,
       ...state,
     }),
-    [setCruiseSpeed, setFuel, setIncludeFrequencies, setLegs, setMetadata, setStartTime, state],
+    [setCruiseSpeed, setFuel, setLegs, setMetadata, setStartTime, state],
   );
 }

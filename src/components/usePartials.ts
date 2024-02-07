@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 
-import * as math from '../../../../components/math';
-import type { PointPOI } from '../../../../components/openAIP';
-import POIsContext from '../../../../components/POIsContext';
-import { useStore } from '../../../../components/store';
-import type { Coords } from '../../../../types';
-import reverse from '../../../../utils/reverse';
-import type { WorldMagneticModel } from '../../../../utils/WorldMagneticModel';
+import type { Coords } from '../types';
+import reverse from '../utils/reverse';
+import type { WorldMagneticModel } from '../utils/WorldMagneticModel';
+import * as math from './math';
+import type { PointPOI } from './openAIP';
+import POIsContext from './POIsContext';
+import { useStore } from './store';
 
 export interface Partial {
   course: number;
