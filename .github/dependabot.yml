@@ -9,3 +9,14 @@ updates:
       interval: 'weekly'
     assignees:
       - 'knoid'
+    groups:
+      dnd-kit:
+        patterns:
+          - '@dnd-kit/*'
+      mui:
+        patterns:
+          - '@emotion/*'
+          - '@mui/*'
+      testing-library:
+        patterns:
+          - '@testing-library/*'
