@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest';
+
 import { capitalize } from './capitalize';
 
 function testString(input: string) {
