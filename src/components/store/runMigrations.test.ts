@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { expect, test } from 'vitest';
 
 import { version } from './constants';
 import runMigrations from './runMigrations';

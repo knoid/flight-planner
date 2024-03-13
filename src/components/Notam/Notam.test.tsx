@@ -1,6 +1,5 @@
-import { renderHook } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
-import { Mock, vi } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
+import { beforeEach, expect, Mock, test, vi } from 'vitest';
 
 import fetchNOTAMs from './fetchNOTAMs';
 import { NotamProvider, useNotam } from './Notam';
@@ -24,9 +23,9 @@ test('requests NOTAMs when mounted', async () => {
   });
   expect(result.current).toHaveProperty('state', 'loading');
 
-  await act(() => rerender('ASD'));
+  rerender('ASD');
   expect(mockedFetchNOTAMs).toHaveBeenCalled();
-  expect(result.current).toHaveProperty('hasNOTAM', true);
+  await waitFor(() => expect(result.current).toHaveProperty('hasNOTAM', true));
 
   rerender('not in list');
   expect(result.current).toHaveProperty('hasNOTAM', false);
@@ -41,7 +40,7 @@ test('handles error response', async () => {
   });
   expect(result.current).toHaveProperty('state', 'loading');
 
-  await act(() => rerender('ASD'));
+  rerender('ASD');
   expect(mockedFetchNOTAMs).toHaveBeenCalled();
-  expect(result.current).toHaveProperty('state', 'error');
+  await waitFor(() => expect(result.current).toHaveProperty('state', 'error'));
 });

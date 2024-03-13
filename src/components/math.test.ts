@@ -1,3 +1,5 @@
+import { expect, test } from 'vitest';
+
 import { toDegrees, toRadians } from './math';
 
 test('toDegrees', () => {
