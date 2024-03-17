@@ -1,12 +1,12 @@
 import 'leaflet/dist/leaflet.css';
 
 import { Map } from 'leaflet';
-import { forwardRef, Ref } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 import { MapContainer as LeafMapContainer, MapContainerProps, TileLayer } from 'react-leaflet';
 
 export const MapContainer = forwardRef(function MapContainer(
   { children, ...props }: MapContainerProps,
-  ref: Ref<Map>,
+  ref: ForwardedRef<Map>,
 ) {
   return (
     <LeafMapContainer {...props} ref={ref}>

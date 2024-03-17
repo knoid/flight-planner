@@ -1,7 +1,7 @@
 import { styled } from '@mui/material';
 import { PickersToolbar } from '@mui/x-date-pickers/internals';
 import { PickersToolbarText } from '@mui/x-date-pickers/internals/components/PickersToolbarText';
-import { forwardRef, Ref } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 
 import { TValue } from './WindPicker.types';
 
@@ -27,7 +27,7 @@ interface WindPickerToolbarProps {
 
 export const WindPickerToolbar = forwardRef(function WindPickerToolbar(
   { isLandscape, value }: WindPickerToolbarProps,
-  ref: Ref<HTMLDivElement>,
+  ref: ForwardedRef<HTMLDivElement>,
 ) {
   const direction = `${Math.round(value.direction)}`.padStart(3, '0');
   const speed = `${Math.floor(value.speed)}`.padStart(2, '0');
