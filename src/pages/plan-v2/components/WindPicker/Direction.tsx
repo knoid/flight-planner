@@ -1,5 +1,5 @@
 import { styled } from '@mui/material';
-import { forwardRef, ReactNode, Ref } from 'react';
+import { ForwardedRef, forwardRef, ReactNode } from 'react';
 
 import { DIRECTION_SIZE, SIZE } from './WindPicker.types';
 
@@ -25,7 +25,7 @@ interface DirectionProps {
 
 export const Direction = forwardRef(function Direction(
   props: DirectionProps,
-  ref: Ref<HTMLDivElement>,
+  ref: ForwardedRef<HTMLDivElement>,
 ) {
   const { angle, children } = props;
 

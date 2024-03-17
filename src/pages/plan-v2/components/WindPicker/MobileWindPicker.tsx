@@ -7,7 +7,15 @@ import { useIsLandscape } from '@mui/x-date-pickers/internals/hooks/useIsLandsca
 import { OpenStateProps, useOpenState } from '@mui/x-date-pickers/internals/hooks/useOpenState';
 import { UsePickerLayoutProps } from '@mui/x-date-pickers/internals/hooks/usePicker/usePickerLayoutProps';
 import { PickersLayout } from '@mui/x-date-pickers/PickersLayout';
-import { forwardRef, MouseEvent, Ref, TouchEvent, useEffect, useRef, useState } from 'react';
+import {
+  ForwardedRef,
+  forwardRef,
+  MouseEvent,
+  TouchEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import * as math from '../../../../components/math';
 import { useI18nContext } from '../../../../i18n/i18n-react';
@@ -125,7 +133,7 @@ interface MobileWindPicker extends OpenStateProps, UsePickerLayoutProps {
 
 export const MobileWindPicker = forwardRef(function MobileWindPicker(
   props: MobileWindPicker,
-  ref: Ref<HTMLButtonElement>,
+  ref: ForwardedRef<HTMLButtonElement>,
 ) {
   const { isOpen, setIsOpen } = useOpenState(props);
   const { LL } = useI18nContext();
