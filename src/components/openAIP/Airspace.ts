@@ -1,3 +1,4 @@
+import { Polygon } from 'geojson';
 import { LatLngBounds } from 'leaflet';
 
 import { Frequency } from './Frequency';
@@ -60,11 +61,6 @@ export enum AirspaceType {
   /** TSA/TRA Feeding Route */
   TFR,
   VFR,
-}
-
-interface Polygon {
-  type: 'Polygon';
-  coordinates: [lng: number, lat: number][][];
 }
 
 export enum LimitUnit {

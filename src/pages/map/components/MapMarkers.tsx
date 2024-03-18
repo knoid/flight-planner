@@ -39,9 +39,7 @@ export default function MapMarkers() {
         .filter((poi): poi is Airport => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
           <Marker
-            eventHandlers={{
-              click: () => clickedAirport(poi),
-            }}
+            eventHandlers={{ click: () => clickedAirport(poi) }}
             key={poi._id}
             position={poi.latLng()}
             zIndexOffset={1}
@@ -55,9 +53,7 @@ export default function MapMarkers() {
         .filter((poi): poi is ReportingPoint => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
           <Marker
-            eventHandlers={{
-              click: () => clickedReportingPoint(poi),
-            }}
+            eventHandlers={{ click: () => clickedReportingPoint(poi) }}
             key={poi._id}
             position={poi.latLng()}
             zIndexOffset={2}

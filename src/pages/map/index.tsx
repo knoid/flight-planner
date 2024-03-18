@@ -1,4 +1,4 @@
-import { LatLng, Map } from 'leaflet';
+import { LatLng } from 'leaflet';
 import { useEffect, useRef } from 'react';
 import { Pane, useMapEvents } from 'react-leaflet';
 import { useMatch, useNavigate } from 'react-router-dom';
@@ -61,19 +61,12 @@ function useCenterZoomLocation() {
 export const Component = function MapPage() {
   const { altitude, setAltitude, showReminderOnMap, toggleReminderOnMap } = useStore();
   const { center, zoom } = useCenterZoomLocation();
-  const mapRef = useRef<Map>(null);
   const paneRef = useRef<HTMLElement>(null);
 
   return (
     <SelectedPOIsProvider pane={paneRef}>
       <Details />
-      <MapContainer
-        center={center}
-        doubleClickZoom={false}
-        ref={mapRef}
-        zoom={zoom}
-        zoomControl={false}
-      >
+      <MapContainer center={center} doubleClickZoom={false} zoom={zoom} zoomControl={false}>
         <Pane name="clickable" ref={paneRef}>
           <Airspaces altitude={altitude} />
           <MapMarkers />

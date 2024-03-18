@@ -1,11 +1,7 @@
+import { Point } from 'geojson';
 import { LatLng } from 'leaflet';
 
 import POI, { POIProps } from './POI';
-
-interface Point {
-  type: 'Point';
-  coordinates: [lng: number, lat: number];
-}
 
 export interface PointPOIProps extends POIProps {
   geometry: Point;
