@@ -47,7 +47,7 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_OPENAIP_KEY: ${{ vars.VITE_OPENAIP_KEY }}
+          VITE_OPENAIP_KEY: ${{ secrets.VITE_OPENAIP_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
