@@ -7,6 +7,7 @@ const es = {
   altitude: 'Altitud',
   callSign: 'Matrícula',
   cardinalDirections: { N: 'N', E: 'E', S: 'S', W: 'O' },
+  checkNOTAMs: 'revisar NOTAMs',
   closeNotes: 'cerrar notas',
   coordinates: 'Coordenadas',
   course: 'Curso',

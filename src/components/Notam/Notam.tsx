@@ -32,7 +32,7 @@ export function NotamProvider({ children }: NotamProviderProps) {
   return <NotamContext.Provider value={state}>{children}</NotamContext.Provider>;
 }
 
-export function useNotam(identifier: string) {
+export function useNotam(identifier: string | undefined) {
   const { identifiers, state } = useContext(NotamContext);
-  return { hasNOTAM: identifiers.includes(identifier), state };
+  return { hasNOTAM: !!identifier && identifiers.includes(identifier), state };
 }

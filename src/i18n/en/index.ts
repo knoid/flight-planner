@@ -7,6 +7,7 @@ const en = {
   altitude: 'Altitude',
   callSign: 'Call Sign',
   cardinalDirections: { N: 'N', E: 'E', S: 'S', W: 'W' },
+  checkNOTAMs: 'check NOTAMs',
   closeNotes: 'close notes',
   coordinates: 'Coordinates',
   course: 'Course',

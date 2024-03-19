@@ -53,6 +53,10 @@ type RootTranslation = {
 		W: string
 	}
 	/**
+	 * c​h​e​c​k​ ​N​O​T​A​M​s
+	 */
+	checkNOTAMs: string
+	/**
 	 * c​l​o​s​e​ ​n​o​t​e​s
 	 */
 	closeNotes: string
@@ -255,6 +259,10 @@ export type TranslationFunctions = {
 		 */
 		W: () => LocalizedString
 	}
+	/**
+	 * check NOTAMs
+	 */
+	checkNOTAMs: () => LocalizedString
 	/**
 	 * close notes
 	 */
