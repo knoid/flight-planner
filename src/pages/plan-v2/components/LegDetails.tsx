@@ -1,6 +1,10 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { DragIndicator, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import {
+  DragIndicator as DragIndicatorIcon,
+  ExpandMore as ExpandMoreIcon,
+  OpenInNew as OpenInNewIcon,
+} from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -8,15 +12,22 @@ import {
   AccordionSummary,
   IconButton,
   styled,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import { MouseEvent } from 'react';
 
+import { useNotam } from '../../../components/Notam';
 import { useAirport, useReportingPoint } from '../../../components/POIsContext';
 import { Leg } from '../../../components/store/constants';
 import WaypointDetails from '../../../components/WaypointDetails';
 import { useI18nContext } from '../../../i18n/i18n-react';
 
 const Identifier = styled('span')({ fontFamily: 'monospace' });
+
+function stopPropagation(event: MouseEvent) {
+  event.stopPropagation();
+}
 
 interface LegDetailsProps extends Pick<AccordionProps, 'onChange'> {
   expanded: string | false;
@@ -26,6 +37,7 @@ interface LegDetailsProps extends Pick<AccordionProps, 'onChange'> {
 
 export default function LegDetails({ expanded, index, leg, onChange }: LegDetailsProps) {
   const airport = useAirport(leg._id);
+  const { hasNOTAM } = useNotam(airport?.altIdentifier || airport?.iataCode);
   const reportingPoint = useReportingPoint(leg._id);
   const poi = airport || reportingPoint;
   const { LL } = useI18nContext();
@@ -57,11 +69,25 @@ export default function LegDetails({ expanded, index, leg, onChange }: LegDetail
             aria-label={LL.dragLeg()}
             {...listeners}
           >
-            <DragIndicator />
+            <DragIndicatorIcon />
           </IconButton>
         )}
         <Typography>
           {index + 1}. <Identifier>{poi?.getIdentifier()}</Identifier>
+          {hasNOTAM && (
+            <Tooltip title="check NOTAMs">
+              <IconButton
+                href="https://ais.anac.gov.ar/notam"
+                onClick={stopPropagation}
+                rel="noreferrer"
+                size="small"
+                sx={{ my: -1 }}
+                target="_blank"
+              >
+                <OpenInNewIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
+          )}
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ display: 'flex', padding: 0 }}>
