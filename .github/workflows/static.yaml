@@ -23,6 +23,7 @@ concurrency:
 jobs:
   build:
     name: Build
+    environment: github-pages
     runs-on: ubuntu-latest
 
     steps:
@@ -45,6 +46,8 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_OPENAIP_KEY: ${{ vars.VITE_OPENAIP_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

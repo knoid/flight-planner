@@ -35,7 +35,7 @@ export default function MapMarkers() {
   return (
     <>
       <Polyline positions={points} />
-      {[...airports.values()]
+      {Array.from(airports.values())
         .filter((poi): poi is Airport => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
           <Marker
@@ -49,7 +49,7 @@ export default function MapMarkers() {
             </DivIcon>
           </Marker>
         ))}
-      {[...reportingPoints.values()]
+      {Array.from(reportingPoints.values())
         .filter((poi): poi is ReportingPoint => (poi && bounds.contains(poi.latLng())) || false)
         .map((poi) => (
           <Marker

@@ -17,10 +17,11 @@ interface PagingResult<Item> {
 }
 
 const baseURL = 'https://api.core.openaip.net/api/';
+const { VITE_OPENAIP_KEY } = import.meta.env;
 
 export default async function openAIP<T>(path: string, params: Record<string, string>) {
   const searchParams = new URLSearchParams({
-    apiKey: '72a6755bd7f6b13109de4c0f4ed2b694',
+    apiKey: VITE_OPENAIP_KEY,
     ...params,
   });
   const response = await fetch(baseURL + path + '?' + searchParams.toString());
