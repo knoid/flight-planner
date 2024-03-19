@@ -69,7 +69,7 @@ async function fetchAirports(params: POIFetchParams) {
      *  12: Agricultural Landing Strip
      *  13: Altiport
      */
-    type: [0, 2, 3].join(','),
+    type: [0, 1, 2, 3, 6, 9, 10, 11, 12, 13].join(','),
     ...params,
   });
 }
