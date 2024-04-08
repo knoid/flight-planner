@@ -16,7 +16,8 @@ updates:
       mui:
         patterns:
           - '@emotion/*'
-          - '@mui/*'
+          - '@mui/icons-material'
+          - '@mui/material'
       testing-library:
         patterns:
           - '@testing-library/*'
