@@ -21,6 +21,7 @@ const storedState = {
       const migratedData = runMigrations(data);
       return migratedData;
     } catch (error) {
+      console.error('Error migrating data', error);
       return initialState;
     }
   })(),
